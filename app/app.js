@@ -19,6 +19,7 @@
 */
 
 var game = {
+    paused: true,
     turn: {
         id: 0,
         startTime: null,
@@ -35,25 +36,29 @@ var game = {
         console.log('\n\n\nWELCOME TO PIRADICE\n\n\n');
         
         render.gui.canvas.addEventListener('mousedown', game.click, false);
+        
+        this.paused = false;
     },
     
     click: function(e){
         
-        var cX = (e.pageX - render.entities.canvas.offsetLeft)/render.box<<0,
-            cY = (e.pageY - render.entities.canvas.offsetTop)/render.box<<0;
-        
-        if(game.unit_selected > -1){            
-            if(game.attackOrMove(cX, cY)){
-                render.render({entities:true, gui:true});
-                game.unit_selected = -1;
-                game.nextTurn();            
-            }
-        }else{
-            game.select(cX, cY);
-            render.render({gui:true});
-        }           
-        
-        game.nextTurn();
+        if(!game.paused){
+            var cX = (e.pageX - render.entities.canvas.offsetLeft)/render.box<<0,
+                cY = (e.pageY - render.entities.canvas.offsetTop)/render.box<<0;
+            
+            if(game.unit_selected > -1){            
+                if(game.attackOrMove(cX, cY)){
+                    render.render({entities:true, gui:true});
+                    game.unit_selected = -1;
+                    game.nextTurn();            
+                }
+            }else{
+                game.select(cX, cY);
+                render.render({gui:true});
+            }           
+            
+            game.nextTurn();
+        }
     },
     
     select: function(cX,cY){
@@ -93,13 +98,17 @@ var game = {
                         }else{
                             //merge
                             if(world.maps[world.map].entities[game.unit_selected].reloading < 1){
-                                if(!world.maps[world.map].entities[i].merge(world.maps[world.map].entities[game.unit_selected])){                             
+                                if(world.maps[world.map].entities[i].merge(world.maps[world.map].entities[game.unit_selected])){                             
+                                    world.maps[world.map].entities[game.unit_selected].unselect();                            
+                                    i = world.maps[world.map].entities.length;
+                                }else{
+                                    world.maps[world.map].entities[game.unit_selected].moves = 1;
                                     world.maps[world.map].entities[game.unit_selected].x = temp.x;
                                     world.maps[world.map].entities[game.unit_selected].y = temp.y;
+                                    
                                 }                            
                             }
-                            world.maps[world.map].entities[game.unit_selected].unselect();                            
-                            i = world.maps[world.map].entities.length;
+                            
                         }
                     }
                 }    
@@ -162,6 +171,11 @@ var game = {
                     world.maps[world.map].entities[i].reloading--;
                 }
                 world.maps[world.map].entities[i].moves = 1;
+                
+                world.maps[world.map].entities[i].message = null;
+                if(world.maps[world.map].entities[i].team === this.turn.team && world.maps[world.map].entities[i].reloading < 1){
+                    world.maps[world.map].entities[i].shout();
+                }
             }
                         
                 
@@ -177,8 +191,13 @@ var game = {
     },
     
     win: function(){
-        window.alert('You win!\nClick ok to restart game');
-        window.location.reload(false);
+        if(world.map < world.maps.length-1){
+            world.map++;
+            render.render({gui:true, entities:true, map:true});
+        }else{
+            window.alert('You win!\nClick ok to restart game');
+            window.location.reload(false);
+        }
     },
     
     lose: function(){
@@ -275,69 +294,8 @@ var world = {
         this.loadMap();        
     },
     
-    loadMap: function(){
-        this.maps[0] = {
-            name:   'First islands',
-            width:  16,
-            height: 12,
-            data: [
-                0,0,1,1,1,1,1,0,0,0,0,0,0,0,0,0,
-                0,1,1,2,2,2,1,1,1,1,1,1,1,1,0,0,
-                1,1,2,2,4,2,2,2,2,1,1,2,2,1,1,1,
-                1,2,4,4,4,4,2,2,3,6,2,5,4,5,2,1,
-                1,2,5,5,5,5,2,3,1,1,3,2,5,2,3,1,
-                1,3,2,2,3,3,3,1,1,1,1,3,3,3,1,1,
-                1,1,3,3,1,1,1,1,1,1,1,1,7,1,1,1,
-                0,1,1,7,1,1,0,1,1,2,2,4,4,4,2,1,
-                1,1,1,4,4,1,0,1,2,5,4,4,4,5,2,1,
-                1,4,4,4,4,1,0,1,3,2,5,5,5,2,3,1,
-                1,5,5,5,5,1,0,1,1,3,3,3,3,3,1,1,
-                1,1,1,1,1,1,0,0,1,1,1,1,1,1,1,0,
-            ],
-            moves: [],
-            entities: [
-                new Pirate({x:1,y:3,squad:1,team:0}),
-                new Pirate({x:1,y:5,squad:1,team:0}),
-                new Pirate({x:2,y:3,squad:2,team:0}),                
-                new RangePirate({x:1,y:4,squad:1,team:0}),
-                new RangePirate({x:14,y:9,squad:1,team:0}),
-                new RangePirate({x:13,y:10,squad:1,team:0}),
-                new Skeleton({x:5,y:2,squad:2,team:1}),
-                new Skeleton({x:5,y:5,squad:1,team:1}),
-                new Skeleton({x:11,y:4,squad:3,team:1}),
-                new Skeleton({x:12,y:4,squad:2,team:1}),
-                new Skeleton({x:9,y:8,squad:3,team:1}),
-                new Skeleton({x:13,y:8,squad:1,team:1}),
-                new Skeleton({x:10,y:9,squad:4,team:1}),
-                new Skeleton({x:4,y:9,squad:1,team:1}),
-            ],
-            items: [
-                new Chest({x:5, y:4}),
-                new Chest({x:11, y:2}),
-                new Chest({x:9, y:8}),
-                new Chest({x:1, y:10}),
-                new Palm({x:4,y:3}),
-                new Palm({x:11,y:7}),
-                new Palm({x:11,y:8}),
-                new Palm({x:10,y:8}),
-                new Palm({x:3, y:3}),
-                new Palm({x:2, y:9}),
-                new Palm({x:4, y:8}),
-                new Palm({x:4, y:10}),
-                new Palm({x:1, y:9}), 
-                new Palm({x:12, y:3}),
-                new Ship({x:0, y:3}),
-                new Ship({x:15, y:9})
-            ]
-        };
-        
-        for (var i = 0; i < this.maps[this.map].data.length; i++) {
-            if(this.maps[this.map].data[i] === 0 || this.maps[this.map].data[i] == 1){
-                this.maps[this.map].moves.push(0);
-            }else{
-                this.maps[this.map].moves.push(1);
-            }
-        }
+    loadMap: function(){         
+        this.maps = load.map();            
         
         this._W = this.maps[this.map].width;
         this._H = this.maps[this.map].height;
@@ -394,7 +352,7 @@ var render = {
             render.sprites[9] = render.makeSprite(4,0); // move
             render.sprites[10] = render.makeSprite(5,0); // select
             render.sprites[11] = render.makeSprite(5,1); // done
-            render.sprites[12] = render.makeSprite(2,2); // ship;
+            render.sprites[12] = render.makeSprite(2,2); // ship
             render.sprites[13] = render.makeSprite(0,2); // treasure
             render.sprites[14] = render.makeSprite(1,2); // treasure open
             render.sprites[15] = render.makeSprite(5,2); // reloading
@@ -419,8 +377,9 @@ var render = {
             render.sprites[35] = render.makeSprite(5,4); // range pirate 6
             render.sprites[36] = render.makeSprite(2,2); // pirates ture
             render.sprites[37] = render.makeSprite(3,2); // skeleton ture
+            render.sprites[38] = render.makeSprite(4,2); // message
             
-            render.render({map:true, entities:true});
+            render.render({map:true, entities:true, gui:true});
         }                
         
     },
@@ -433,6 +392,16 @@ var render = {
         m_context.drawImage(this.sprites_img, -x*this.box, -y*this.box);
         return m_canvas;
     },  
+    
+    drawMessage: function(msg, x, y){ 
+        
+        this.gui.ctx.drawImage(this.sprites[38], (x*this.box)-12, (y*this.box)-18);        
+        this.gui.ctx.fillStyle = '#000';
+        this.gui.ctx.font = 'bold 0.7em Verdana sans-serif';
+        this.gui.ctx.textBaseline = 'top';
+        this.gui.ctx.textAlign = 'center';
+        this.gui.ctx.fillText(msg , (x*this.box)+4, (y*this.box)-4);    
+    },
     
     render: function(args){
         var i = 0;
@@ -471,11 +440,15 @@ var render = {
                     for (var j = 0; j < world.maps[world.map].entities[i].move_area.length; j++) {
                         render.gui.ctx.drawImage(render.sprites[9], world.maps[world.map].entities[i].move_area[j].x*render.box, world.maps[world.map].entities[i].move_area[j].y*render.box);
                     }                    
+                }else{
+                    if(world.maps[world.map].entities[i].message && world.maps[world.map].entities[i].squad > 0){
+                        this.drawMessage(world.maps[world.map].entities[i].message,world.maps[world.map].entities[i].x, world.maps[world.map].entities[i].y)
+                    }
                 }
-                if(world.maps[world.map].entities[i].reloading > 0){
+                if(world.maps[world.map].entities[i].reloading > 0 && world.maps[world.map].entities[i].squad > 0 ){
                     render.gui.ctx.drawImage(render.sprites[15], world.maps[world.map].entities[i].x*render.box, world.maps[world.map].entities[i].y*render.box);    
                 }
-                if(world.maps[world.map].entities[i].moves < 1){
+                if(world.maps[world.map].entities[i].moves < 1 && world.maps[world.map].entities[i].squad > 0){
                     render.gui.ctx.drawImage(render.sprites[11], world.maps[world.map].entities[i].x*render.box, world.maps[world.map].entities[i].y*render.box);    
                 }
             }

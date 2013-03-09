@@ -3,7 +3,7 @@ body {width:512px; margin:0 auto; background-color:#00c3d4; cursor:url('../media
 header,
 footer {margin:32px 0; text-align:center; font-size:0.8em; color:#ffec93;}
 a {color:#ffec93;}
-#game {position:relative;}
+
 canvas {display: block; position:absolute;
     image-rendering: optimizeSpeed;
     image-rendering: -moz-crisp-edges;

@@ -23,6 +23,8 @@ var Unit = function Unit(){
     this.team = 0;
     this.moves = 1;
     this.reloading = 0;
+    this.message = null;
+    this.messages = [];
 };
 
 Unit.prototype = {
@@ -81,6 +83,7 @@ Unit.prototype = {
                 this.x = x;
                 this.y = y;
                 this.moves = 0;
+                this.message = false;
                 return true;
             }
         }
@@ -94,7 +97,8 @@ Unit.prototype = {
                 this.squad++;
                 this.sprite++;
                 other.squad--;
-            }                
+            }           
+            this.message = this.squad;            
             other.die();
             return true;
         }else{
@@ -106,8 +110,9 @@ Unit.prototype = {
         if(this.pirate){
             for (var j = 0; j < world.maps[world.map].items.length; j++) {                    
                 if(world.maps[world.map].items[j].x == this.x && world.maps[world.map].items[j].y == this.y){                        
-                    world.maps[world.map].items[j].open();   
-                    render.render({items:true});
+                    world.maps[world.map].items[j].open(); 
+                    this.message = 'Gold';
+                    render.render({items:true, gui:true});
                 }                    
             }
         }
@@ -115,50 +120,63 @@ Unit.prototype = {
     
     attack: function(other){
         var dice = null,
-            dice2 = null;
-        console.log('\n\n\n\n');
-        console.log('-------------- SKIRMISH --------------');
-        console.log(this.name + ' ' + this.squad + '  -vs-  ' + other.squad + ' ' +  other.name + ' ');
+            dice2 = null,
+            total = 0,
+            total2 = 0;
         
-        while(this.squad > 0 && other.squad > 0){
-            dice = ((Math.random()*5)<<0)+1;
-            dice2 = ((Math.random()*5)<<0)+1;
-                   
-            console.log(this.name + '('+this.squad+')  roll  '+ game.toDice(dice) + ' ' + dice + '   -vs- ' + other.name + '('+other.squad+')  roll ' + game.toDice(dice2) + ' ' + dice2 );
-            
-            if(dice > dice2){
-                other.hit();       
-            }else
-            if(dice < dice2){
-                if(this.range){
+        if(this.range){
+             for (var i = 0; i <= this.squad; i++) {
+                dice = ((Math.random()*5)<<0)+1;
+                dice2 = ((Math.random()*5)<<0)+1;
+                       
+                total += dice;
+                total2 += dice2;
+                
+                if(dice > dice2){
+                    other.hit();
+                    other.message = '!@';
+                }else
+                if(dice < dice2){
                     if((Math.abs(this.x - other.x) < 2) && (Math.abs(this.y - other.y) < 2)){
                         this.hit();
-                    }                                        
-                }else{
-                    this.hit();
+                    }
+                    this.message = 'miss';
                 }
+            }            
+                        
+            this.reloading = 3;            
+            
+        }else{        
+            while(this.squad > 0 && other.squad > 0){
+                dice = ((Math.random()*5)<<0)+1;
+                dice2 = ((Math.random()*5)<<0)+1;
+                       
+                total += dice;
+                total2 += dice2;
+                            
+                if(dice > dice2){
+                    other.hit();       
+                }else
+                if(dice < dice2){                   
+                    this.hit();
+                }            
+                
             }
-            
-            
-            
         }
         
-        
         if(this.squad < 1 ){
-            console.log('-------------- DEFEAT --------------');
-            console.log(this.name + ' ' + this.squad  + ' -vs- ' + other.squad + ' ' + other.name );
+            other.message = total + '-' + total2;
             this.die();
         }
         
-        if(other.squad < 1){
-            console.log('-------------- VICTORY --------------');
-            console.log(this.name, this.squad, '-vs-', other.name, other.squad);            
-            
-            if(this.range){
-                this.reloading = 3;    
-            }
+        if(other.squad < 1){                                 
+            this.message = total + '-' + total2;
             other.die();            
         }
+        
+        if(this.squad > 0 && other.squad > 0){
+            //this.message = 'miss';            
+        }        
     },
     
     hit: function(){
@@ -172,6 +190,11 @@ Unit.prototype = {
         this.x = 0;
         this.y = 0;    
     },
+    
+    shout: function(){
+        var r = (Math.random()*this.messages.length)<<0;
+        this.message = this.messages[r];        
+    },
 };
 
 var Pirate = function Pirate(args){
@@ -181,7 +204,9 @@ var Pirate = function Pirate(args){
     this.y = args.y;
     this.team = args.team;
     this.squad = args.squad;
-    this.sprite = 17 + args.squad -1;  
+    this.sprite = 17 + args.squad -1;
+    this.message = 'Arr..';
+    this.messages = ['Arr..', 'Yes?', '..y', 'Go!', 'ye!'];
 };
 
 Pirate.prototype = new Unit();
@@ -195,6 +220,8 @@ var RangePirate = function RangePirate(args){
     this.range = true;
     this.team = args.team;
     this.squad = args.squad;
+    this.message = 'Yarr!';
+    this.messages = ['Fire!', 'Aim', 'Yarr!', 'Bum!'];
 };
 
 RangePirate.prototype = new Unit();
@@ -207,7 +234,8 @@ var Skeleton = function Skeleton(args){
     this.y = args.y;
     this.team = args.team;
     this.squad = args.squad;
-    this.sprite = 23 + args.squad -1;    
+    this.sprite = 23 + args.squad -1;
+    this.messages = ['...', '..', '.'];
 };
 
 Skeleton.prototype = new Unit();
