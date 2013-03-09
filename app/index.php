@@ -11,7 +11,7 @@
     <body>
         <header>
             <h1><img src="media/logo.png" alt="Piradice"/></h1>
-            <p>alpha version #piradice <a href="piradice_concept_art.png">art</a> <strong>☼suno</strong></p>
+            <p>alpha version #piradice <a href="piradice2x.png">art</a> <strong>☼suno</strong></p>
         </header>
         <div id="game">
             <canvas id="map"></canvas>
