@@ -1,0 +1,9 @@
+body {background-color:#00c3d4; cursor:url('../media/cur.png'), auto; font:1em Helvetica, Arial sans-serif;}
+* {margin: 0; padding: 0;}
+canvas {display: block; position:absolute; margin:auto; top:0; left:0; right:0; bottom:0;
+    image-rendering: optimizeSpeed;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: optimize-contrast;}
+header {text-align:center; line-height:2em; color:#f8f8f8; font-size:0.8em;}
+header a {color:#fff;}
