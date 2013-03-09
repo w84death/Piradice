@@ -77,16 +77,7 @@ Unit.prototype = {
     move: function(x,y){
         
         for (var i = 0; i < this.move_area.length; i++) {
-            if(x == this.move_area[i].x && y == this.move_area[i].y && this.reloading < 1){
-                if(this.pirate){
-                    for (var j = 0; j < world.maps[world.map].items.length; j++) {                    
-                        if(world.maps[world.map].items[j].x == x && world.maps[world.map].items[j].y == y){                        
-                            world.maps[world.map].items[j].open();   
-                            render.render({items:true});
-                        }                    
-                    }
-                }
-                
+            if(x == this.move_area[i].x && y == this.move_area[i].y && this.reloading < 1){                
                 this.x = x;
                 this.y = y;
                 this.moves = 0;
@@ -108,6 +99,17 @@ Unit.prototype = {
             return true;
         }else{
             return false;
+        }
+    },
+    
+    open: function(){
+        if(this.pirate){
+            for (var j = 0; j < world.maps[world.map].items.length; j++) {                    
+                if(world.maps[world.map].items[j].x == this.x && world.maps[world.map].items[j].y == this.y){                        
+                    world.maps[world.map].items[j].open();   
+                    render.render({items:true});
+                }                    
+            }
         }
     },
     

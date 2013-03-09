@@ -32,6 +32,8 @@ var game = {
         world.init();
         render.init(); 
         
+        console.log('\n\n\nWELCOME TO PIRADICE\n\n\n');
+        
         render.gui.canvas.addEventListener('mousedown', game.click, false);
     },
     
@@ -57,15 +59,17 @@ var game = {
     select: function(cX,cY){
                 
         for (var i = 0; i < world.maps[world.map].entities.length; i++) {            
-            if(world.maps[world.map].entities[i].x == cX && world.maps[world.map].entities[i].y == cY && world.maps[world.map].entities[i].team == this.turn.team && world.maps[world.map].entities[i].moves > 0 && world.maps[world.map].entities[i].reloading < 1) {                                
+            if(world.maps[world.map].entities[i].x == cX && world.maps[world.map].entities[i].y == cY && world.maps[world.map].entities[i].team == this.turn.team && world.maps[world.map].entities[i].moves > 0 && world.maps[world.map].entities[i].reloading < 1) {                                                
                 world.maps[world.map].entities[i].select();
+                world.maps[world.map].entities[i].open();
                 this.unit_selected = i;                
             }
         }
         
     },
     
-    attackOrMove: function(cX,cY){
+    attackOrMove: function(cX,cY){                
+        
         var temp = {
             x:world.maps[world.map].entities[game.unit_selected].x,
             y:world.maps[world.map].entities[game.unit_selected].y
@@ -101,6 +105,7 @@ var game = {
                 }    
             }
         }
+                
         world.maps[world.map].entities[game.unit_selected].unselect();
         this.unit_selected = -1;        
         
@@ -108,7 +113,7 @@ var game = {
     
     toDice: function(value){
         var dice = [];        
-		dice[1] = "⚀";
+    	dice[1] = "⚀";
 		dice[2] = "⚁";
 		dice[3] = "⚂";
 		dice[4] = "⚃";
@@ -146,8 +151,7 @@ var game = {
                 this.turn.id++;
             }
             
-            var loose = true,
-                win = true;
+            var loose = true;
                 
             for (i = 0; i < world.maps[world.map].entities.length; i++) {
                 if(world.maps[world.map].entities[i].team === 0 && world.maps[world.map].entities[i].squad > 0){
@@ -159,29 +163,27 @@ var game = {
                 }
                 world.maps[world.map].entities[i].moves = 1;
             }
-            
-            for (i = 0; i < world.maps[world.map].items.length; i++) {
-                if(world.maps[world.map].items[i].can_open && world.maps[world.map].items[i].close){
-                    win = false;
-                }
-            }
+                        
                 
             if(loose){
-                window.alert('You lose.\nClick ok to restart game');
-                window.location.reload(false);
-            }
-            if(win){
-                window.alert('You win!\nClick ok to restart game');
-                window.location.reload(false);
+                this.lose();
             }
             
-            console.log('\n\n\n\n\=========[ TURN -- ' + this.turn.id + ' -- TURN ]=========');
-            console.log('=========[ TEAM: ' + this.turn.team + ' ]=========');
-            console.log('========================================');
+            console.log('\n\n\n\nNEXT TURN\n\n\n');            
                         
         }         
         
         render.render({gui:true, entities:true});
+    },
+    
+    win: function(){
+        window.alert('You win!\nClick ok to restart game');
+        window.location.reload(false);
+    },
+    
+    lose: function(){
+        window.alert('You lose.\nClick ok to restart game');
+        window.location.reload(false);
     },
 };
 
@@ -491,7 +493,3 @@ var render = {
 
 
 game.init();
-
-
-
-

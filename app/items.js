@@ -22,6 +22,16 @@ Item.prototype = {
             this.sprite = this.sprite_open;
             this.close = false;
         }
+        
+        var win = true;
+        for (i = 0; i < world.maps[world.map].items.length; i++) {
+            if(world.maps[world.map].items[i].can_open && world.maps[world.map].items[i].close){
+                win = false;
+            }
+        }
+        if(win){
+            game.win();            
+        }
     },
 };
 
