@@ -163,19 +163,29 @@ var load = {
                 new RangePirate({x:2,y:1,squad:1,team:0}),
                 new RangePirate({x:2,y:2,squad:1,team:0}),
                 new RangePirate({x:1,y:3,squad:2,team:0}),
+                
+                new RangePirate({x:13,y:2,squad:1,team:0}),
+                new RangePirate({x:13,y:3,squad:1,team:0}),
+                new RangePirate({x:14,y:3,squad:3,team:0}),
+                
+                new Skeleton({x:14,y:6,squad:3,team:1}),
+                new Skeleton({x:13,y:7,squad:1,team:1}),
+                new Skeleton({x:11,y:9,squad:1,team:1}),
+                
                 new Skeleton({x:6,y:1,squad:1,team:1}),
                 new Skeleton({x:1,y:6,squad:1,team:1}),
-                new Skeleton({x:5,y:2,squad:1,team:1}),
-                
-                new Skeleton({x:2,y:7,squad:1,team:1}),
-                
+                new Skeleton({x:5,y:2,squad:1,team:1}),                
+                new Skeleton({x:2,y:7,squad:1,team:1}),                
                 new Skeleton({x:6,y:10,squad:3,team:1}),
                 new Skeleton({x:5,y:9,squad:2,team:1}),
                 new Skeleton({x:13,y:8,squad:1,team:1})
             ],
             items: [
                 new Ship({x:1, y:1}),
+                new Ship({x:14, y:2}),
                 new Chest({x:9, y:5}),
+                new Chest({x:6, y:9}),
+                new Chest({x:12, y:8}),
                 new Palm({x:8, y:5}),
                 new Palm({x:10, y:8}),
                 new Palm({x:11, y:8}),
