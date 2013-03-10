@@ -83,6 +83,13 @@ var game = {
         
         if(world.maps[world.map].entities[game.unit_selected].move(cX, cY)){
             for (var i = 0; i < world.maps[world.map].entities.length; i++) {
+                
+                if(world.maps[world.map].entities[i].squad < 1){
+                    world.maps[world.map].entities[i].moves = 0;
+                    world.maps[world.map].entities[i].x = 0;
+                    world.maps[world.map].entities[i].y = 0;
+                }
+                    
                 if(world.maps[world.map].entities[i].x == world.maps[world.map].entities[game.unit_selected].x && world.maps[world.map].entities[i].y == world.maps[world.map].entities[game.unit_selected].y){
                     if(this.unit_selected != i){                    
                         if((world.maps[world.map].entities[this.unit_selected].pirate && world.maps[world.map].entities[i].skeleton) || (world.maps[world.map].entities[game.unit_selected].skeleton && world.maps[world.map].entities[i].pirate)){
@@ -126,8 +133,8 @@ var game = {
     
     toDice: function(value){
         var dice = [];        
-    	dice[1] = "⚀";
-		dice[2] = "⚁";
+        dice[1] = "⚀";
+        dice[2] = "⚁";
 		dice[3] = "⚂";
 		dice[4] = "⚃";
 		dice[5] = "⚄";
@@ -141,7 +148,7 @@ var game = {
         
         if(this.turn.start){
             for (var i = 0; i < world.maps[world.map].entities.length; i++) {
-                world.maps[world.map].entities[i].message = null;
+                world.maps[world.map].entities[i].message = null;                                
                 if(world.maps[world.map].entities[i].team === this.turn.team && world.maps[world.map].entities[i].reloading < 1){
                     world.maps[world.map].entities[i].shout();
                 }
@@ -159,7 +166,7 @@ var game = {
                     
                     if(world.maps[world.map].entities[i].reloading < 1){
                         next_turn = false;                
-                    }
+                    }                                        
                 }
             }         
         }
@@ -193,7 +200,9 @@ var game = {
             
             this.turn.start = true;            
                         
-        }         
+        }
+        
+        
         
         render.render({gui:true, entities:true});
     },
@@ -201,6 +210,7 @@ var game = {
     win: function(){
         if(world.map < world.maps.length-1){
             world.map++;
+            this.turn.start = true;
             localStorage.setItem("map", world.map);
             render.render({gui:true, entities:true, map:true});
         }else{
@@ -443,7 +453,6 @@ var render = {
         if(args.entities){ 
             this.entities.ctx.clearRect(0, 0, world._W*this.box, world._H*this.box);
             for(i=0; i<world.maps[world.map].entities.length; i++){
-                //console.log(world.maps[world.map].entities[i]);
                 if(world.maps[world.map].entities[i].squad > 0){
                     this.entities.ctx.drawImage(this.sprites[world.maps[world.map].entities[i].sprite], world.maps[world.map].entities[i].x*this.box, world.maps[world.map].entities[i].y*this.box);                                                       
                 }
@@ -472,12 +481,19 @@ var render = {
             }
             
             if(game.turn.start){
-                this.gui.ctx.fillStyle = 'rgba(0,0,0,0.4)';
+                this.gui.ctx.fillStyle = 'rgba(0,0,0,0.2)';
                 this.gui.ctx.fillRect(0, 0, world._W*this.box, world._H*this.box); 
-                render.gui.ctx.drawImage(this.next_turn, ((world.maps[world.map].width*0.5)<<0)*render.box - ((this.next_turn.width*0.5)<<0), ((world.maps[world.map].height*0.5)<<0)*render.box - ((this.next_turn.height*0.5)<<0));    
+                render.gui.ctx.drawImage(this.next_turn, ((world.maps[world.map].width*0.5)<<0)*render.box - ((this.next_turn.width*0.5)<<0), ((world.maps[world.map].height*0.7)<<0)*render.box - ((this.next_turn.height*0.5)<<0));    
+                this.gui.ctx.fillStyle = '#fff';
+                this.gui.ctx.font = 'bold 1.2em VT323 sans-serif';
+                this.gui.ctx.textBaseline = 'middle';
+                this.gui.ctx.textAlign = 'center';
+                this.gui.ctx.fillText('Next turn', ((world.maps[world.map].width*0.5)<<0)*render.box, ((world.maps[world.map].height*0.7)<<0)*render.box );
             }else{
                 if(game.turn.team == 1){
-                    render.gui.ctx.drawImage(render.sprites[37], ((world.maps[world.map].width*0.5)<<0)*render.box, ((world.maps[world.map].height*0.5)<<0)*render.box);    
+                    this.gui.ctx.fillStyle = 'rgba(0,0,0,0.2)';
+                    this.gui.ctx.fillRect(0, 0, world._W*this.box, world._H*this.box);
+                    render.gui.ctx.drawImage(render.sprites[37], 0,0);    
                 }
             }
             

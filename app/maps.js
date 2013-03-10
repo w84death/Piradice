@@ -24,7 +24,7 @@ var load = {
             moves: [],
             entities: [                                
                 new Pirate({x:4,y:5,squad:1,team:0}),
-                new Pirate({x:4,y:6,squad:1,team:0}),                
+                new Pirate({x:4,y:6,squad:2,team:0}),                
                 new Skeleton({x:6,y:6,squad:1,team:1}),
                 new Skeleton({x:7,y:6,squad:1,team:1}),
             ],

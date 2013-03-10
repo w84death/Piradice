@@ -148,6 +148,7 @@ Unit.prototype = {
             total = 0,
             total2 = 0;
         
+        //range pirate
         if(this.range){
              for (var i = 0; i <= this.squad; i++) {
                 dice = ((Math.random()*5)<<0)+1;
@@ -170,8 +171,10 @@ Unit.prototype = {
                         
             this.reloading = 3;            
             
-        }else{        
-            for (var i = 0; i <= this.squad; i++) {
+        }else{   
+            
+        // normal unit
+        for (var i = 0; i <= this.squad; i++) {
                 dice = ((Math.random()*5)<<0)+1;
                 dice2 = ((Math.random()*5)<<0)+1;
                        
@@ -183,21 +186,24 @@ Unit.prototype = {
                 }else
                 if(dice < dice2){                   
                     this.hit();
-                }                            
+                } 
+                
+                if(this.squad < 1 ){
+                    other.message = total + '-' + total2;
+                    this.die();
+                    if(other.squad < 1){                                                 
+                        other.die();    
+                    }
+                    return false;
+                }
+                
+                if(other.squad < 1){                                 
+                    this.message = total + '-' + total2;
+                    other.die();    
+                    return true;
+                }
             }            
-        }
-        
-        if(this.squad < 1 ){
-            other.message = total + '-' + total2;
-            this.die();
-            return false;
-        }
-        
-        if(other.squad < 1){                                 
-            this.message = total + '-' + total2;
-            other.die();    
-            return true;
-        }
+        }        
         
         if(this.squad > 0 && other.squad > 0){
             this.message = total;
