@@ -20,7 +20,7 @@ Item.prototype = {
     open: function(){        
         if(this.can_open && this.close){            
             this.sprite = this.sprite_open;
-            this.close = false;    
+            this.close = false; 
         
             var win = true;
             for (i = 0; i < world.maps[world.map].items.length; i++) {

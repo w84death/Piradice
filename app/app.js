@@ -22,6 +22,7 @@ var game = {
     paused: true,
     turn: {
         id: 0,
+        start: true,
         startTime: null,
         team: 0,
         endTime: null            
@@ -92,7 +93,10 @@ var game = {
                             }
                             world.maps[world.map].entities[game.unit_selected].unselect();                                                          
                             if(world.maps[world.map].entities[game.unit_selected].reloading < 1){
-                                world.maps[world.map].entities[game.unit_selected].attack(world.maps[world.map].entities[i]);
+                                if(!world.maps[world.map].entities[game.unit_selected].attack(world.maps[world.map].entities[i])){
+                                    world.maps[world.map].entities[game.unit_selected].x = temp.x;
+                                    world.maps[world.map].entities[game.unit_selected].y = temp.y;
+                                };
                             }
                             i = world.maps[world.map].entities.length;
                         }else{
@@ -132,23 +136,33 @@ var game = {
 		return dice[value];
 	},
     
-    nextTurn: function(){
+    nextTurn: function(){                    
         var next_turn = true;                
         
-        for (var i = 0; i < world.maps[world.map].entities.length; i++) {            
-            if(world.maps[world.map].entities[i].team == this.turn.team && world.maps[world.map].entities[i].moves > 0 && world.maps[world.map].entities[i].squad > 0) {                                
-                
-                if(world.maps[world.map].entities[i].ai){
-                    this.unit_selected = i;
-                    ai.think(world.maps[world.map].entities[i]);
-                }
-                
-                if(world.maps[world.map].entities[i].reloading < 1){
-                    next_turn = false;                
+        if(this.turn.start){
+            for (var i = 0; i < world.maps[world.map].entities.length; i++) {
+                world.maps[world.map].entities[i].message = null;
+                if(world.maps[world.map].entities[i].team === this.turn.team && world.maps[world.map].entities[i].reloading < 1){
+                    world.maps[world.map].entities[i].shout();
                 }
             }
-        }         
-        
+            this.turn.start = false;
+            next_turn = false; 
+        }else{        
+            for (var i = 0; i < world.maps[world.map].entities.length; i++) {            
+                if(world.maps[world.map].entities[i].team == this.turn.team && world.maps[world.map].entities[i].moves > 0 && world.maps[world.map].entities[i].squad > 0) {                                
+                    
+                    if(world.maps[world.map].entities[i].ai){
+                        this.unit_selected = i;
+                        ai.think(world.maps[world.map].entities[i]);
+                    }
+                    
+                    if(world.maps[world.map].entities[i].reloading < 1){
+                        next_turn = false;                
+                    }
+                }
+            }         
+        }
         if(next_turn){
             if(this.turn.team == 1){
                 // AI                
@@ -158,7 +172,7 @@ var game = {
             }else{
                 this.turn.team = 1;
                 this.turn.id++;
-            }
+            }     
             
             var loose = true;
                 
@@ -170,20 +184,14 @@ var game = {
                 if(world.maps[world.map].entities[i].range){
                     world.maps[world.map].entities[i].reloading--;
                 }
-                world.maps[world.map].entities[i].moves = 1;
-                
-                world.maps[world.map].entities[i].message = null;
-                if(world.maps[world.map].entities[i].team === this.turn.team && world.maps[world.map].entities[i].reloading < 1){
-                    world.maps[world.map].entities[i].shout();
-                }
-            }
-                        
+                world.maps[world.map].entities[i].moves = 1;                                
+            }                        
                 
             if(loose){
                 this.lose();
             }
             
-            console.log('\n\n\n\nNEXT TURN\n\n\n');            
+            this.turn.start = true;            
                         
         }         
         
@@ -320,6 +328,7 @@ var render = {
     },
     box: 32,
     sprites_img: new Image(),
+    next_turn: new Image(),
     sprites: [],
     
     init: function(){
@@ -382,10 +391,14 @@ var render = {
             render.sprites[35] = render.makeSprite(5,4); // range pirate 6
             render.sprites[36] = render.makeSprite(2,2); // pirates ture
             render.sprites[37] = render.makeSprite(3,2); // skeleton ture
-            render.sprites[38] = render.makeSprite(4,2); // message
-            
-            render.render({map:true, entities:true, gui:true});
-        }                
+            render.sprites[38] = render.makeSprite(4,2); // message                    
+            render.render({map:true, entities:true,});
+        }         
+        
+        this.next_turn.src = "media/next_turn.png";
+        this.next_turn.onload = function(){
+            render.render({gui:true});
+        }
         
     },
     
@@ -458,8 +471,14 @@ var render = {
                 }
             }
             
-            if(game.turn.team == 1){
-                render.gui.ctx.drawImage(render.sprites[37], ((world.maps[world.map].width*0.5)<<0)*render.box, ((world.maps[world.map].height*0.5)<<0)*render.box);    
+            if(game.turn.start){
+                this.gui.ctx.fillStyle = 'rgba(0,0,0,0.4)';
+                this.gui.ctx.fillRect(0, 0, world._W*this.box, world._H*this.box); 
+                render.gui.ctx.drawImage(this.next_turn, ((world.maps[world.map].width*0.5)<<0)*render.box - ((this.next_turn.width*0.5)<<0), ((world.maps[world.map].height*0.5)<<0)*render.box - ((this.next_turn.height*0.5)<<0));    
+            }else{
+                if(game.turn.team == 1){
+                    render.gui.ctx.drawImage(render.sprites[37], ((world.maps[world.map].width*0.5)<<0)*render.box, ((world.maps[world.map].height*0.5)<<0)*render.box);    
+                }
             }
             
             

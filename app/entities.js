@@ -171,7 +171,7 @@ Unit.prototype = {
             this.reloading = 3;            
             
         }else{        
-            while(this.squad > 0 && other.squad > 0){
+            for (var i = 0; i <= this.squad; i++) {
                 dice = ((Math.random()*5)<<0)+1;
                 dice2 = ((Math.random()*5)<<0)+1;
                        
@@ -183,23 +183,26 @@ Unit.prototype = {
                 }else
                 if(dice < dice2){                   
                     this.hit();
-                }            
-                
-            }
+                }                            
+            }            
         }
         
         if(this.squad < 1 ){
             other.message = total + '-' + total2;
             this.die();
+            return false;
         }
         
         if(other.squad < 1){                                 
             this.message = total + '-' + total2;
-            other.die();            
+            other.die();    
+            return true;
         }
         
         if(this.squad > 0 && other.squad > 0){
-            //this.message = 'miss';            
+            this.message = total;
+            other.message = total2;
+            return false;
         }        
     },
     
@@ -229,7 +232,6 @@ var Pirate = function Pirate(args){
     this.team = args.team;
     this.squad = args.squad;
     this.sprite = 17 + args.squad -1;
-    this.message = 'Arr..';
     this.messages = ['Arr..', 'Yes?', '..y', 'Go!', 'ye!'];
 };
 
@@ -244,7 +246,6 @@ var RangePirate = function RangePirate(args){
     this.range = true;
     this.team = args.team;
     this.squad = args.squad;
-    this.message = 'Yarr!';
     this.messages = ['Fire!', 'Aim', 'Yarr!', 'Bum!'];
 };
 
