@@ -36,24 +36,15 @@ Unit.prototype = {
             if(world.maps[world.map].moves[(this.x-1)+((this.y)*world.maps[world.map].width)] == 1){           
                 this.move_area.push({x:this.x-1,y:this.y});
             }
-            if(world.maps[world.map].moves[(this.x-2)+((this.y)*world.maps[world.map].width)] == 1){
-                this.move_area.push({x:this.x-2,y:this.y});            
-            }
+            
             if(world.maps[world.map].moves[(this.x)+((this.y-1)*world.maps[world.map].width)] == 1){
                 this.move_area.push({x:this.x,  y:this.y-1});
             }
-            if(world.maps[world.map].moves[(this.x)+((this.y-2)*world.maps[world.map].width)] == 1){
-                this.move_area.push({x:this.x,  y:this.y-2});
-            }            
-            if(world.maps[world.map].moves[(this.x+2)+((this.y)*world.maps[world.map].width)] == 1){
-                this.move_area.push({x:this.x+2,  y:this.y});
-            }
+            
             if(world.maps[world.map].moves[(this.x)+((this.y+1)*world.maps[world.map].width)] == 1){
                 this.move_area.push({x:this.x,  y:this.y+1});
             }
-            if(world.maps[world.map].moves[(this.x)+((this.y+2)*world.maps[world.map].width)] == 1){
-                this.move_area.push({x:this.x,  y:this.y+2});
-            }
+                        
             if(world.maps[world.map].moves[(this.x+1)+((this.y)*world.maps[world.map].width)] == 1){
                 this.move_area.push({x:this.x+1,  y:this.y});
             }
@@ -68,7 +59,38 @@ Unit.prototype = {
             }
             if(world.maps[world.map].moves[(this.x+1)+((this.y+1)*world.maps[world.map].width)] == 1){
                 this.move_area.push({x:this.x+1,y:this.y+1});
-            }                
+            }
+            
+            
+            if(world.maps[world.map].moves[(this.x-2)+((this.y)*world.maps[world.map].width)] == 1){
+                this.move_area.push({x:this.x-2,y:this.y});            
+            }
+            if(world.maps[world.map].moves[(this.x)+((this.y-2)*world.maps[world.map].width)] == 1){
+                this.move_area.push({x:this.x,  y:this.y-2});
+            }            
+            if(world.maps[world.map].moves[(this.x+2)+((this.y)*world.maps[world.map].width)] == 1){
+                this.move_area.push({x:this.x+2,  y:this.y});
+            }
+            if(world.maps[world.map].moves[(this.x)+((this.y+2)*world.maps[world.map].width)] == 1){
+                this.move_area.push({x:this.x,  y:this.y+2});
+            }            
+
+            if(this.range){
+                if(world.maps[world.map].moves[(this.x-3)+((this.y)*world.maps[world.map].width)] == 1 && world.maps[world.map].moves[(this.x-2)+((this.y)*world.maps[world.map].width)] == 1){
+                    this.move_area.push({x:this.x-3,y:this.y, shoot:true});            
+                }
+                if(world.maps[world.map].moves[(this.x)+((this.y-3)*world.maps[world.map].width)] == 1 && world.maps[world.map].moves[(this.x)+((this.y-2)*world.maps[world.map].width)] == 1){
+                    this.move_area.push({x:this.x,  y:this.y-3, shoot:true});
+                }            
+                if(world.maps[world.map].moves[(this.x+3)+((this.y)*world.maps[world.map].width)] == 1 && world.maps[world.map].moves[(this.x+2)+((this.y)*world.maps[world.map].width)] == 1){
+                    this.move_area.push({x:this.x+3,  y:this.y, shoot:true});
+                }
+                if(world.maps[world.map].moves[(this.x)+((this.y+3)*world.maps[world.map].width)] == 1 && world.maps[world.map].moves[(this.x)+((this.y+2)*world.maps[world.map].width)] == 1){
+                    this.move_area.push({x:this.x,  y:this.y+3, shoot:true});
+                }            
+
+            }
+
         }
     },
     
@@ -110,9 +132,11 @@ Unit.prototype = {
         if(this.pirate){
             for (var j = 0; j < world.maps[world.map].items.length; j++) {                    
                 if(world.maps[world.map].items[j].x == this.x && world.maps[world.map].items[j].y == this.y){                        
-                    world.maps[world.map].items[j].open(); 
-                    this.message = 'Gold';
-                    render.render({items:true, gui:true});
+                    if(world.maps[world.map].items[j].open()){ 
+                        this.message = 'Gold';
+                        render.render({items:true, gui:true});
+                        this.moves--;
+                    }
                 }                    
             }
         }
@@ -134,7 +158,7 @@ Unit.prototype = {
                 
                 if(dice > dice2){
                     other.hit();
-                    other.message = '!@';
+                    other.message = '!';
                 }else
                 if(dice < dice2){
                     if((Math.abs(this.x - other.x) < 2) && (Math.abs(this.y - other.y) < 2)){

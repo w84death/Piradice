@@ -193,9 +193,11 @@ var game = {
     win: function(){
         if(world.map < world.maps.length-1){
             world.map++;
+            localStorage.setItem("map", world.map);
             render.render({gui:true, entities:true, map:true});
         }else{
-            window.alert('You win!\nClick ok to restart game');
+            window.alert('\n\nCongratulations.\nYou win!\n\n\nIf You like this game share it!\n\n#piradice');
+            localStorage.setItem("map", 0);
             window.location.reload(false);
         }
     },
@@ -286,7 +288,7 @@ var ai = {
 var world = {
     _W: 0,
     _H: 0,
-    map: 0,
+    map: localStorage.getItem("map") || 0,
     maps: [],
     entities: [],
     
@@ -321,6 +323,9 @@ var render = {
     sprites: [],
     
     init: function(){
+        
+        document.getElementById('game').style.width = (world._W*this.box)+'px';
+        document.getElementById('game').style.height = (world._H*this.box)+'px';
         
         this.map.canvas = document.getElementById('map');
         this.map.canvas.width = world._W*this.box;
@@ -397,7 +402,7 @@ var render = {
         
         this.gui.ctx.drawImage(this.sprites[38], (x*this.box)-12, (y*this.box)-18);        
         this.gui.ctx.fillStyle = '#000';
-        this.gui.ctx.font = 'bold 0.7em Verdana sans-serif';
+        this.gui.ctx.font = 'bold 0.6em VT323 sans-serif';
         this.gui.ctx.textBaseline = 'top';
         this.gui.ctx.textAlign = 'center';
         this.gui.ctx.fillText(msg , (x*this.box)+4, (y*this.box)-4);    
