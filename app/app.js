@@ -63,12 +63,14 @@ var game = {
     },
     
     select: function(cX,cY){
-                
-        for (var i = 0; i < world.maps[world.map].entities.length; i++) {            
-            if(world.maps[world.map].entities[i].x == cX && world.maps[world.map].entities[i].y == cY && world.maps[world.map].entities[i].team == this.turn.team && world.maps[world.map].entities[i].moves > 0 && world.maps[world.map].entities[i].reloading < 1) {                                                
-                world.maps[world.map].entities[i].select();
-                world.maps[world.map].entities[i].open();
-                this.unit_selected = i;                
+        
+        if(this.turn.team === 0){
+            for (var i = 0; i < world.maps[world.map].entities.length; i++) {            
+                if(world.maps[world.map].entities[i].x == cX && world.maps[world.map].entities[i].y == cY && world.maps[world.map].entities[i].team == this.turn.team && world.maps[world.map].entities[i].moves > 0 && world.maps[world.map].entities[i].reloading < 1) {                                                
+                    world.maps[world.map].entities[i].select();
+                    world.maps[world.map].entities[i].open();
+                    this.unit_selected = i;                
+                }
             }
         }
         
@@ -338,6 +340,7 @@ var render = {
     },
     box: 32,
     sprites_img: new Image(),
+    noise_img: null,
     next_turn: new Image(),
     sprites: [],
     
@@ -360,7 +363,8 @@ var render = {
         this.gui.canvas.width = world._W*this.box;
         this.gui.canvas.height = world._H*this.box;
         this.gui.ctx = this.gui.canvas.getContext('2d');
-                
+        
+        this.noise_img = this.fastNoise(world._W*this.box, world._H*this.box, 8 ),
         
         this.sprites_img.src = "media/sprites.png";
         this.sprites_img.onload = function(){
@@ -419,16 +423,68 @@ var render = {
         var m_context = m_canvas.getContext('2d');        
         m_context.drawImage(this.sprites_img, -x*this.box, -y*this.box);
         return m_canvas;
-    },  
+    },    
+    
+    fastNoise: function(width, height, opacity){
+        var m_canvas = document.createElement('canvas');
+        m_canvas.width = width;
+        m_canvas.height = height;                                
+        var m_context = m_canvas.getContext('2d');
+        
+        var imageData = m_context.getImageData(0, 0, m_canvas.width, m_canvas.height),
+            random = Math.random,
+            pixels = imageData.data,
+            n = pixels.length,
+            i = 0;
+
+        while (i < n) {
+            pixels[i++] = pixels[i++] = pixels[i++] = (random() * 256); 
+            pixels[i++] = opacity;
+        }
+        
+        m_context.putImageData(imageData, 0, 0);
+        
+        return m_canvas;
+	},
     
     drawMessage: function(msg, x, y){ 
         
         this.gui.ctx.drawImage(this.sprites[38], (x*this.box)-12, (y*this.box)-18);        
         this.gui.ctx.fillStyle = '#000';
-        this.gui.ctx.font = 'bold 0.6em VT323 sans-serif';
+        this.gui.ctx.font = '0.7em VT323, cursive';
         this.gui.ctx.textBaseline = 'top';
         this.gui.ctx.textAlign = 'center';
         this.gui.ctx.fillText(msg , (x*this.box)+4, (y*this.box)-4);    
+    },
+    
+    drawNextTurn: function(){
+        
+        if(game.turn.start || game.turn.team == 1){
+            
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('game').style.display = 'block';
+            
+            
+            //this.gui.ctx.drawImage(this.black_img,0,0);
+            
+            this.gui.ctx.fillStyle = 'rgba(0,0,0,0.2)';
+            this.gui.ctx.fillRect(0, 0, world._W*this.box, world._H*this.box); 
+            
+            this.gui.ctx.fillStyle = '#fff';
+            this.gui.ctx.font = 'bold 1.4em VT323, cursive';
+            this.gui.ctx.textBaseline = 'middle';
+            this.gui.ctx.textAlign = 'center';
+            
+    
+            if(game.turn.start){                
+                this.gui.ctx.drawImage(this.next_turn, ((world.maps[world.map].width*0.5)<<0)*this.box - ((this.next_turn.width*0.5)<<0), ((world.maps[world.map].height*0.5)<<0)*this.box - ((this.next_turn.height*0.5)<<0));                    
+                this.gui.ctx.fillText('Next turn', ((world.maps[world.map].width*0.5)<<0)*render.box, ((world.maps[world.map].height*0.5)<<0)*this.box );
+            }else
+            if(game.turn.team == 1){                
+                this.gui.ctx.drawImage(render.sprites[37], (((world.maps[world.map].width*0.5)<<0)*this.box)-this.box*0.5, ((world.maps[world.map].height*0.5)<<0)*this.box );    
+                this.gui.ctx.fillText('Click/Tap..', ((world.maps[world.map].width*0.5)<<0)*this.box, (((world.maps[world.map].height*0.5)<<0)*this.box)+this.box*2 );
+            }
+        }
     },
     
     render: function(args){
@@ -442,6 +498,7 @@ var render = {
                 }
             }
             args.items = true;
+            this.map.ctx.drawImage(this.noise_img, 0, 0);                    
         }
         
         if(args.items){
@@ -480,23 +537,7 @@ var render = {
                 }
             }
             
-            if(game.turn.start){
-                this.gui.ctx.fillStyle = 'rgba(0,0,0,0.2)';
-                this.gui.ctx.fillRect(0, 0, world._W*this.box, world._H*this.box); 
-                render.gui.ctx.drawImage(this.next_turn, ((world.maps[world.map].width*0.5)<<0)*render.box - ((this.next_turn.width*0.5)<<0), ((world.maps[world.map].height*0.7)<<0)*render.box - ((this.next_turn.height*0.5)<<0));    
-                this.gui.ctx.fillStyle = '#fff';
-                this.gui.ctx.font = 'bold 1.2em VT323 sans-serif';
-                this.gui.ctx.textBaseline = 'middle';
-                this.gui.ctx.textAlign = 'center';
-                this.gui.ctx.fillText('Next turn', ((world.maps[world.map].width*0.5)<<0)*render.box, ((world.maps[world.map].height*0.7)<<0)*render.box );
-            }else{
-                if(game.turn.team == 1){
-                    this.gui.ctx.fillStyle = 'rgba(0,0,0,0.2)';
-                    this.gui.ctx.fillRect(0, 0, world._W*this.box, world._H*this.box);
-                    render.gui.ctx.drawImage(render.sprites[37], 0,0);    
-                }
-            }
-            
+            this.drawNextTurn();            
             
         }
         
