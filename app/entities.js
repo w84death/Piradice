@@ -90,6 +90,14 @@ Unit.prototype = {
                 }            
 
             }
+            
+            for (var i = 0; i < this.move_area.length; i++) {
+                for (var j = 0; j < world.maps[world.map].entities.length; j++) { 
+                    if( world.maps[world.map].entities[j].x == this.move_area[i].x && world.maps[world.map].entities[j].y == this.move_area[i].y && world.maps[world.map].entities[j].team != this.team ){ 
+                        this.move_area[i].attack = true;    
+                    }
+                }
+            }
 
         }
     },

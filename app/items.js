@@ -53,7 +53,7 @@ var Ship = function Ship(args){
     this.name = 'Ship';
     this.x = args.x;
     this.y = args.y;
-    this.sprite = 12;  
+    this.sprite = 36;  
 };
 
 Ship.prototype = new Item();

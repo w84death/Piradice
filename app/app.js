@@ -380,7 +380,7 @@ var render = {
             render.sprites[9] = render.makeSprite(4,0); // move
             render.sprites[10] = render.makeSprite(5,0); // select
             render.sprites[11] = render.makeSprite(5,1); // done
-            render.sprites[12] = render.makeSprite(2,2); // ship
+            render.sprites[12] = render.makeSprite(6,0); // attack
             render.sprites[13] = render.makeSprite(0,2); // treasure
             render.sprites[14] = render.makeSprite(1,2); // treasure open
             render.sprites[15] = render.makeSprite(5,2); // reloading
@@ -403,9 +403,10 @@ var render = {
             render.sprites[33] = render.makeSprite(4,4); // range pirate 5
             render.sprites[34] = render.makeSprite(5,4); // range pirate 6
             render.sprites[35] = render.makeSprite(5,4); // range pirate 6
-            render.sprites[36] = render.makeSprite(2,2); // pirates ture
-            render.sprites[37] = render.makeSprite(3,2); // skeleton ture
-            render.sprites[38] = render.makeSprite(4,2); // message                    
+            render.sprites[36] = render.makeSprite(2,2); // ship
+            render.sprites[37] = render.makeSprite(3,2); // big skeleton head
+            render.sprites[38] = render.makeSprite(4,2); // message  
+            render.sprites[39] = render.makeSprite(0,7); // octopus  
             render.render({map:true, entities:true,});
         }         
         
@@ -522,7 +523,11 @@ var render = {
                 if(world.maps[world.map].entities[i].selected){
                     this.gui.ctx.drawImage(this.sprites[10], world.maps[world.map].entities[i].x*this.box, world.maps[world.map].entities[i].y*this.box);
                     for (var j = 0; j < world.maps[world.map].entities[i].move_area.length; j++) {
-                        render.gui.ctx.drawImage(render.sprites[9], world.maps[world.map].entities[i].move_area[j].x*render.box, world.maps[world.map].entities[i].move_area[j].y*render.box);
+                        if(world.maps[world.map].entities[i].move_area[j].attack){
+                            render.gui.ctx.drawImage(render.sprites[12], world.maps[world.map].entities[i].move_area[j].x*render.box, world.maps[world.map].entities[i].move_area[j].y*render.box);
+                        }else{
+                            render.gui.ctx.drawImage(render.sprites[9], world.maps[world.map].entities[i].move_area[j].x*render.box, world.maps[world.map].entities[i].move_area[j].y*render.box);
+                        }
                     }                    
                 }else{
                     if(world.maps[world.map].entities[i].message && world.maps[world.map].entities[i].squad > 0){
