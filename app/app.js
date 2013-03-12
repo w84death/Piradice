@@ -358,14 +358,17 @@ var render = {
     gui: {
         canvas: null,
         ctx: null,
-    },
-    box: 32,
+    },    
+    box: 16,
+    scale: 2,
     sprites_img: new Image(),
+    sprites_scaled: null,
     noise_img: null,
     next_turn: new Image(),
     sprites: [],
     
     init: function(){
+        this.box = this.box * this.scale;
         
         document.getElementById('game').style.width = (world._W*this.box)+'px';
         document.getElementById('game').style.height = (world._H*this.box)+'px';
@@ -389,6 +392,8 @@ var render = {
         
         this.sprites_img.src = "media/sprites.png";
         this.sprites_img.onload = function(){
+            render.sprites_img = render.resize(render.sprites_img, render.scale);
+            
             render.sprites[0] = render.makeSprite(0,0); // sea
             render.sprites[1] = render.makeSprite(1,0); // water
             render.sprites[2] = render.makeSprite(2,0); // beach
@@ -424,10 +429,17 @@ var render = {
             render.sprites[33] = render.makeSprite(4,4); // range pirate 5
             render.sprites[34] = render.makeSprite(5,4); // range pirate 6
             render.sprites[35] = render.makeSprite(5,4); // range pirate 6
-            render.sprites[36] = render.makeSprite(2,2); // ship
+            render.sprites[36] = render.makeSprite(2,2); // octopus
             render.sprites[37] = render.makeSprite(3,2); // big skeleton head
             render.sprites[38] = render.makeSprite(4,2); // message  
-            render.sprites[39] = render.makeSprite(0,6); // octopus  
+            render.sprites[39] = render.makeSprite(0,6); // ship 0
+            render.sprites[40] = render.makeSprite(1,6); // ship 1
+            render.sprites[41] = render.makeSprite(2,6); // ship 2
+            render.sprites[42] = render.makeSprite(3,6); // ship 3
+            render.sprites[43] = render.makeSprite(4,6); // ship 4
+            render.sprites[44] = render.makeSprite(5,6); // ship 5
+            render.sprites[45] = render.makeSprite(6,6); // ship 6
+            
             render.render({map:true, entities:true,});
         }         
         
@@ -444,8 +456,46 @@ var render = {
         m_canvas.height = this.box;                                
         var m_context = m_canvas.getContext('2d');        
         m_context.drawImage(this.sprites_img, -x*this.box, -y*this.box);
+
         return m_canvas;
     },    
+    
+    resize: function( img, scale ) {
+        // Takes an image and a scaling factor and returns the scaled image
+        
+        // The original image is drawn into an offscreen canvas of the same size
+        // and copied, pixel by pixel into another offscreen canvas with the 
+        // new size.
+        
+        var widthScaled = img.width * scale;
+        var heightScaled = img.height * scale;
+        
+        var orig = document.createElement('canvas');
+        orig.width = img.width;
+        orig.height = img.height;
+        var origCtx = orig.getContext('2d');
+        origCtx.drawImage(img, 0, 0);
+        var origPixels = origCtx.getImageData(0, 0, img.width, img.height);
+        
+        var scaled = document.createElement('canvas');
+        scaled.width = widthScaled;
+        scaled.height = heightScaled;
+        var scaledCtx = scaled.getContext('2d');
+        var scaledPixels = scaledCtx.getImageData( 0, 0, widthScaled, heightScaled );
+        
+        for( var y = 0; y < heightScaled; y++ ) {
+            for( var x = 0; x < widthScaled; x++ ) {
+                var index = (Math.floor(y / scale) * img.width + Math.floor(x / scale)) * 4;
+                var indexScaled = (y * widthScaled + x) * 4;
+                scaledPixels.data[ indexScaled ] = origPixels.data[ index ];
+                scaledPixels.data[ indexScaled+1 ] = origPixels.data[ index+1 ];
+                scaledPixels.data[ indexScaled+2 ] = origPixels.data[ index+2 ];
+                scaledPixels.data[ indexScaled+3 ] = origPixels.data[ index+3 ];
+            }
+        }
+        scaledCtx.putImageData( scaledPixels, 0, 0 );
+        return scaled;
+    },
     
     fastNoise: function(width, height, opacity){
         var m_canvas = document.createElement('canvas');
@@ -471,12 +521,12 @@ var render = {
     
     drawMessage: function(msg, x, y){ 
         
-        this.gui.ctx.drawImage(this.sprites[38], (x*this.box)-12, (y*this.box)-18);        
+        this.gui.ctx.drawImage(this.sprites[38], (x*this.box)-(12), (y*this.box)-(18));        
         this.gui.ctx.fillStyle = '#000';
-        this.gui.ctx.font = '0.7em VT323, cursive';
+        this.gui.ctx.font = '12px VT323, cursive';
         this.gui.ctx.textBaseline = 'top';
         this.gui.ctx.textAlign = 'center';
-        this.gui.ctx.fillText(msg , (x*this.box)+4, (y*this.box)-4);    
+        this.gui.ctx.fillText(msg , (x*this.box)+(4), (y*this.box)-(4));    
     },
     
     drawNextTurn: function(){
