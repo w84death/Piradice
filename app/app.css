@@ -1,16 +1,21 @@
 * {margin: 0; padding: 0;}
-body {width:512px; margin:0 auto; background:#00c3d4 url('../media/ocean.png'); cursor:url('../media/cur.png'), auto; font:1em 'VT323', cursive;}
+body {background-color:#444; color:#f8f8f8; cursor:url('../media/cur.png'), auto; font:1em 'VT323', cursive;}
 header,
 footer {margin:32px 0; text-align:center; font-size:0.8em; color:#ffec93;}
 a {color:#ffec93;text-decoration:none;}
 a:hover {text-decoration:underline;}
+
+
+#container{background:#00c3d4 url('../media/ocean.png');}
 #loading {display:block; margin:1em 0; text-align:center;}
-#game {display:none;}
+#game {display:none; width:1024px; height:768px; margin:0 auto;}
 canvas {display: block; position:absolute;
     image-rendering: optimizeSpeed;
     image-rendering: -moz-crisp-edges;
     image-rendering: -webkit-optimize-contrast;
     image-rendering: optimize-contrast;}
+    
+.desktop {width:512px; margin:0 auto;}    
 article {margin-top:1em;}
 article p {margin-top:1em;}
 article:first-child {margin-top:0;}
@@ -19,6 +24,10 @@ article:first-child {margin-top:0;}
 aside {margin:4em 0;}
 footer a {display:inline-block; width:32px; height:32px; background: transparent url('../media/sprites_web.png') -128px -64px; color:#000; position:relative;}
 footer a strong {position: absolute;top: 12px;left: 3px;}
+
+
+
+
 
 #AdTaily_Widget_Container,
 #AdTaily_Widget_Container .AdTaily_Widget_Title,

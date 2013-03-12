@@ -8,10 +8,10 @@ var load = {
             width:  16,
             height: 12,
             data: [
-                0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-                0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-                0,0,0,0,1,1,1,1,1,0,0,0,0,0,0,0,
-                0,0,0,1,1,2,2,2,1,1,0,0,0,0,0,0,
+                0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,
+                0,0,0,0,0,0,0,0,0,0,0,1,5,4,4,1,
+                0,0,0,0,1,1,1,1,1,0,0,1,1,5,5,1,
+                0,0,0,1,1,2,2,2,1,1,0,0,1,1,1,1,
                 0,0,0,1,2,2,4,4,2,1,1,0,0,0,0,0,
                 0,0,0,1,2,5,4,4,2,2,1,0,0,0,0,0,
                 0,0,0,1,3,2,5,5,2,3,1,0,0,0,0,0,
@@ -29,9 +29,9 @@ var load = {
                 new Skeleton({x:7,y:6,squad:1,team:1}),
             ],
             items: [
-                new Ship({x:3, y:5}),
                 new Chest({x:7, y:5}),
-                new Palm({x:6, y:5})
+                new Palm({x:6, y:5}),
+                new Palm({x:14, y:1})
             ]    
         };
         
@@ -56,12 +56,14 @@ var load = {
             moves: [],
             entities: [
                 new Pirate({x:1,y:3,squad:1,team:0}),
-                new RangePirate({x:1,y:5,squad:1,team:0}),
+                new RangePirate({x:1,y:5,team:0}),
                 new Pirate({x:2,y:3,squad:2,team:0}),                
                 new Pirate({x:1,y:4,squad:1,team:0}),
                 new Pirate({x:14,y:9,squad:2,team:0}),
                 new Pirate({x:13,y:10,squad:1,team:0}),
                 new Pirate({x:13,y:9,squad:1,team:0}),
+                
+                new Octopus({x:6, y:8,team:1}),
                 new Skeleton({x:5,y:2,squad:2,team:1}),
                 new Skeleton({x:4,y:5,squad:1,team:1}),
                 new Skeleton({x:12,y:4,squad:2,team:1}),
@@ -83,9 +85,7 @@ var load = {
                 new Palm({x:4, y:8}),
                 new Palm({x:4, y:10}),
                 new Palm({x:1, y:9}), 
-                new Palm({x:12, y:3}),
-                new Ship({x:0, y:3}),
-                new Ship({x:15, y:9})
+                new Palm({x:12, y:3})
             ]        
         };
             
@@ -109,11 +109,17 @@ var load = {
             ],
             moves: [],
             entities: [
+                new Ship({x:6,y:2,squad:1,team:0}),
                 new Pirate({x:2,y:1,squad:2,team:0}),
                 new Pirate({x:2,y:2,squad:3,team:0}),
                 new Pirate({x:3,y:1,squad:2,team:0}),                
                 new RangePirate({x:3,y:3,squad:3,team:0}),
                 new RangePirate({x:1,y:2,squad:1,team:0}),
+                
+                
+                new Octopus({x:6, y:6,team:1}),
+                new Octopus({x:1, y:8,team:1}),
+                new Octopus({x:14, y:10,team:1}),
                 new Skeleton({x:4,y:4,squad:1,team:1}),
                 new Skeleton({x:3,y:9,squad:5,team:1}),                
                 new Skeleton({x:8,y:10,squad:3,team:1}),
@@ -135,8 +141,7 @@ var load = {
                 new Palm({x:14, y:5}),
                 new Palm({x:11, y:3}),
                 new Palm({x:10, y:3}),
-                new Palm({x:10, y:4}),
-                new Ship({x:1, y:1})                
+                new Palm({x:10, y:4})              
             ]    
         };
         
@@ -181,8 +186,6 @@ var load = {
                 new Skeleton({x:13,y:8,squad:1,team:1})
             ],
             items: [
-                new Ship({x:1, y:1}),
-                new Ship({x:14, y:2}),
                 new Chest({x:9, y:5}),
                 new Chest({x:6, y:9}),
                 new Chest({x:12, y:8}),
@@ -209,6 +212,10 @@ var load = {
     map: function(){
         this.init();
         return this.maps;
+    },
+    
+    generateMap: function(args){
+            
     },
     
        

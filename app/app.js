@@ -19,9 +19,10 @@
 */
 
 var game = {
+    version: '0.3',
     paused: true,
     turn: {
-        id: 0,
+        id: 1,
         start: true,
         startTime: null,
         team: 0,
@@ -137,7 +138,7 @@ var game = {
         var dice = [];        
         dice[1] = "⚀";
         dice[2] = "⚁";
-		dice[3] = "⚂";
+    	dice[3] = "⚂";
 		dice[4] = "⚃";
 		dice[5] = "⚄";
 		dice[6] = "⚅";		
@@ -175,12 +176,14 @@ var game = {
         if(next_turn){
             if(this.turn.team == 1){
                 // AI                
-                this.turn.team = 0;                
+                this.turn.team = 0; 
+                this.turn.ai = false;
                 this.turn.id++;
 
             }else{
                 this.turn.team = 1;
-                this.turn.id++;
+                this.turn.ai = true;
+                //this.turn.id++;
             }     
             
             var loose = true;
@@ -194,14 +197,20 @@ var game = {
                     world.maps[world.map].entities[i].reloading--;
                 }
                 world.maps[world.map].entities[i].moves = 1;                                
+                world.maps[world.map].entities[i].selected = false;                                
             }                        
-                
+            
+            this.unit_selected = -1;
+            
             if(loose){
                 this.lose();
             }
             
-            this.turn.start = true;            
-                        
+            this.turn.start = true;                        
+        
+            if(this.turn.ai){
+                 ai.loop();
+            }
         }
         
         
@@ -229,6 +238,7 @@ var game = {
 };
 
 var ai = {   
+    loop_id: 0,
     
     think: function(other){
         other.select();
@@ -303,6 +313,17 @@ var ai = {
         other.unselect();
         return true;
     },
+    
+
+
+    loop: function() {
+        setTimeout(function () {
+            game.nextTurn();
+            if (game.turn.ai) {
+                ai.loop();
+            }
+    }, 500)
+}
 };
 
 var world = {
@@ -406,7 +427,7 @@ var render = {
             render.sprites[36] = render.makeSprite(2,2); // ship
             render.sprites[37] = render.makeSprite(3,2); // big skeleton head
             render.sprites[38] = render.makeSprite(4,2); // message  
-            render.sprites[39] = render.makeSprite(0,7); // octopus  
+            render.sprites[39] = render.makeSprite(0,6); // octopus  
             render.render({map:true, entities:true,});
         }         
         
@@ -459,31 +480,28 @@ var render = {
     },
     
     drawNextTurn: function(){
+        var pos = 0.9;
         
-        if(game.turn.start || game.turn.team == 1){
+        if(game.turn.start || game.turn.ai){
             
             document.getElementById('loading').style.display = 'none';
             document.getElementById('game').style.display = 'block';
             
-            
-            //this.gui.ctx.drawImage(this.black_img,0,0);
-            
-            this.gui.ctx.fillStyle = 'rgba(0,0,0,0.2)';
-            this.gui.ctx.fillRect(0, 0, world._W*this.box, world._H*this.box); 
+            //this.gui.ctx.fillStyle = 'rgba(0,0,0,0.2)';
+            //this.gui.ctx.fillRect(0, 0, world._W*this.box, world._H*this.box); 
             
             this.gui.ctx.fillStyle = '#fff';
             this.gui.ctx.font = 'bold 1.4em VT323, cursive';
             this.gui.ctx.textBaseline = 'middle';
             this.gui.ctx.textAlign = 'center';
             
-    
-            if(game.turn.start){                
-                this.gui.ctx.drawImage(this.next_turn, ((world.maps[world.map].width*0.5)<<0)*this.box - ((this.next_turn.width*0.5)<<0), ((world.maps[world.map].height*0.5)<<0)*this.box - ((this.next_turn.height*0.5)<<0));                    
-                this.gui.ctx.fillText('Next turn', ((world.maps[world.map].width*0.5)<<0)*render.box, ((world.maps[world.map].height*0.5)<<0)*this.box );
-            }else
-            if(game.turn.team == 1){                
-                this.gui.ctx.drawImage(render.sprites[37], (((world.maps[world.map].width*0.5)<<0)*this.box)-this.box*0.5, ((world.maps[world.map].height*0.5)<<0)*this.box );    
-                this.gui.ctx.fillText('Click/Tap..', ((world.maps[world.map].width*0.5)<<0)*this.box, (((world.maps[world.map].height*0.5)<<0)*this.box)+this.box*2 );
+            
+            this.gui.ctx.drawImage(this.next_turn, ((world.maps[world.map].width*0.5)<<0)*this.box - ((this.next_turn.width*0.5)<<0), ((world.maps[world.map].height*pos)<<0)*this.box - ((this.next_turn.height*0.5)<<0));                    
+            
+            if(game.turn.ai){                                
+                this.gui.ctx.fillText('Skeleton Army..', ((world.maps[world.map].width*0.5)<<0)*this.box, ((world.maps[world.map].height*pos)<<0)*this.box );
+            }else{
+                this.gui.ctx.fillText('Your turn [' + game.turn.id + ']', ((world.maps[world.map].width*0.5)<<0)*render.box, ((world.maps[world.map].height*pos)<<0)*this.box );
             }
         }
     },
