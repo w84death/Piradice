@@ -28,8 +28,10 @@
                     <h1><img src="media/logo.png" alt="Piradice"/></h1>
                     <p>beta version <a href="https://twitter.com/search?q=%23piradice" alt="#piradice on twitter">#piradice</a> by <strong>suno</strong></p>
                 </header>
-                        
-            
+                
+                <h2>Story</h2>
+                <p>Arrr!</p>
+                
                 <h2>How to play?</h2>
                 <p>You are a pirate. Open all chests to sail to another island! Every single unit = K6 dice. Double unit = 2x K6 dices and so on..</p>
                 <p>All units must be used before end turn. Same units can be grouped up (except water units).</p>
@@ -37,10 +39,9 @@
                 <p><span class="sprite" style="background-position: 0px -134px;"></span> <strong>Range Pirate</strong> Shoots at a distance of 3 blocks. After each shot, unit must reload weapon. Waits one turn.</p>
                 <p class="animate"><span class="sprite" style="background-position: 0px -68px;"></span> <strong>Chest</strong> Your quest! One turn for opening.</p>
                 <p><span class="sprite" style="background-position: 0px -160px;"></span> <strong>Skeleton</strong> They don't like You..</p>            
-                        
-                <aside>            
-                    <script type="text/javascript" id="AdTaily_Widget" src="http://static.adtaily.pl/widget.js#JowK19NLeYDKt01"></script>
-                </aside>
+                
+                <h2>News &amp; Discussion</h2>
+                <p>Explore <a href="https://twitter.com/search?q=%23piradice&src=typd" alt="twitter">#piradice</a>, follow <a href="https://twitter.com/w84death" alt="Krzysztof Jankowski on twitter">@w84death</a> and join the discussion on <a href="http://www.reddit.com/r/WebGames/comments/19zlc5/piradice_pirates_pixelart_turnbased_strategy_game/" alt="reddit">reddit</a>.</p>                            
                 
                 <footer>
                     <p><a href="http://krzysztofjankowski.com" alt="suno"><strong>suno</strong></a></p>

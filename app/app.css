@@ -17,6 +17,7 @@ canvas {display: block; position:absolute;
     
 .desktop {width:512px; margin:0 auto;}    
 article {margin-top:1em;}
+article h2 {margin-top:2em;}
 article p {margin-top:1em;}
 article:first-child {margin-top:0;}
 .sprite {display:inline-block; width:32px; height:32px; margin-bottom: -14px; background-image:url('../media/sprites_web.png');}
@@ -24,14 +25,3 @@ article:first-child {margin-top:0;}
 aside {margin:4em 0;}
 footer a {display:inline-block; width:32px; height:32px; background: transparent url('../media/sprites_web.png') -128px -64px; color:#000; position:relative;}
 footer a strong {position: absolute;top: 12px;left: 3px;}
-
-
-
-
-
-#AdTaily_Widget_Container,
-#AdTaily_Widget_Container .AdTaily_Widget_Title,
-#AdTaily_Widget_Container .Footer,
-#AdTaily_Widget_Container .Footer a {
-    font: 1em 'VT323', cursive !important;
-}
