@@ -7,7 +7,7 @@ a:hover {text-decoration:underline;}
 
 
 #container{background:#00c3d4 url('../media/ocean.png');}
-#loading {display:block; margin:1em 0; text-align:center;}
+#loading {display:block; padding:1em 0; text-align:center;}
 #game {display:none; width:1024px; height:768px; margin:0 auto;}
 canvas {display: block; position:absolute;
     image-rendering: optimizeSpeed;
