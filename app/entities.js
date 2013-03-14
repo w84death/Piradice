@@ -20,6 +20,8 @@ var Unit = function Unit(){
     this.skeletor = false;
     this.squad = 1;
     this.range = false;
+    this.transport = false;
+    this.on_board = [];
     this.team = 0;
     this.moves = 1;
     this.reloading = 0;
@@ -27,6 +29,7 @@ var Unit = function Unit(){
     this.messages = [];
     this.land = true;
     this.water = false;
+    this.flip = 0;
 };
 
 Unit.prototype = {
@@ -116,7 +119,12 @@ Unit.prototype = {
     move: function(x,y){
         
         for (var i = 0; i < this.move_area.length; i++) {
-            if(x == this.move_area[i].x && y == this.move_area[i].y && this.reloading < 1){                
+            if(x == this.move_area[i].x && y == this.move_area[i].y && this.reloading < 1){      
+                if(this.x > x){
+                    this.flip = 1;
+                }else{
+                    this.flip = 0;
+                }
                 this.x = x;
                 this.y = y;
                 this.moves = 0;
@@ -165,6 +173,12 @@ Unit.prototype = {
             dice2 = null,
             total = 0,
             total2 = 0;
+        
+        if(this.x > other.x){
+            this.flip = 1;
+        }else{
+            this.flip = 0;
+        }
         
         //range pirate
         if(this.range){
@@ -294,28 +308,45 @@ var Ship = function Ship(args){
     this.pirate = true;
     this.x = args.x;
     this.y = args.y;
-    this.sprite = 36;
+    this.sprite = 39 + args.squad -1;
     this.water = true;
     this.range = true;    
-    this.team = args.team;
+    this.transport = true;
     this.squad = 1;
-    this.on_board = null;
+    this.moves = 0;
     this.messages = ['Sail', 'Ahoy'];
 };
 
 Ship.prototype = new Unit();
 
+var BlackPearl = function BlackPearl(args){
+    this.name = 'Black Pearl';
+    this.pirate = true;
+    this.x = args.x;
+    this.y = args.y;
+    this.sprite = 46 + args.squad -1;
+    this.water = true;
+    this.range = true;    
+    this.transport = true;
+    this.team = args.team;
+    this.squad = 1;
+    this.moves = 0;
+    this.messages = ['Sail', 'Ahoy'];
+};
+
+BlackPearl.prototype = new Unit();
+
 var Octopus = function Octopus(args){
-    this.name = 'Stefan';
+    this.name = 'Kraken';
     this.skeleton = true;
     this.ai = true;
     this.x = args.x;
     this.y = args.y;
-    this.sprite = 39;
+    this.sprite = 36;
     this.water = true;
     this.team = args.team;
     this.squad = 1;
-    this.messages = ['oOo', 'Ooo.', 'oo..', 'o?', 'OOO!'];
+    this.messages = ['Ooo.', 'oo..', 'o?', ':)', ':o', ':['];
 };
 
 Octopus.prototype = new Unit();

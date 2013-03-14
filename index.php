@@ -35,19 +35,33 @@
                 <h2>How to play?</h2>
                 <p>You are a pirate. Open all chests to sail to another island! Every single unit = K6 dice. Double unit = 2x K6 dices and so on..</p>
                 <p>All units must be used before end turn. Same units can be grouped up (except water units).</p>
+                
+                <h3>Land units</h3>
                 <p><span class="sprite" style="background-position: 0px -288px;"></span> <strong>Pirate</strong> Moves 1-2 klocks. Attacks only nearby units.</p>
                 <p><span class="sprite" style="background-position: 0px -134px;"></span> <strong>Range Pirate</strong> Shoots at a distance of 3 blocks. After each shot, unit must reload weapon. Waits one turn.</p>
-                <p class="animate"><span class="sprite" style="background-position: 0px -68px;"></span> <strong>Chest</strong> Your quest! One turn for opening.</p>
                 <p><span class="sprite" style="background-position: 0px -160px;"></span> <strong>Skeleton</strong> They don't like You..</p>            
+                
+                <h3>Water units</h3>
+                <p><span class="sprite" style="background-position: 0px -288px;"></span> <strong>Pirate Ship</strong> Moves 1-2 klocks. Attacks only nearby units.</p>
+                <p><span class="sprite" style="background-position: 0px -288px;"></span> <strong>Black Pearl Ship</strong> Moves 1-2 klocks. Attacks only nearby units.</p>
+                <p><span class="sprite" style="background-position: 0px -288px;"></span> <strong>Octopus/Kraken</strong> Moves 1-2 klocks. Attacks only nearby units.</p>
+                
+                <h3>Items</h3>
+                <p class="animate"><span class="sprite" style="background-position: 0px -68px;"></span> <strong>Chest</strong> Your quest! One turn for opening.</p>
+                
                 
                 <h2>News &amp; Discussion</h2>
                 <p>Explore <a href="https://twitter.com/search?q=%23piradice&src=typd" alt="twitter">#piradice</a>, follow <a href="https://twitter.com/w84death" alt="Krzysztof Jankowski on twitter">@w84death</a> and join the discussion on <a href="http://www.reddit.com/r/WebGames/comments/19zlc5/piradice_pirates_pixelart_turnbased_strategy_game/" alt="reddit">reddit</a>.</p>                            
+                
+                <h2>Sponsored by</h2>
+                <p><a href="https://www.etsy.com/shop/VintageVanillaShop" title="Vintage Vanilla Shop on Etsy"><img src="media/vintage_vanilla_logo.png" alt="VintageVanillaShop" /></a></p>
                 
                 <footer>
                     <p><a href="http://krzysztofjankowski.com" alt="suno"><strong>suno</strong></a></p>
                 </footer>
             </article>
         </section>
+        <script src="app/seed.js"></script>
         <script src="app/entities.js"></script>
         <script src="app/items.js"></script>
         <script src="app/maps.js"></script>
