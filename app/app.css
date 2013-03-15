@@ -1,12 +1,12 @@
 * {margin: 0; padding: 0;}
-body {background-color:#444; color:#f8f8f8; cursor:url('../media/cur.png'), auto; font:1em 'VT323', cursive;}
+body {background-color:#444; color:#f8f8f8; cursor:url('/media/cur.png'), auto; font:1em 'VT323', cursive;}
 header,
 footer {margin:32px 0; text-align:center; font-size:0.8em; color:#ffec93;}
 a {color:#ffec93;text-decoration:none;}
 a:hover {text-decoration:underline;}
 
 
-#container{background:#00c3d4 url('../media/ocean.png');}
+#container{background:#00c3d4 url('/media/ocean.png');}
 #loading {display:block; padding:1em 0; text-align:center;}
 #game {display:none; width:1024px; height:768px; margin:0 auto;}
 canvas {display: block; position:absolute;
@@ -21,9 +21,9 @@ article h2 {margin-top:2em;}
 article h3 {margin-top:1em;}
 article p {margin-top:1em;}
 article:first-child {margin-top:0;}
-.sprite {display:inline-block; width:32px; height:32px; margin-bottom: -14px; background-image:url('../media/sprites_web.png');}
+.sprite {display:inline-block; width:32px; height:32px; margin-bottom: -14px; background-image:url('/media/sprites_web.png');}
 .animate:hover .sprite {background-position-x:-32px !important;}
-footer a {display:inline-block; width:32px; height:32px; background: transparent url('../media/sprites_web.png') -128px -64px; color:#000; position:relative;}
+footer a {display:inline-block; width:32px; height:32px; background: transparent url('/media/sprites_web.png') -128px -64px; color:#000; position:relative;}
 footer a strong {position: absolute;top: 12px;left: 3px;}
 
 #editor {position:fixed; top:1em; left:1em; background-color:rgba(0,0,0,0.2); padding:1em;}

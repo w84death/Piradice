@@ -9,9 +9,9 @@
         <meta name="apple-mobile-web-app-status-bar-style" content="black" />
         <link rel="apple-touch-icon" href="media/apple-touch-icon-precomposed.png"/>
         <link rel="apple-touch-startup-image" href="media/startup.png">
-        <link rel="shortcut icon" href="media/favicon.ico">
+        <link rel="shortcut icon" href="/media/favicon.ico">
         <link href='http://fonts.googleapis.com/css?family=VT323' rel='stylesheet' type='text/css'>
-        <link rel="stylesheet" href="app/app.css">        
+        <link rel="stylesheet" href="/app/app.css">        
     </head>
     <body>
         <div id="container">
@@ -62,7 +62,7 @@
         <section class="desktop">
             <article>
                 <header>
-                    <h1><img src="media/logo.png" alt="Piradice"/></h1>
+                    <h1><img src="/media/logo.png" alt="Piradice"/></h1>
                     <p>beta version <a href="https://twitter.com/search?q=%23piradice" alt="#piradice on twitter">#piradice</a> by <strong>suno</strong></p>
                 </header>
                 
@@ -94,19 +94,19 @@
                 <p>Full source code avilable at <a href="https://github.com/w84death/Piradice">github.com/w84death/Piradice</a></p>
                 
                 <h2>Sponsored by</h2>
-                <p><a href="https://www.etsy.com/shop/VintageVanillaShop" title="Vintage Vanilla Shop on Etsy"><img src="media/vintage_vanilla_logo.png" alt="VintageVanillaShop" /></a></p>
+                <p><a href="https://www.etsy.com/shop/VintageVanillaShop" title="Vintage Vanilla Shop on Etsy"><img src="/media/vintage_vanilla_logo.png" alt="VintageVanillaShop" /></a></p>
                 
                 <footer>
                     <p><a href="http://krzysztofjankowski.com" alt="suno"><strong>suno</strong></a></p>
                 </footer>
             </article>
         </section>
-        <script src="app/seed.js"></script>
-        <script src="app/entities.js"></script>
-        <script src="app/items.js"></script>
-        <script src="app/maps.js"></script>
-        <script src="app/app.js"></script>
-        <script src="app/editor.js"></script>
+        <script src="/app/seed.js"></script>
+        <script src="/app/entities.js"></script>
+        <script src="/app/items.js"></script>
+        <script src="/app/maps.js"></script>
+        <script src="/app/app.js"></script>
+        <script src="/app/editor.js"></script>
         <script>
         <?php if($_GET['mode'] == 'editor'){ ?>
             editor.init();        

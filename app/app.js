@@ -465,7 +465,7 @@ var render = {
 
         this.noise_img = this.fastNoise(world._W*this.box, world._H*this.box, 8 ),
 
-        this.sprites_img.src = "media/sprites.png";
+        this.sprites_img.src = "/media/sprites.png";
         this.sprites_img.onload = function(){
             render.sprites_img = render.resize(render.sprites_img, render.scale);
 
@@ -531,7 +531,7 @@ var render = {
             render.render({map:true, entities:true,});
         }
 
-        this.next_turn.src = "media/next_turn.png";
+        this.next_turn.src = "/media/next_turn.png";
         this.next_turn.onload = function(){
             render.render({gui:true});
         }
