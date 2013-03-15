@@ -1,25 +1,16 @@
 var load = {
     maps: [],
     
-    init: function(set){
-        
-        if(set == 'campain'){
+    map: function(args){
+        if(args.campain){
             this.loadCampain();
         }else{
-            this.proceduralMap({ 
-                id: 0,
-                islands: 6,
-                islands_size: 10,      
-                grass: 20,
-                palms: 70,
-                chests: 3,
-                pirates: 4,
-                skeletons: 8,
-                seed: 'czarnakrowawkropkibordo',
-            });
+            this.proceduralMap(args);
         }
         
         this.generateMask();
+        
+        return this.maps;
     },
     
     loadCampain: function(){
@@ -232,11 +223,6 @@ var load = {
             }
         }},
     
-    map: function(set){
-        this.init(set);
-        return this.maps;
-    },
-    
     proceduralMap: function(args){
         /*
         
@@ -249,7 +235,7 @@ var load = {
             args.stop_generator = 100;
         }
         
-        //Math.seedrandom(args.seed);
+        Math.seedrandom(args.seed);
         
         var procMap = { name:   'Procedural Map',
                 width:  32,
@@ -310,14 +296,14 @@ var load = {
         }
 
         
-        // generate plants
-        console.log(':: GENERATING PLANTS..');
+        // generate grass
+        console.log(':: GENERATING GRASS..');
         
         for (var generate = 0; generate < args.grass; generate++) {
             for (var y = 4; y < procMap.height-4; y++) {
                 for (var x = 4; x < procMap.width-4; x++) {
                     if(generate == 0){
-                        if(procMapData[x][y] == 2 && procMapData[x-3][y] == 2 && procMapData[x][y-3] == 2 && procMapData[x+3][y] == 2 && procMapData[x][y+3] == 2){                            
+                        if(procMapData[x][y] == 2 && procMapData[x-3][y] == 2 && procMapData[x][y-3] == 2 && procMapData[x+3][y] == 2 && procMapData[x][y+3] == 2 && (Math.random()*args.stop_generator)<<0 < args.grass){                            
                             procMapData[x-1][y] = 4;
                             procMapData[x][y-1] = 4;
                             procMapData[x+1][y] = 4;
@@ -325,10 +311,10 @@ var load = {
                         }                        
                     }else{
                         if(procMapData[x][y] == 4 && (Math.random()*args.stop_generator)<<0 < args.grass){
-                            if(procMapData[x-3][y] == 2 ) { procMapData[x-1][y] = 4; }
-                            if(procMapData[x][y-3] == 2 ) { procMapData[x][y-1] = 4; }
-                            if(procMapData[x+3][y] == 2) { procMapData[x+1][y] = 4; }
-                            if( procMapData[x][y+3] ==2 ) { procMapData[x][y+1] = 4; }
+                            if(procMapData[x-1][y] == 2 ) { procMapData[x-1][y] = 4; }
+                            if(procMapData[x][y-1] == 2 ) { procMapData[x][y-1] = 4; }
+                            if(procMapData[x+1][y] == 2) { procMapData[x+1][y] = 4; }
+                            if( procMapData[x][y+1] ==2 ) { procMapData[x][y+1] = 4; }
                         }
                     }
                     
@@ -374,8 +360,8 @@ var load = {
         for (var y = 2; y < procMap.height-2; y++) {
             for (var x = 2; x < procMap.width-2; x++) {
                 // palm
-                if(procMapData[x][y] == 4 && (Math.random()*args.stop_generator)<<0 < args.palms){
-                    if(procMapData[x-2][y] == 4 && procMapData[x][y-2] == 4  && procMapData[x+2][y] == 4 &&  procMapData[x][y+2] == 4 ) { 
+                if(procMapData[x][y] != 0 && (Math.random()*args.stop_generator)<<0 < args.palms){
+                    if(procMapData[x-2][y] != 0 && procMapData[x][y-2] != 0  && procMapData[x+2][y] != 0 &&  procMapData[x][y+2] != 0 ) { 
                         var place_palm = true;
                         for (var i = 0; i < start.length; i++) {
                             if(x == start[i].x && y == start[i].y){
@@ -408,6 +394,9 @@ var load = {
         
         
         // generate army
+        
+        
+        procMap.entities = args.entities;
         
         
         
@@ -460,8 +449,8 @@ var load = {
                 
         
         this.maps[args.id] = procMap;
-        //console.log(this.maps[args.id])
     },
+    
     
        
 };

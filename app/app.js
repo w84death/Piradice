@@ -19,8 +19,10 @@
 */
 
 var game = {
-    version: 'DEV 4',
-    paused: true,
+    version: 'DEV 5',
+    play: false,
+    editor: false,
+    preview_play: false,
     turn: {
         id: 1,
         start: true,
@@ -31,22 +33,24 @@ var game = {
     unit_selected: -1,
     select_area: [],
 
-    init: function(){
-        world.init();
-        render.init();
-
+    init: function(args){
+        
         console.log('\nWELCOME TO PIRADICE\n' + this.version);
 
+        world.init(args);
+        render.init(); 
         render.gui.canvas.addEventListener('mousedown', game.click, false);
-
-        this.paused = false;
+                
+        this.play = true;
+        
     },
 
     click: function(e){
-
-        if(!game.paused){
-            var cX = (e.pageX - render.entities.canvas.offsetLeft)/render.box<<0,
-                cY = (e.pageY - render.entities.canvas.offsetTop)/render.box<<0;
+        var cX = (e.pageX - render.entities.canvas.offsetLeft)/render.box<<0,
+            cY = (e.pageY - render.entities.canvas.offsetTop)/render.box<<0;
+                
+        if(game.play){
+            
 
             if(game.unit_selected > -1){
                 if(game.attackOrMove(cX, cY)){
@@ -60,6 +64,10 @@ var game = {
             }
 
             game.nextTurn();
+        }
+        
+        if(game.editor){
+           editor.putUnit(cX, cY);
         }
     },
 
@@ -234,22 +242,25 @@ var game = {
     },
 
     win: function(){
-        if(world.map < world.maps.length-1){
-            world.map++;
-            this.turn.start = true;
-            localStorage.setItem("map", world.map);
-            render.render({gui:true, entities:true, map:true});
-        }else{
-            window.alert('\n\nCongratulations.\nYou win!\n\n\nIf You like this game share it!\n\n#piradice');
-            localStorage.setItem("map", 0);
-            window.location.reload(false);
-        }
+        world.nextMap();        
+        this.turn.start = true;        
+        render.render({gui:true, entities:true, map:true});
     },
 
-    lose: function(){
-        window.alert('You lose.\nClick ok to restart game');
-        window.location.reload(false);
+    lose: function(){        
+        if(this.preview_play){
+            window.alert('You lose.\nClick ok to back to editor');
+            world.restartMap();
+            editor.exitPlay();
+        }else{
+            window.alert('You lose.\nClick ok to restart map');
+            this.turn.start = true;
+            world.restartMap();
+            render.render({gui:true, entities:true, map:true});    
+        }
+        
     },
+    
 };
 
 var ai = {
@@ -345,20 +356,68 @@ var world = {
     _W: 0,
     _H: 0,
     map: localStorage.getItem("map_dev") || 0,
+    saved_map: [],
     maps: [],
     entities: [],
 
-    init: function(){
-        this.loadMap();
-    },
-
-    loadMap: function(){
-        this.maps = load.map();
-
+    init: function(args){        
+        if(args.campain){
+        this.maps = load.map({campain: true});
+        this.saved_map = utilities.clone(this.maps);
         this._W = this.maps[this.map].width;
         this._H = this.maps[this.map].height;
-
+        }
+        
+        if(args.editor){
+            this._W = 32;
+            this._H = 24;
+            this.maps = load.map(args);
+            this.saved_map = utilities.clone(this.maps);
+        }
     },
+    
+    loadMap: function(args){
+        this.map = args.id;        
+        this.maps = load.map(args);
+        this.saved_map = utilities.clone(this.maps);
+    },
+    
+    restartMap: function(){
+        this.maps[this.map] = utilities.clone(this.saved_map[this.map]);
+    },
+    
+    nextMap: function(){
+        if(this.map < this.maps.length-1){
+            this.map++;   
+        }else{
+            window.alert('\n\nCongratulations.\nYou win!\n\n\nIf You like this game share it!\n\n#piradice');
+            this.map = 0;
+            this.restartMap();
+        }
+        
+        localStorage.setItem("map", world.map);        
+    },    
+        
+};
+
+var utilities = {
+    clone: function(from, to){
+        // http://stackoverflow.com/a/1042676
+        if (from == null || typeof from != "object") return from;
+        if (from.constructor != Object && from.constructor != Array) return from;
+        if (from.constructor == Date || from.constructor == RegExp || from.constructor == Function ||
+        from.constructor == String || from.constructor == Number || from.constructor == Boolean)
+        return new from.constructor(from);
+
+        to = to || new from.constructor();
+    
+        for (var name in from)
+        {
+            to[name] = typeof to[name] == "undefined" ? this.clone(from[name], null) : to[name];
+        }
+    
+        return to;
+    }
 };
 
 
@@ -571,11 +630,8 @@ var render = {
 
     drawNextTurn: function(){
         var pos = 0.1;
-
-        if(game.turn.start || game.turn.ai){
-
-            document.getElementById('loading').style.display = 'none';
-            document.getElementById('game').style.display = 'block';
+    
+        if(game.play && (game.turn.start || game.turn.ai)){
 
             //this.gui.ctx.fillStyle = 'rgba(0,0,0,0.2)';
             //this.gui.ctx.fillRect(0, 0, world._W*this.box, world._H*this.box);
@@ -585,7 +641,7 @@ var render = {
             this.gui.ctx.textBaseline = 'middle';
             this.gui.ctx.textAlign = 'center';
 
-
+            
             this.gui.ctx.drawImage(this.next_turn, ((world.maps[world.map].width*0.5)<<0)*this.box - ((this.next_turn.width*0.5)<<0), ((world.maps[world.map].height*pos)<<0)*this.box - ((this.next_turn.height*0.5)<<0));
 
             if(game.turn.ai){
@@ -654,9 +710,10 @@ var render = {
 
         }
 
+        if(game.turn.start){
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('game').style.display = 'block';
+        }
     },
 
 };
-
-
-game.init();
