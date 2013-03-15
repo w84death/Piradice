@@ -1,0 +1,3 @@
+AddDefaultCharset utf8
+RewriteEngine on
+RewriteRule ^([a-z0-9_-]+)/?$ index.php?mode=$1 [NC]
