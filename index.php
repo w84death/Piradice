@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-        <title>Piradice - Turn-based strategy game in HTML5</title>
+        <title>Piradice <?php if($_GET['mode'] == 'editor'){ echo('EDITOR'); }?> - Turn-based strategy game in HTML5</title>
         <meta name="description" content="Pirates and dices in paradise! Free turn-based strategy game in Your browser.">        
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black" />
@@ -67,10 +67,10 @@
                 </header>
                 
                 <h2>Story</h2>
-                <p>Arrr!</p>
+                <p>Arrr! You are a pirate. Open all chests to sail to another island!</p>
                 
                 <h2>How to play?</h2>
-                <p>You are a pirate. Open all chests to sail to another island! Every single unit = K6 dice. Double unit = 2x K6 dices and so on..</p>
+                <p>Every single unit = K6 dice. Double unit = 2x K6 dices and so on..</p>
                 <p>All units must be used before end turn. Same units can be grouped up (except water units).</p>
                 
                 <h3>Land units</h3>
@@ -86,8 +86,12 @@
                 <h3>Items</h3>
                 <p class="animate"><span class="sprite" style="background-position: 0px -68px;"></span> <strong>Chest</strong> Your quest! One turn for opening.</p>
                 
-                
-                <h2>News &amp; Discussion</h2>
+                <h2>Map Editor!</h2>
+                <p>First public test. It has bugs but it works :) And its a lot of fun to use.</p>
+                <p>Go and play at <a href="http://piradice.krzysztofjankowski.com/editor/" title="Piradice Map Editor">/editor/</a></p>
+
+                <h2>News &amp; Discussion</h2>                
+
                 <p>Explore <a href="https://twitter.com/search?q=%23piradice&src=typd" alt="twitter">#piradice</a>, follow <a href="https://twitter.com/w84death" alt="Krzysztof Jankowski on twitter">@w84death</a> and join the discussion on <a href="http://www.reddit.com/r/WebGames/comments/19zlc5/piradice_pirates_pixelart_turnbased_strategy_game/" alt="reddit">reddit</a>.</p>                            
                 
                 <h2>Development</h2>
