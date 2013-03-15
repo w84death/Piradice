@@ -18,6 +18,7 @@ canvas {display: block; position:absolute;
 .desktop {width:512px; margin:0 auto;}    
 article {margin-top:1em;}
 article h2 {margin-top:2em;}
+article h3 {margin-top:1em;}
 article p {margin-top:1em;}
 article:first-child {margin-top:0;}
 .sprite {display:inline-block; width:32px; height:32px; margin-bottom: -14px; background-image:url('../media/sprites_web.png');}

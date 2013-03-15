@@ -3,8 +3,8 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-        <title>Piradice</title>
-        <meta name="description" content="Pirates and dices in paradise! Turn-based HTML5 strategy game.">        
+        <title>Piradice - Turn-based strategy game in HTML5</title>
+        <meta name="description" content="Pirates and dices in paradise! Free turn-based strategy game in Your browser.">        
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black" />
         <link rel="apple-touch-icon" href="media/apple-touch-icon-precomposed.png"/>
@@ -21,6 +21,43 @@
                 <canvas id="entities"></canvas>
                 <canvas id="gui"></canvas>
             </section>
+            <?php if($_GET['mode'] == 'editor'){ ?>
+            <aside id="editor">
+                <h2>Map Editor</h2>
+                <p>For pirates use only</p>                                
+                <ul id="generator">
+                    <li>Seed:  <input id="seed" value="piradice"/>
+                    <li>Islands: <input id="islands" value="5"/>
+                    <li>Islands size: <input id="islands_size" value="10"/>
+                    <li>Grass: <input id="grass" value="16"/>
+                    <li>Palms: <input id="palms" value="40"/>
+                    <li>Chests: <input id="chests" value="5"/>
+                    <li>Units: <select id="unit">
+                                    <option value="pirate">Pirate</option>
+                                    <option value="range_pirate">Range Pirate</option>                                    
+                                    <option value="ship">Ship</option>
+                                    <option value="black_pearl">Black Pearl</option>
+                                    <option value="skeleton">Skieleton</option>
+                                    <option value="octopus">Octopus</option>
+                                </select>
+                    <li>Squad: <select id="squad">
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                    <option value="6">6</option>s
+                                </select>
+                    <li><button onclick="editor.generateMap(true)" class="hot">Generate new map</button>                        
+                </ul>
+                <hr/>
+                <ul>
+                    <li><button id="play" onclick="editor.playMap()">Play this map</button>
+                    <li>
+                    <li><button id="save" class="disabled">Save</button><button id="load" class="disabled">Load</button>
+                </ul>
+            </aside>
+            <?php } ?>
         </div>
         <section class="desktop">
             <article>
@@ -53,6 +90,9 @@
                 <h2>News &amp; Discussion</h2>
                 <p>Explore <a href="https://twitter.com/search?q=%23piradice&src=typd" alt="twitter">#piradice</a>, follow <a href="https://twitter.com/w84death" alt="Krzysztof Jankowski on twitter">@w84death</a> and join the discussion on <a href="http://www.reddit.com/r/WebGames/comments/19zlc5/piradice_pirates_pixelart_turnbased_strategy_game/" alt="reddit">reddit</a>.</p>                            
                 
+                <h2>Development</h2>
+                <p>Full source code avilable at <a href="https://github.com/w84death/Piradice">github.com/w84death/Piradice</a></p>
+                
                 <h2>Sponsored by</h2>
                 <p><a href="https://www.etsy.com/shop/VintageVanillaShop" title="Vintage Vanilla Shop on Etsy"><img src="media/vintage_vanilla_logo.png" alt="VintageVanillaShop" /></a></p>
                 
@@ -66,6 +106,14 @@
         <script src="app/items.js"></script>
         <script src="app/maps.js"></script>
         <script src="app/app.js"></script>
+        <script src="app/editor.js"></script>
+        <script>
+        <?php if($_GET['mode'] == 'editor'){ ?>
+            editor.init();        
+        <?php }else{ ?>
+            game.init({campain:true});
+        <?php } ?>
+        </script>
         
         <script type="text/javascript">
         
@@ -79,7 +127,4 @@
             var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
           })();
         
-        </script>
-        
-    </body>
-</html>
+        </scri
