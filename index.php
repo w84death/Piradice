@@ -16,7 +16,7 @@
     <body>
         <div id="container">
             <p id="loading"><strong>Loading game..</strong></p>
-            <section id="game">                        
+            <section id="game" <?php if($_GET['mode'] == 'editor'){ echo('class=editor'); }?>>                        
                 <canvas id="map"></canvas>
                 <canvas id="entities"></canvas>
                 <canvas id="gui"></canvas>

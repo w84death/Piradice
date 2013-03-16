@@ -9,6 +9,7 @@ a:hover {text-decoration:underline;}
 #container{background:#00c3d4 url('/media/ocean.png');}
 #loading {display:block; padding:1em 0; text-align:center;}
 #game {display:none; width:1024px; height:768px; margin:0 auto;}
+#game.editor {padding-left: 170px;}
 canvas {display: block; position:absolute;
     image-rendering: optimizeSpeed;
     image-rendering: -moz-crisp-edges;
@@ -26,7 +27,7 @@ article:first-child {margin-top:0;}
 footer a {display:inline-block; width:32px; height:32px; background: transparent url('/media/sprites_web.png') -128px -64px; color:#000; position:relative;}
 footer a strong {position: absolute;top: 12px;left: 3px;}
 
-#editor {position:fixed; top:1em; left:1em; background-color:rgba(0,0,0,0.2); padding:1em;}
+#editor {position:fixed; top:1em; left:1em; background-color:rgba(0,0,0,0.2); padding:1em; width:190px;}
 
 #editor ul {list-style:none;}
 #editor ul li {margin:1em 0; text-align:right;}
