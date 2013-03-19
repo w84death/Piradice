@@ -535,6 +535,7 @@ var render = {
             render.sprites[54] = render.makeSprite(1,8, false); // forest
             render.sprites[55] = [render.makeSprite(2,8, false),render.makeSprite(2,8, true)]; // lumberjack
 
+            render.sprites[56] = render.makeSprite(6,2, false); // shout
 
             render.render({map:true, entities:true,});
         }
@@ -626,9 +627,12 @@ var render = {
         return m_canvas;
     },
 
-    drawMessage: function(msg, x, y){
-
-        this.gui.ctx.drawImage(this.sprites[38], (x*this.box)-(12), (y*this.box)-(18));
+    drawMessage: function(msg, x, y, important){
+        if(important){
+            this.gui.ctx.drawImage(this.sprites[56], (x*this.box)-(12), (y*this.box)-(18));
+        }else{
+            this.gui.ctx.drawImage(this.sprites[38], (x*this.box)-(12), (y*this.box)-(18));
+        }
         this.gui.ctx.fillStyle = '#000';
         this.gui.ctx.font = '12px VT323, cursive';
         this.gui.ctx.textBaseline = 'top';
@@ -704,7 +708,7 @@ var render = {
                     }
                 }else{
                     if(world.maps[world.map].entities[i].message && world.maps[world.map].entities[i].squad > 0){
-                        this.drawMessage(world.maps[world.map].entities[i].message,world.maps[world.map].entities[i].x, world.maps[world.map].entities[i].y)
+                        this.drawMessage(world.maps[world.map].entities[i].message,world.maps[world.map].entities[i].x, world.maps[world.map].entities[i].y, world.maps[world.map].entities[i].important)
                     }
                 }
                 if(world.maps[world.map].entities[i].reloading > 0 && world.maps[world.map].entities[i].squad > 0 ){

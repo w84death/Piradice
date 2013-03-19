@@ -24,9 +24,10 @@ var Unit = function Unit(){
     this.on_board = [];
     this.team = 0;
     this.moves = 1;
-    this.reloading = 0;
+    this.reloading = 0;    
     this.message = null;
     this.messages = [];
+    this.important = false;
     this.land = true;
     this.water = false;
     this.flip = 0;
@@ -143,7 +144,7 @@ Unit.prototype = {
         if(this.water || other.water ){
             return false
         }else
-        if( (this.range && other.range ) || (!this.range && !other.range)){
+        if( (this.range && other.range ) || (!this.range && !other.range) && !this.lumberjack && !other.lumberjack){
             while (this.squad < 6 && other.squad > 0) {
                 this.squad++;
                 this.sprite++;
@@ -163,6 +164,7 @@ Unit.prototype = {
                 if(world.maps[world.map].items[j].x == this.x && world.maps[world.map].items[j].y == this.y){                        
                     if(world.maps[world.map].items[j].open()){ 
                         this.message = 'Gold';
+                        this.important = false;
                         render.render({items:true, gui:true});
                         this.moves--;
                     }
@@ -195,12 +197,14 @@ Unit.prototype = {
                 if(dice > dice2){
                     other.hit();
                     other.message = '!';
+                    other.important = false;
                 }else
                 if(dice < dice2){
                     if((Math.abs(this.x - other.x) < 2) && (Math.abs(this.y - other.y) < 2)){
                         this.hit();
                     }
                     this.message = 'miss';
+                    this.important = false;
                 }
             }            
                         
@@ -225,6 +229,7 @@ Unit.prototype = {
                 
                 if(this.squad < 1 ){
                     other.message = total + '-' + total2;
+                    other.important = false;
                     this.die();
                     if(other.squad < 1){                                                 
                         other.die();    
@@ -234,6 +239,7 @@ Unit.prototype = {
                 
                 if(other.squad < 1){                                 
                     this.message = total + '-' + total2;
+                    this.important = false;
                     other.die();    
                     return true;
                 }
@@ -243,6 +249,8 @@ Unit.prototype = {
         if(this.squad > 0 && other.squad > 0){
             this.message = total;
             other.message = total2;
+            this.important = false;
+            other.important = false;
             return false;
         }        
     },
@@ -261,7 +269,8 @@ Unit.prototype = {
     
     shout: function(){
         var r = (Math.random()*this.messages.length)<<0;
-        this.message = this.messages[r];        
+        this.message = this.messages[r];
+        this.important = true;
     },
 };
 
@@ -299,6 +308,7 @@ var Lumberjack = function Lumberjack(args){
     this.x = args.x;
     this.y = args.y;
     this.team = args.team;
+    this.lumberjack = true;
     this.squad = 1;
     this.sprite = 55;
     this.messages = ['Cut!', 'Hmm', 'Tree'];

@@ -225,7 +225,7 @@ var load = {
         
             for (var k = 0; k < this.maps[i].items.length; k++) {
                 if(this.maps[i].items[k].forest){
-                    this.maps[i].moves[this.maps[i].items[k].x + this.maps[i].items[k].y*this.maps[i].width] = 0;
+                    this.maps[i].moves[this.maps[i].items[k].x + this.maps[i].items[k].y*this.maps[i].width] = 2;
                 }
             }
             
