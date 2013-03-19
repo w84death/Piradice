@@ -482,7 +482,7 @@ var render = {
             render.sprites[5] = render.makeSprite(1,1, false); // grass rif
             render.sprites[6] = render.makeSprite(3,1, false); // bridge east west
             render.sprites[7] = render.makeSprite(4,1, false); // bridge north south
-            render.sprites[8] = render.makeSprite(2,1, false); // palm
+            render.sprites[8] = render.makeSprite(6,1, false); // merge
             render.sprites[9] = render.makeSprite(4,0, false); // move
             render.sprites[10] = render.makeSprite(5,0, false); // select
             render.sprites[11] = render.makeSprite(5,1, false); // done
@@ -530,6 +530,10 @@ var render = {
             render.sprites[50] = [render.makeSprite(4,7, false),render.makeSprite(4,7, true)]; // black pearl 4
             render.sprites[51] = [render.makeSprite(5,7, false),render.makeSprite(5,7, true)]; // black pearl 5
             render.sprites[52] = [render.makeSprite(6,7, false),render.makeSprite(6,7, true)]; // black pearl 6
+            
+            render.sprites[53] = render.makeSprite(0,8, false); // palm
+            render.sprites[54] = render.makeSprite(1,8, false); // forest
+            render.sprites[55] = [render.makeSprite(2,8, false),render.makeSprite(2,8, true)]; // lumberjack
 
 
             render.render({map:true, entities:true,});

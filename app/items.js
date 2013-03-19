@@ -14,6 +14,7 @@
 
 var Item = function Item(){        
     this.can_open = false;
+    this.forest = false;
 };
 
 Item.prototype = {        
@@ -38,13 +39,34 @@ Item.prototype = {
         }
         
     },
+    
+    grow: function(){
+        if(this.forest && this.palms == 1){
+            this.palms = 2;
+            this.sprite = 54;
+        }
+    },
+    
+    cut: function(){
+        if(this.forest){
+            this.palms--;
+            this.sprite = 53;
+        }
+        
+        if(this.palms < 1){
+            this.x = 0;
+            this.y = 0;
+        }
+    },
 };
 
 var Palm = function Palm(args){
     this.name = 'Palm';
+    this.forest = true;
     this.x = args.x;
     this.y = args.y;
-    this.sprite = 8;  
+    this.palms = args.palms;
+    this.sprite = 53 + args.palms - 1;  
 };
 
 Palm.prototype = new Item();

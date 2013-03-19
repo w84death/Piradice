@@ -42,8 +42,8 @@ var load = {
             ],
             items: [
                 new Chest({x:7, y:5}),
-                new Palm({x:6, y:5}),
-                new Palm({x:14, y:1})
+                new Palm({x:6, y:5, palms:1}),
+                new Palm({x:14, y:1, palms:1})
             ]    
         };
         
@@ -88,16 +88,16 @@ var load = {
                 new Chest({x:11, y:2}),
                 new Chest({x:9, y:8}),
                 new Chest({x:1, y:10}),
-                new Palm({x:4,y:3}),
-                new Palm({x:11,y:7}),
-                new Palm({x:11,y:8}),
-                new Palm({x:10,y:8}),
-                new Palm({x:3, y:3}),
-                new Palm({x:2, y:9}),
-                new Palm({x:4, y:8}),
-                new Palm({x:4, y:10}),
-                new Palm({x:1, y:9}), 
-                new Palm({x:12, y:3})
+                new Palm({x:4,y:3, palms:1}),
+                new Palm({x:11,y:7, palms:1}),
+                new Palm({x:11,y:8, palms:1}),
+                new Palm({x:10,y:8, palms:1}),
+                new Palm({x:3, y:3, palms:1}),
+                new Palm({x:2, y:9, palms:1}),
+                new Palm({x:4, y:8, palms:1}),
+                new Palm({x:4, y:10, palms:1}),
+                new Palm({x:1, y:9, palms:1}), 
+                new Palm({x:12, y:3, palms:1})
             ]        
         };
             
@@ -145,16 +145,16 @@ var load = {
             ],
             items: [
                 new Chest({x:12, y:3}),
-                new Palm({x:4, y:8}),
-                new Palm({x:12, y:9}),
-                new Palm({x:14, y:8}),
-                new Palm({x:12, y:2}),
-                new Palm({x:13, y:4}),
-                new Palm({x:14, y:4}),
-                new Palm({x:14, y:5}),
-                new Palm({x:11, y:3}),
-                new Palm({x:10, y:3}),
-                new Palm({x:10, y:4})              
+                new Palm({x:4, y:8, palms:1}),
+                new Palm({x:12, y:9, palms:1}),
+                new Palm({x:14, y:8, palms:1}),
+                new Palm({x:12, y:2, palms:1}),
+                new Palm({x:13, y:4, palms:1}),
+                new Palm({x:14, y:4, palms:1}),
+                new Palm({x:14, y:5, palms:1}),
+                new Palm({x:11, y:3, palms:1}),
+                new Palm({x:10, y:3, palms:1}),
+                new Palm({x:10, y:4, palms:1})              
             ]    
         };
         
@@ -202,11 +202,11 @@ var load = {
                 new Chest({x:9, y:5}),
                 new Chest({x:6, y:9}),
                 new Chest({x:12, y:8}),
-                new Palm({x:8, y:5}),
-                new Palm({x:10, y:8}),
-                new Palm({x:11, y:8}),
-                new Palm({x:8, y:9}),
-                new Palm({x:7, y:9})
+                new Palm({x:8, y:5, palms:1}),
+                new Palm({x:10, y:8, palms:1}),
+                new Palm({x:11, y:8, palms:1}),
+                new Palm({x:8, y:9, palms:1}),
+                new Palm({x:7, y:9, palms:1})
             ]    
         };
         
@@ -214,6 +214,7 @@ var load = {
     
     generateMask: function(){
         for (var i = 0; i < this.maps.length; i++) {                                
+            
             for (var j = 0; j < this.maps[i].data.length; j++) {
                 if(this.maps[i].data[j] === 0 || this.maps[i].data[j] == 1){
                     this.maps[i].moves.push(0);
@@ -221,7 +222,18 @@ var load = {
                     this.maps[i].moves.push(1);
                 }
             }
-        }},
+        
+            for (var k = 0; k < this.maps[i].items.length; k++) {
+                if(this.maps[i].items[k].forest){
+                    this.maps[i].moves[this.maps[i].items[k].x + this.maps[i].items[k].y*this.maps[i].width] = 0;
+                }
+            }
+            
+        }
+        
+        
+        
+    },
     
     proceduralMap: function(args){
         /*
@@ -369,26 +381,50 @@ var load = {
                                 place_palm = false;
                             }
                         }
-                        if(place_palm){
-                            procMap.items.push(new Palm({x:x, y:y}));
+                        if(place_palm){                            
+                            procMap.items.push(new Palm({x:x, y:y, palms:1}));
                         }
                     }
                 }
                 
                
                 // bridge
-                if(procMapData[x][y] != 0 && procMapData[x-1][y] != 0  && procMapData[x+1][y] != 0 && procMapData[x][y-1] === 0  && procMapData[x][y+1] === 0){
+                if(procMapData[x][y] !== 0 && procMapData[x-1][y] !== 0  && procMapData[x+1][y] !== 0 && procMapData[x][y-1] === 0  && procMapData[x][y+1] === 0){
                     procMapData[x][y] = 6;
                 }
                 
-                if(procMapData[x][y] != 0 && procMapData[x-1][y] === 0  && procMapData[x+1][y] === 0 && procMapData[x][y-1] != 0  && procMapData[x][y+1] != 0){
+                if(procMapData[x][y] !== 0 && procMapData[x-1][y] === 0  && procMapData[x+1][y] === 0 && procMapData[x][y-1] !== 0  && procMapData[x][y+1] !== 0){
                     procMapData[x][y] = 7;
                 }
             }
         }
         
-         for (var i = 0; i < start.length; i++) {
-            if(procMapData[start[i].x][start[i].y] != 0 &&  i < args.chests ){
+        
+        for (i = 0; i < procMap.items.length; i++) {
+            if(procMap.items[i].forest){
+                var neighbors = 0;
+                for (var j = 0; j < procMap.items.length; j++) {
+                    if(procMap.items[j].forest){
+                        if(procMap.items[j].x - 1 == procMap.items[i].x && procMap.items[j].y == procMap.items[i].y) { neighbors++; }
+                        if(procMap.items[j].x + 1 == procMap.items[i].x && procMap.items[j].y == procMap.items[i].y) { neighbors++; }
+                        if(procMap.items[j].x == procMap.items[i].x && procMap.items[j].y - 1  == procMap.items[i].y) { neighbors++; }
+                        if(procMap.items[j].x == procMap.items[i].x && procMap.items[j].y + 1 == procMap.items[i].y) { neighbors++; }
+                        
+                        if(procMap.items[j].x - 1 == procMap.items[i].x && procMap.items[j].y - 1 == procMap.items[i].y) { neighbors++; }
+                        if(procMap.items[j].x + 1 == procMap.items[i].x && procMap.items[j].y - 1 == procMap.items[i].y) { neighbors++; }
+                        if(procMap.items[j].x - 1 == procMap.items[i].x && procMap.items[j].y + 1 == procMap.items[i].y) { neighbors++; }
+                        if(procMap.items[j].x + 1 == procMap.items[i].x && procMap.items[j].y + 1 == procMap.items[i].y) { neighbors++; }
+                    }
+                }
+
+                if(neighbors > 4){
+                    procMap.items[i].grow();
+                }
+            }            
+        }
+                
+        for (i = 0; i < start.length; i++) {
+            if(procMapData[start[i].x][start[i].y] !== 0 &&  i < args.chests ){
                 procMap.items.push(new Chest({x:start[i].x, y:start[i].y}));
             }
         }

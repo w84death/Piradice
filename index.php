@@ -33,8 +33,9 @@
                     <li>Palms: <input id="palms" value="40"/>
                     <li>Chests: <input id="chests" value="5"/>
                     <li>Units: <select id="unit">
-                                    <option value="pirate">Pirate</option>
-                                    <option value="range_pirate">Range Pirate</option>                                    
+                                    <option value="pirate">Pirate w/ sword</option>
+                                    <option value="range_pirate">Pirate w/ gun</option>
+                                    <option value="lumberjack">Pirate w/ axe</option>
                                     <option value="ship">Ship</option>
                                     <option value="black_pearl">Black Pearl</option>
                                     <option value="skeleton">Skieleton</option>

@@ -292,6 +292,20 @@ var RangePirate = function RangePirate(args){
 
 RangePirate.prototype = new Unit();
 
+
+var Lumberjack = function Lumberjack(args){
+    this.name = 'lumberjack';
+    this.pirate = true;
+    this.x = args.x;
+    this.y = args.y;
+    this.team = args.team;
+    this.squad = 1;
+    this.sprite = 55;
+    this.messages = ['Cut!', 'Hmm', 'Tree'];
+};
+
+Lumberjack.prototype = new Unit();
+
 var Skeleton = function Skeleton(args){
     this.name = 'skeleton';
     this.ai = true;
