@@ -27,7 +27,7 @@ article:first-child {margin-top:0;}
 footer a {display:inline-block; width:32px; height:32px; background: transparent url('/media/sprites_web.png') -128px -64px; color:#000; position:relative;}
 footer a strong {position: absolute;top: 12px;left: 3px;}
 
-#editor {position:fixed; top:1em; left:1em; background-color:rgba(0,0,0,0.2); padding:1em; width:190px;}
+#editor {position:absolute; top:1em; left:1em; background-color:rgba(0,0,0,0.2); padding:1em; width:190px;}
 
 #editor ul {list-style:none;}
 #editor ul li {margin:1em 0; text-align:right;}

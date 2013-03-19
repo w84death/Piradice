@@ -4,7 +4,7 @@ var editor = {
     saved_entities: [],
     
     init: function(){
-        this.updateSettings();
+        this.loadSettings();
         game.init(this.settings);        
         game.editor = true;
         game.play = false;
@@ -18,13 +18,13 @@ var editor = {
         }else {
             this.entities = utilities.clone(this.saved_entities);
         }
-        this.updateSettings();
+        this.loadSettings();
         world.loadMap(this.settings);
         render.render({gui:true, entities:true, map:true});
     },
     
     playMap: function(){
-        this.updateSettings();
+        this.loadSettings();
         world.loadMap(this.settings);        
         
         game.turn.start = true;
@@ -51,18 +51,22 @@ var editor = {
         document.getElementById('play').setAttribute('onclick','editor.playMap()');
     },
     
-    updateSettings: function(){
+    loadSettings: function(){
         this.settings = { 
             editor: true,
             id: 0,
-            seed: document.getElementById('seed').value,
-            islands: document.getElementById('islands').value,
-            islands_size: document.getElementById('islands_size').value,      
-            grass: document.getElementById('grass').value,
-            palms: document.getElementById('palms').value,
-            chests: document.getElementById('chests').value,
-            entities: this.entities,               
+            seed: document.getElementById('seed').value || localStorage.getItem("seed"),
+            islands: document.getElementById('islands').value || localStorage.getItem("islands"),
+            islands_size: document.getElementById('islands_size').value || localStorage.getItem("islands_size"),      
+            grass: document.getElementById('grass').value || localStorage.getItem("grass"),
+            palms: document.getElementById('palms').value || localStorage.getItem("palms"),
+            chests: document.getElementById('chests').value || localStorage.getItem("chests"),
+            entities: this.entities || localStorage.getItem("entities"),               
         }
+    },
+    
+    saveSettings: function(){
+        
     },
     
     putUnit: function(x,y){ 
