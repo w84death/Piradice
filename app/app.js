@@ -19,7 +19,7 @@
 */
 
 var game = {
-    version: 'DEV 6',
+    version: 'PUBLIC BETA 2',
     play: false,
     editor: false,
     preview_play: false,
@@ -358,7 +358,7 @@ var ai = {
 var world = {
     _W: 0,
     _H: 0,
-    map: localStorage.getItem("map_dev") || 0,
+    map: localStorage.getItem("map") || 0,
     saved_map: [],
     maps: [],
     entities: [],
@@ -372,6 +372,7 @@ var world = {
         }
         
         if(args.editor){
+            this.map = 0;
             this._W = 32;
             this._H = 24;
             this.maps = load.map(args);
@@ -675,8 +676,7 @@ var render = {
             }
         }
 
-        if(args.entities){
-            console.log(world.maps[world.map].entities);
+        if(args.entities){            
             this.entities.ctx.clearRect(0, 0, world._W*this.box, world._H*this.box);
             for(i=0; i<world.maps[world.map].entities.length; i++){
                 if(world.maps[world.map].entities[i].squad > 0){
