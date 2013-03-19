@@ -19,7 +19,7 @@
 */
 
 var game = {
-    version: 'DEV 5',
+    version: 'DEV 6',
     play: false,
     editor: false,
     preview_play: false,
@@ -86,6 +86,9 @@ var game = {
     },
 
     attackOrMove: function(cX,cY){
+        
+        var randomizer = new Date();
+        Math.seedrandom(randomizer);
 
         var temp = {
             x:world.maps[world.map].entities[game.unit_selected].x,
@@ -673,9 +676,11 @@ var render = {
         }
 
         if(args.entities){
+            console.log(world.maps[world.map].entities);
             this.entities.ctx.clearRect(0, 0, world._W*this.box, world._H*this.box);
             for(i=0; i<world.maps[world.map].entities.length; i++){
                 if(world.maps[world.map].entities[i].squad > 0){
+                    
                     this.entities.ctx.drawImage(this.sprites[ world.maps[world.map].entities[i].sprite ][ world.maps[world.map].entities[i].flip ], world.maps[world.map].entities[i].x*this.box, world.maps[world.map].entities[i].y*this.box);
                 }
             }

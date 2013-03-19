@@ -279,13 +279,14 @@ var load = {
             procMapData[start[i].x][start[i].y] = 2;
             
         }
-        
-          
+                
+        var size = args.islands_size;        
+                
         for (var generate = 0; generate < args.stop_generator; generate++) {
             for (var y = 3; y < procMap.height-3; y++) {
                 for (var x = 3; x < procMap.width-3; x++) {                    
-                    if(procMapData[x][y] == 2 && (Math.random()*args.stop_generator)<<0 < args.islands_size){                 
-                        args.islands_size -= (args.islands_size*0.4)<<0;                        
+                    if(procMapData[x][y] == 2 && (Math.random()*args.stop_generator)<<0 < size){        
+                            size *= 0.99;
                             procMapData[x-1][y] = 2;
                             procMapData[x][y-1] = 2;
                             procMapData[x+1][y] = 2;
@@ -394,11 +395,33 @@ var load = {
         
         
         // generate army
-        
+        console.log(':: GENERATING ARMY..');
         
         procMap.entities = args.entities;
+        /*
         
+         // MAYBE SOME DAY..
+         
+         
+        args.skeletons = 10;
+        args.skeletons_size = 3;
         
+        for (var i = 0; i < start.length; i++) {
+             
+            if(procMapData[start[i].x][start[i].y] != 0 ){
+                // 70%
+                if((Math.random()*args.stop_generator)<<0 < args.stop_generator*0.7){
+                    
+                    var new_x = start[i].x + ((Math.random()*3 )<<0 ) -1,
+                        new_y = start[i].y + ((Math.random()*3 )<<0 ) -1,
+                        new_squad = ((Math.random()*args.skeletons_size )<<0 ) + 1;
+                   
+                    procMap.entities.push( new Skeleton({x:new_x,y:new_y,squad:new_squad,team:1}) );  
+                }
+            }
+
+        }            
+        */
         
         // HARD LINE
         

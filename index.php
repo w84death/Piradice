@@ -7,8 +7,8 @@
         <meta name="description" content="Pirates and dices in paradise! Free turn-based strategy game in Your browser.">        
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black" />
-        <link rel="apple-touch-icon" href="media/apple-touch-icon-precomposed.png"/>
-        <link rel="apple-touch-startup-image" href="media/startup.png">
+        <link rel="apple-touch-icon" href="/media/apple-touch-icon-precomposed.png"/>
+        <link rel="apple-touch-startup-image" href="/media/startup.png">
         <link rel="shortcut icon" href="/media/favicon.ico">
         <link href='http://fonts.googleapis.com/css?family=VT323' rel='stylesheet' type='text/css'>
         <link rel="stylesheet" href="/app/app.css">        
@@ -28,7 +28,7 @@
                 <ul id="generator">
                     <li>Seed:  <input id="seed" value="piradice"/>
                     <li>Islands: <input id="islands" value="5"/>
-                    <li>Islands size: <input id="islands_size" value="10"/>
+                    <li>Islands size: <input id="islands_size" value="20"/>
                     <li>Grass: <input id="grass" value="16"/>
                     <li>Palms: <input id="palms" value="40"/>
                     <li>Chests: <input id="chests" value="5"/>
@@ -48,13 +48,11 @@
                                     <option value="5">5</option>
                                     <option value="6">6</option>s
                                 </select>
-                    <li><button onclick="editor.generateMap(true)" class="hot">Generate new map</button>                        
-                </ul>
-                <hr/>
-                <ul>
+                    <li><button onclick="editor.generateMap(true)" class="hot">Generate new map</button>
+                    <li><button id="save" onclick="editor.saveSettings()">Save</button><button id="load" class="disabled">Load</button>
+                </ul>                
+                <ul class="play">
                     <li><button id="play" onclick="editor.playMap()">Play this map</button>
-                    <li>
-                    <li><button id="save" class="disabled">Save</button><button id="load" class="disabled">Load</button>
                 </ul>
             </aside>
             <?php } ?>
@@ -88,7 +86,7 @@
                 
                 <h2>Map Editor!</h2>
                 <p>First public test. It has bugs but it works :) And its a lot of fun to use.</p>
-                <p>Go and play at <a href="http://piradice.krzysztofjankowski.com/editor/" title="Piradice Map Editor">/editor/</a></p>
+                <p>Go and play at <a href="/editor/" title="Piradice Map Editor">/editor/</a></p>
 
                 <h2>News &amp; Discussion</h2>                
 

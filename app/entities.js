@@ -43,6 +43,7 @@ Unit.prototype = {
             }
             
             this.move_area = [];
+            
             if(world.maps[world.map].moves[(this.x-1)+((this.y)*world.maps[world.map].width)] == map_type){           
                 this.move_area.push({x:this.x-1,y:this.y});
             }
@@ -58,6 +59,8 @@ Unit.prototype = {
             if(world.maps[world.map].moves[(this.x+1)+((this.y)*world.maps[world.map].width)] == map_type){
                 this.move_area.push({x:this.x+1,  y:this.y});
             }
+            
+            
             if(world.maps[world.map].moves[(this.x-1)+((this.y-1)*world.maps[world.map].width)] == map_type){
                 this.move_area.push({x:this.x-1,y:this.y-1});
             }
@@ -100,7 +103,7 @@ Unit.prototype = {
                 }            
 
             }
-            
+                        
             for (var i = 0; i < this.move_area.length; i++) {
                 for (var j = 0; j < world.maps[world.map].entities.length; j++) { 
                     if( world.maps[world.map].entities[j].x == this.move_area[i].x && world.maps[world.map].entities[j].y == this.move_area[i].y && world.maps[world.map].entities[j].team != this.team ){ 
@@ -263,7 +266,7 @@ Unit.prototype = {
 };
 
 var Pirate = function Pirate(args){
-    this.name = 'Pirate';
+    this.name = 'pirate';
     this.pirate = true;
     this.x = args.x;
     this.y = args.y;
@@ -276,7 +279,7 @@ var Pirate = function Pirate(args){
 Pirate.prototype = new Unit();
 
 var RangePirate = function RangePirate(args){
-    this.name = 'Range pirate';
+    this.name = 'range_pirate';
     this.pirate = true;
     this.x = args.x;
     this.y = args.y;
@@ -290,7 +293,7 @@ var RangePirate = function RangePirate(args){
 RangePirate.prototype = new Unit();
 
 var Skeleton = function Skeleton(args){
-    this.name = 'Skeleton';
+    this.name = 'skeleton';
     this.ai = true;
     this.skeleton = true;
     this.x = args.x;
@@ -304,7 +307,7 @@ var Skeleton = function Skeleton(args){
 Skeleton.prototype = new Unit();
 
 var Ship = function Ship(args){
-    this.name = 'Black Pearl';
+    this.name = 'ship';
     this.pirate = true;
     this.x = args.x;
     this.y = args.y;
@@ -320,7 +323,7 @@ var Ship = function Ship(args){
 Ship.prototype = new Unit();
 
 var BlackPearl = function BlackPearl(args){
-    this.name = 'Black Pearl';
+    this.name = 'black_pearl';
     this.pirate = true;
     this.x = args.x;
     this.y = args.y;
@@ -337,7 +340,7 @@ var BlackPearl = function BlackPearl(args){
 BlackPearl.prototype = new Unit();
 
 var Octopus = function Octopus(args){
-    this.name = 'Kraken';
+    this.name = 'octopus';
     this.skeleton = true;
     this.ai = true;
     this.x = args.x;

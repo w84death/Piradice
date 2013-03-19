@@ -4,10 +4,13 @@ var editor = {
     saved_entities: [],
     
     init: function(){
-        this.loadSettings();
+        this.updateSettings();
         game.init(this.settings);        
         game.editor = true;
         game.play = false;
+        
+        this.updateButtons();        
+        
     },
     
     generateMap: function(clear){
@@ -18,13 +21,13 @@ var editor = {
         }else {
             this.entities = utilities.clone(this.saved_entities);
         }
-        this.loadSettings();
+        this.updateSettings();
         world.loadMap(this.settings);
         render.render({gui:true, entities:true, map:true});
     },
     
     playMap: function(){
-        this.loadSettings();
+        this.updateSettings();
         world.loadMap(this.settings);        
         
         game.turn.start = true;
@@ -51,25 +54,85 @@ var editor = {
         document.getElementById('play').setAttribute('onclick','editor.playMap()');
     },
     
-    loadSettings: function(){
+    updateSettings: function(){
         this.settings = { 
             editor: true,
             id: 0,
-            seed: document.getElementById('seed').value || localStorage.getItem("seed"),
-            islands: document.getElementById('islands').value || localStorage.getItem("islands"),
-            islands_size: document.getElementById('islands_size').value || localStorage.getItem("islands_size"),      
-            grass: document.getElementById('grass').value || localStorage.getItem("grass"),
-            palms: document.getElementById('palms').value || localStorage.getItem("palms"),
-            chests: document.getElementById('chests').value || localStorage.getItem("chests"),
-            entities: this.entities || localStorage.getItem("entities"),               
+            seed: document.getElementById('seed').value,
+            islands: parseInt(document.getElementById('islands').value),
+            islands_size: parseInt(document.getElementById('islands_size').value),      
+            grass: parseInt(document.getElementById('grass').value),
+            palms: parseInt(document.getElementById('palms').value),
+            chests: parseInt(document.getElementById('chests').value),
+            entities: this.entities,               
         }
     },
     
-    saveSettings: function(){
+    updateButtons: function(){
+        if(localStorage.getItem("save")){
+            document.getElementById('load').removeAttribute('class');
+            document.getElementById('load').setAttribute('onclick','editor.loadSettings()');
+        }else{
+            document.getElementById('load').setAttribute('class','disabled');
+            document.getElementById('load').removeAttribute('onclick');
+        }
+    },
+    
+    loadSettings: function(){
+        console.log(':: LOADING...');
+        this.settings = { 
+            editor: true,
+            id: 0,
+            seed: localStorage.getItem("seed"),
+            islands: localStorage.getItem("islands"),
+            islands_size: localStorage.getItem("islands_size"),      
+            grass: localStorage.getItem("grass"),
+            palms: localStorage.getItem("palms"),
+            chests: localStorage.getItem("chests"),
+            entities: [],               
+        }
+        
+        document.getElementById('seed').value = this.settings.seed;
+        document.getElementById('islands').value = this.settings.islands;
+        document.getElementById('islands_size').value = this.settings.islands_size;
+        document.getElementById('grass').value = this.settings.grass;
+        document.getElementById('palms').value = this.settings.palms;
+        document.getElementById('chests').value = this.settings.chests;
+         
+         
+        this.saved_entities = [];   
+        
+        var entities_from_storage = JSON.parse(localStorage.getItem("entities"));
+                
+        this.generateMap(true);
+        
+        for (var i = 0; i < entities_from_storage.length; i++) {
+            this.putUnit( entities_from_storage[i].x, entities_from_storage[i].y,entities_from_storage[i].name, entities_from_storage[i].squad);
+        }
+        
+        console.log(':: SETTINGS LOADED');
         
     },
     
-    putUnit: function(x,y){ 
+    saveSettings: function(){        
+        console.log(':: SAVEING...');
+        
+        localStorage.setItem("save",true);
+        localStorage.setItem("seed",this.settings.seed);
+        localStorage.setItem("islands",this.settings.islands);
+        localStorage.setItem("islands_size",this.settings.islands_size);
+        localStorage.setItem("grass",this.settings.grass);
+        localStorage.setItem("palms",this.settings.palms);
+        localStorage.setItem("chests",this.settings.chests);
+                
+        localStorage.setItem("entities",JSON.stringify(this.entities));
+        this.updateButtons(); 
+        
+        console.log(':: SETTINGS SAVED...');
+    },
+    
+    putUnit: function(x,y, unit, squad){ 
+        
         
         var new_unit = true;
         
@@ -77,39 +140,46 @@ var editor = {
             if(this.entities[i].x == x && this.entities[i].y == y){
                 new_unit = false;
                 this.entities.splice(i, 1);
-                 this.saved_entities
+                this.saved_entities.splice(i, 1);
             }
         }
         
-        var squad = parseInt(document.getElementById('squad').value);
+        if(!squad){
+            squad = parseInt(document.getElementById('squad').value);
+        }
+        
+        if(!unit){
+            unit = document.getElementById('unit').value;
+        }
         
         if(new_unit){
-            if(document.getElementById('unit').value == 'pirate'){
+            
+            if(unit == 'pirate'){
                 this.entities.push(new Pirate({x:x,y:y,squad:squad,team:0}));
-                this.saved_entities.push(new Pirate({x:x,y:y,squad:squad,team:0}));
+                this.saved_entities.push(new Pirate({x:x,y:y,squad:squad,team:0}));                
             }
             
-            if(document.getElementById('unit').value == 'range_pirate'){
+            if(unit == 'range_pirate'){
                 this.entities.push(new RangePirate({x:x,y:y,squad:squad,team:0}));
                 this.saved_entities.push(new RangePirate({x:x,y:y,squad:squad,team:0}));
             }
             
-            if(document.getElementById('unit').value == 'skeleton'){
+            if(unit == 'skeleton'){
                 this.entities.push(new Skeleton({x:x,y:y,squad:squad,team:1}));
                 this.saved_entities.push(new Skeleton({x:x,y:y,squad:squad,team:1}));
             }
             
-            if(document.getElementById('unit').value == 'octopus'){
+            if(unit == 'octopus'){
                 this.entities.push(new Octopus({x:x,y:y,squad:1,team:1}));
                 this.saved_entities.push(new Octopus({x:x,y:y,squad:1,team:1}));
             }
             
-            if(document.getElementById('unit').value == 'ship'){
+            if(unit == 'ship'){
                 this.entities.push(new Ship({x:x,y:y,squad:1,team:0}));
                 this.saved_entities.push(new Ship({x:x,y:y,squad:1,team:0}));
             }
             
-            if(document.getElementById('unit').value == 'black_pearl'){
+            if(unit == 'black_pearl'){
                 this.entities.push(new BlackPearl({x:x,y:y,squad:1,team:0}));
                 this.saved_entities.push(new BlackPearl({x:x,y:y,squad:1,team:0}));
             }
