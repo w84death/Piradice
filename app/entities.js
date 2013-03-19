@@ -104,7 +104,25 @@ Unit.prototype = {
                 }            
 
             }
-                        
+              
+            if(this.lumberjack){
+                if(world.maps[world.map].moves[(this.x-1)+((this.y)*world.maps[world.map].width)] == 2){           
+                    this.move_area.push({x:this.x-1,y:this.y, forest:true});
+                }
+                
+                if(world.maps[world.map].moves[(this.x)+((this.y-1)*world.maps[world.map].width)] == 2){
+                    this.move_area.push({x:this.x,  y:this.y-1, forest:true});
+                }
+                
+                if(world.maps[world.map].moves[(this.x)+((this.y+1)*world.maps[world.map].width)] == 2){
+                    this.move_area.push({x:this.x,  y:this.y+1, forest:true});
+                }
+                            
+                if(world.maps[world.map].moves[(this.x+1)+((this.y)*world.maps[world.map].width)] == 2){
+                    this.move_area.push({x:this.x+1,  y:this.y, forest:true});
+                }
+            }  
+              
             for (var i = 0; i < this.move_area.length; i++) {
                 for (var j = 0; j < world.maps[world.map].entities.length; j++) { 
                     if( world.maps[world.map].entities[j].x == this.move_area[i].x && world.maps[world.map].entities[j].y == this.move_area[i].y && world.maps[world.map].entities[j].team != this.team ){ 
