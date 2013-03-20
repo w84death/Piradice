@@ -35,6 +35,8 @@ var editor = {
         game.editor = false;
         game.preview_play = true;
         
+        document.getElementById('gameGUI').style.display = 'block';
+        
         document.getElementById('generator').style.display = 'none';
         document.getElementById('play').innerHTML = 'Exit play';
         document.getElementById('play').setAttribute('onclick','editor.exitPlay()');
@@ -48,6 +50,8 @@ var editor = {
         editor.generateMap(false);
         
         render.render({gui:true, entities:true, map:true});
+        
+        document.getElementById('gameGUI').style.display = 'none';
         
         document.getElementById('generator').style.display = 'block';
         document.getElementById('play').innerHTML = 'Play this map';
@@ -175,18 +179,18 @@ var editor = {
             }
             
             if(unit == 'octopus'){
-                this.entities.push(new Octopus({x:x,y:y,team:1}));
-                this.saved_entities.push(new Octopus({x:x,y:y,team:1}));
+                this.entities.push(new Octopus({x:x,y:y,squad:1,team:1}));
+                this.saved_entities.push(new Octopus({x:x,y:y,squad:1,team:1}));
             }
             
             if(unit == 'ship'){
-                this.entities.push(new Ship({x:x,y:y,team:0}));
-                this.saved_entities.push(new Ship({x:x,y:y,team:0}));
+                this.entities.push(new Ship({x:x,y:y,squad:1,team:0}));
+                this.saved_entities.push(new Ship({x:x,y:y,squad:1,team:0}));
             }
             
             if(unit == 'black_pearl'){
-                this.entities.push(new BlackPearl({x:x,y:y,team:0}));
-                this.saved_entities.push(new BlackPearl({x:x,y:y,team:0}));
+                this.entities.push(new BlackPearl({x:x,y:y,squad:1,team:0}));
+                this.saved_entities.push(new BlackPearl({x:x,y:y,squad:1,team:0}));
             }
         }
         

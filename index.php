@@ -21,8 +21,13 @@
                 <canvas id="entities"></canvas>
                 <canvas id="gui"></canvas>
             </section>
+            <aside id="gameGUI" class="gui right">
+                <ul>
+                    <li><button onclick="game.nextTurn()" class="hot">NEXT TURN</button>              
+                </ul>
+            </aside>
             <?php if($_GET['mode'] == 'editor'){ ?>
-            <aside id="editor">
+            <aside id="editor" class="gui left">
                 <h2>Map Editor</h2>
                 <p>For pirates use only</p>                                
                 <ul id="generator">
@@ -108,6 +113,7 @@
         <script src="/app/entities.js"></script>
         <script src="/app/items.js"></script>
         <script src="/app/maps.js"></script>
+        <script src="/app/ai.js"></script>
         <script src="/app/app.js"></script>
         <script src="/app/editor.js"></script>
         <script>

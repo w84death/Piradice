@@ -19,9 +19,9 @@
 */
 
 var game = {
-    version: 'PUBLIC BETA 2',
+    version: 'DEV 8',
     play: false,
-    editor: false,
+    editor: false,    
     preview_play: false,
     turn: {
         id: 1,
@@ -30,6 +30,7 @@ var game = {
         team: 0,
         endTime: null
     },
+    ai_speed: 100,
     unit_selected: -1,
     select_area: [],
 
@@ -53,17 +54,13 @@ var game = {
             
 
             if(game.unit_selected > -1){
-                if(game.attackOrMove(cX, cY)){
-                    render.render({entities:true, gui:true});
-                    game.unit_selected = -1;
-                    game.nextTurn();
-                }
+                game.attackOrMove(cX, cY)
+                render.render({entities:true, gui:true});
             }else{
                 game.select(cX, cY);
                 render.render({gui:true});
             }
 
-            game.nextTurn();
         }
         
         if(game.editor){
@@ -73,7 +70,7 @@ var game = {
 
     select: function(cX,cY){
 
-        if(this.turn.team === 0){
+
             for (var i = 0; i < world.maps[world.map].entities.length; i++) {
                 if(world.maps[world.map].entities[i].x == cX && world.maps[world.map].entities[i].y == cY && world.maps[world.map].entities[i].team == this.turn.team && world.maps[world.map].entities[i].moves > 0 && world.maps[world.map].entities[i].reloading < 1) {
                     world.maps[world.map].entities[i].select();
@@ -81,7 +78,7 @@ var game = {
                     this.unit_selected = i;
                 }
             }
-        }
+        
 
     },
 
@@ -95,64 +92,24 @@ var game = {
             y:world.maps[world.map].entities[game.unit_selected].y
         };
 
-        if(world.maps[world.map].entities[game.unit_selected].move(cX, cY)){
-            for (var i = 0; i < world.maps[world.map].entities.length; i++) {
-
-                if(world.maps[world.map].entities[i].squad < 1){
-                    world.maps[world.map].entities[i].moves = 0;
-                    world.maps[world.map].entities[i].x = 0;
-                    world.maps[world.map].entities[i].y = 0;
+        for (var i = 0; i < world.maps[world.map].entities[game.unit_selected].move_area.length; i++) {
+            if(world.maps[world.map].entities[game.unit_selected].move_area[i].x == cX && world.maps[world.map].entities[game.unit_selected].move_area[i].y == cY){
+                if(world.maps[world.map].entities[game.unit_selected].move_area[i].attack){
+                    world.maps[world.map].entities[game.unit_selected].attack(cX, cY);
+                }else
+                if(world.maps[world.map].entities[game.unit_selected].move_area[i].merge){
+                    world.maps[world.map].entities[game.unit_selected].merge(cX, cY);
+                }else
+                if(world.maps[world.map].entities[game.unit_selected].move_area[i].forest){                    
+                    world.maps[world.map].entities[game.unit_selected].cut(cX, cY);
+                }else
+                if(world.maps[world.map].entities[game.unit_selected].move_area[i].move){
+                    world.maps[world.map].entities[game.unit_selected].move(cX, cY);
                 }
-                            
-                if(world.maps[world.map].entities[i].x == world.maps[world.map].entities[game.unit_selected].x && world.maps[world.map].entities[i].y == world.maps[world.map].entities[game.unit_selected].y){
-                    if(this.unit_selected != i){
-                        if((world.maps[world.map].entities[this.unit_selected].pirate && world.maps[world.map].entities[i].skeleton) || (world.maps[world.map].entities[game.unit_selected].skeleton && world.maps[world.map].entities[i].pirate)){
-                            //attack
-                            if(world.maps[world.map].entities[game.unit_selected].range){
-                                world.maps[world.map].entities[game.unit_selected].x = temp.x;
-                                world.maps[world.map].entities[game.unit_selected].y = temp.y;
-                            }
-                            world.maps[world.map].entities[game.unit_selected].unselect();
-                            if(world.maps[world.map].entities[game.unit_selected].reloading < 1){
-                                if(!world.maps[world.map].entities[game.unit_selected].attack(world.maps[world.map].entities[i])){
-                                    world.maps[world.map].entities[game.unit_selected].x = temp.x;
-                                    world.maps[world.map].entities[game.unit_selected].y = temp.y;
-                                };
-                            }
-                            i = world.maps[world.map].entities.length;
-                        }else{
-                            //merge
-                            if(world.maps[world.map].entities[game.unit_selected].reloading < 1){
-                                if(world.maps[world.map].entities[i].merge(world.maps[world.map].entities[game.unit_selected])){
-                                    world.maps[world.map].entities[game.unit_selected].unselect();
-                                    i = world.maps[world.map].entities.length;
-                                }else{
-                                    world.maps[world.map].entities[game.unit_selected].moves = 1;
-                                    world.maps[world.map].entities[game.unit_selected].x = temp.x;
-                                    world.maps[world.map].entities[game.unit_selected].y = temp.y;
-                                    world.maps[world.map].entities[game.unit_selected].shout();
-                                }
-                            }
-
-                        }
-                    }
-                }
-            }
+                
+            }    
         }
-        
-        // cut tree
-        if(world.maps[world.map].entities[game.unit_selected].lumberjack){
-            for (i = 0; i < world.maps[world.map].items.length; i++) {
-                if(world.maps[world.map].items[i].forest && world.maps[world.map].items[i].x == cX && world.maps[world.map].items[i].y == cY){                    
-                    if(!world.maps[world.map].items[i].cut()){
-                        world.maps[world.map].entities[game.unit_selected].x = temp.x;
-                        world.maps[world.map].entities[game.unit_selected].y = temp.y;
-                    }
-                    render.render({map:true});
-                }
-            }
-        }
-
+      
         world.maps[world.map].entities[game.unit_selected].unselect();
         this.unit_selected = -1;
 
@@ -171,12 +128,34 @@ var game = {
     },
 
     nextTurn: function(){
-        var next_turn = true;
+        console.log('next turn..');
 
-        if(this.turn.start){
+            if(game.turn.team == 1){
+                // AI TURN
+                game.turn.team = 0;
+                game.turn.ai = false;
+                game.turn.id++;
+
+            }else{
+                // PLAYER turn
+                game.turn.team = 1;
+                game.turn.ai = true;
+            }
+            
+            for (var i = 0; i < world.maps[world.map].entities.length; i++) {
+                if(!world.maps[world.map].entities[i].alive){
+                    //delete world.maps[world.map].entities[i]
+                    world.maps[world.map].entities[i].x = 0;
+                    world.maps[world.map].entities[i].y = 0;
+                    //world.maps[world.map].entities.slice(i,1);
+                }
+                
+                
+            }
+    
             for (var i = 0; i < world.maps[world.map].entities.length; i++) {
                 world.maps[world.map].entities[i].message = null;
-                if(world.maps[world.map].entities[i].team === this.turn.team && world.maps[world.map].entities[i].reloading < 1){
+                if(world.maps[world.map].entities[i].team === game.turn.team && world.maps[world.map].entities[i].reloading < 1){
                     if(world.maps[world.map].entities[i].transport && world.maps[world.map].entities[i].on_board < 1){
 
                     }else{
@@ -184,35 +163,8 @@ var game = {
                     }
                 }
             }
-            this.turn.start = false;
-            next_turn = false;
-        }else{
-            for (i = 0; i < world.maps[world.map].entities.length; i++) {
-                if(world.maps[world.map].entities[i].team == this.turn.team && world.maps[world.map].entities[i].moves > 0 && world.maps[world.map].entities[i].squad > 0) {
-
-                    if(world.maps[world.map].entities[i].ai){
-                        this.unit_selected = i;
-                        ai.think(world.maps[world.map].entities[i]);
-                    }
-
-                    if(world.maps[world.map].entities[i].reloading < 1){
-                        next_turn = false;
-                    }
-                }
-            }
-        }
-        if(next_turn){
-            if(this.turn.team == 1){
-                // AI TURN
-                this.turn.team = 0;
-                this.turn.ai = false;
-                this.turn.id++;
-
-            }else{
-                // PLAYER turn
-                this.turn.team = 1;
-                this.turn.ai = true;
-            }
+            
+            
 
             var loose = true;
 
@@ -237,22 +189,15 @@ var game = {
                 world.maps[world.map].entities[i].selected = false;
             }
 
-            this.unit_selected = -1;
+            game.unit_selected = -1;
 
             if(loose){
-                this.lose();
+                game.lose();
             }
 
-            this.turn.start = true;
-
-            if(this.turn.ai){
+            if(game.turn.ai){
                  ai.loop();
-                 /*s
-                 -webkit-transform-style: preserve-3d;
-                -webkit-transform: perspective(950) rotateX(30deg);
-                */
-            }
-        }
+            }        
 
         render.render({gui:true, entities:true});
     },
@@ -279,94 +224,6 @@ var game = {
     
 };
 
-var ai = {
-    loop_id: 0,
-
-    think: function(other){
-        other.select();
-
-            // if can move
-            if(other.move_area.length > 0){
-
-                // check all entities
-                for (var i = 0; i < world.maps[world.map].entities.length; i++) {
-
-                    // chech if enemy and live
-                    if(world.maps[world.map].entities[i].team === 0 && world.maps[world.map].entities[i].squad > 0){
-
-                        // check if in sight
-                        for (var j = 0; j < other.move_area.length; j++) {
-                            if(world.maps[world.map].entities[i].x == other.move_area[j].x && world.maps[world.map].entities[i].y == other.move_area[j].y){
-
-                                // check if reloading
-                                if( world.maps[world.map].entities[i].reloading > 0 ){
-                                    game.attackOrMove(other.move_area[j].x, other.move_area[j].y);
-                                    other.unselect();
-                                    return true;
-                                }else
-
-                                // check if range
-                                if( world.maps[world.map].entities[i].range ){
-                                    game.attackOrMove(other.move_area[j].x, other.move_area[j].y);
-                                    other.unselect();
-                                    return true;
-                                }else
-
-                                // check if weak
-                                if( world.maps[world.map].entities[i].squad <= other.squad ){
-                                    game.attackOrMove(other.move_area[j].x, other.move_area[j].y);
-                                    other.unselect();
-                                    return true;
-                                }
-
-                            }
-                        }
-
-                    }
-                }
-
-                // check items
-                for (i = 0; i < world.maps[world.map].items.length; i++) {
-
-                    // search for chest (not opened)
-                    if(world.maps[world.map].items[i].can_open && world.maps[world.map].items[i].close){
-
-                        // if in sight
-                        for (j = 0; j < other.move_area.length; j++) {
-
-                            if(world.maps[world.map].items[i].x == other.move_area[j].x && world.maps[world.map].items[i].y == other.move_area[j].y){
-                                game.attackOrMove(other.move_area[j].x, other.move_area[j].y);
-                                other.unselect();
-                                return true;
-                            }
-
-                        }
-                    }
-                }
-
-                // nothing to attack.. move somewhere
-                var r = (Math.random()*other.move_area.length)<<0;
-                game.attackOrMove(other.move_area[r].x, other.move_area[r].y);
-
-            }else{
-                other.moves = 0;
-            }
-
-        other.unselect();
-        return true;
-    },
-
-
-
-    loop: function() {
-        setTimeout(function () {
-            game.nextTurn();
-            if (game.turn.ai) {
-                ai.loop();
-            }
-    }, 500);
-}
-};
 
 var world = {
     _W: 0,
@@ -503,6 +360,7 @@ var render = {
             render.sprites[13] = render.makeSprite(0,2, false); // treasure
             render.sprites[14] = render.makeSprite(1,2, false); // treasure open
             render.sprites[15] = render.makeSprite(5,2, false); // reloading
+            //16
             render.sprites[37] = render.makeSprite(3,2, false); // big skeleton head
             render.sprites[38] = render.makeSprite(6,3, false); // cut forest
 
@@ -656,26 +514,39 @@ var render = {
     },
 
     drawNextTurn: function(){
-        var pos = 0.1;
+        var pos = 0.1,
+            DOM = document.getElementById('game');
     
-        if(game.play && (game.turn.start || game.turn.ai)){
-
-            //this.gui.ctx.fillStyle = 'rgba(0,0,0,0.2)';
-            //this.gui.ctx.fillRect(0, 0, world._W*this.box, world._H*this.box);
-
-            this.gui.ctx.fillStyle = '#f8f8f8';
-            this.gui.ctx.font = 'bold 1.4em VT323, cursive';
-            this.gui.ctx.textBaseline = 'middle';
-            this.gui.ctx.textAlign = 'center';
-
+        if(game.play){
             
-            this.gui.ctx.drawImage(this.next_turn, ((world.maps[world.map].width*0.5)<<0)*this.box - ((this.next_turn.width*0.5)<<0), ((world.maps[world.map].height*pos)<<0)*this.box - ((this.next_turn.height*0.5)<<0));
-
             if(game.turn.ai){
-                this.gui.ctx.fillText('Skeleton Army..', ((world.maps[world.map].width*0.5)<<0)*this.box, ((world.maps[world.map].height*pos)<<0)*this.box );
+                this.gui.ctx.fillStyle = '#f8f8f8';
+                this.gui.ctx.font = 'bold 1.4em VT323, cursive';
+                this.gui.ctx.textBaseline = 'middle';
+                this.gui.ctx.textAlign = 'center';
+    
+                
+                this.gui.ctx.drawImage(this.next_turn, ((world.maps[world.map].width*0.5)<<0)*this.box - ((this.next_turn.width*0.5)<<0), ((world.maps[world.map].height*pos)<<0)*this.box - ((this.next_turn.height*0.5)<<0));
+    
+                //if(game.turn.ai){
+                    this.gui.ctx.fillText('Skeleton Army..', ((world.maps[world.map].width*0.5)<<0)*this.box, ((world.maps[world.map].height*pos)<<0)*this.box );
+                //}else{
+                //    this.gui.ctx.fillText('Your turn', ((world.maps[world.map].width*0.5)<<0)*render.box, ((world.maps[world.map].height*pos)<<0)*this.box );
+                //}
+                
+                
+                DOM.style,MozTransformStyle = 'preserve-3d';
+                DOM.style.webkitTransformStyle = 'preserve-3d';                
+                
+                DOM.style.MozTransform = 'perspective(830px) rotateX(25deg) translate3d(0,50px,120px)';
+                DOM.style.webkitTransform = 'perspective(830px) rotateX(25deg) translate3d(0,50px,120px)';
             }else{
-                this.gui.ctx.fillText('Your turn', ((world.maps[world.map].width*0.5)<<0)*render.box, ((world.maps[world.map].height*pos)<<0)*this.box );
-            }
+                DOM.style,MozTransformStyle = '';
+                DOM.style.MozTransform = '';
+                DOM.style.webkitTransformStyle = '';
+                DOM.style.webkitTransform = '';
+            }   
+            
         }
     },
 
@@ -715,7 +586,10 @@ var render = {
                 if(world.maps[world.map].entities[i].selected){
                     this.gui.ctx.drawImage(this.sprites[10], world.maps[world.map].entities[i].x*this.box, world.maps[world.map].entities[i].y*this.box);
                     for (var j = 0; j < world.maps[world.map].entities[i].move_area.length; j++) {
-                        var block = 9;
+                        var block = null;
+                        if(world.maps[world.map].entities[i].move_area[j].move){
+                            block = 9;
+                        }
                         if(world.maps[world.map].entities[i].move_area[j].attack){
                             block = 12;
                         }
@@ -725,7 +599,9 @@ var render = {
                         if(world.maps[world.map].entities[i].move_area[j].forest){
                             block = 38;
                         }
-                        render.gui.ctx.drawImage(render.sprites[block], world.maps[world.map].entities[i].move_area[j].x*render.box, world.maps[world.map].entities[i].move_area[j].y*render.box);
+                        if(block){
+                            render.gui.ctx.drawImage(render.sprites[block], world.maps[world.map].entities[i].move_area[j].x*render.box, world.maps[world.map].entities[i].move_area[j].y*render.box);
+                        }
                     }
                 }else{
                     if(world.maps[world.map].entities[i].message && world.maps[world.map].entities[i].squad > 0){

@@ -10,6 +10,7 @@ a:hover {text-decoration:underline;}
 #loading {display:block; padding:1em 0; text-align:center;}
 #game {display:none; width:1024px; height:768px; margin:0 auto;}
 #game.editor {padding-left: 180px;}
+#gameGUI {display:none;}
 canvas {display: block; position:absolute;
     image-rendering: optimizeSpeed;
     image-rendering: -moz-crisp-edges;
@@ -27,15 +28,17 @@ article:first-child {margin-top:0;}
 footer a {display:inline-block; width:32px; height:32px; background: transparent url('/media/sprites_web.png') -128px -64px; color:#000; position:relative;}
 footer a strong {position: absolute;top: 12px;left: 3px;}
 
-#editor {position:absolute; top:1em; left:1em; background-color:rgba(0,0,0,0.2); padding:1em; }
-#editor ul {list-style:none;}
-#editor ul li {margin:1em 0; text-align:right;}
-#editor input,
-#editor select {border:none; background-color:#f8f8f8; color:#444; padding:0.5em 1em;  font:1em 'VT323', cursive; cursor:url('../media/cur.png'), auto;}
-#editor input {width:4em;}
-#editor button {border:none; background-color:#f8f8f8; color:#444; padding:0.5em 2em;  font:1em 'VT323', cursive; cursor:url('../media/cur.png'), auto;}
-#editor button:hover {background-color:#ffec93;}
-#editor button.hot {background-color:#e44; color:#fff;}
-#editor .disabled {opacity:0.2;}
-#editor ul.play {border: 1px dashed #fff;}
-#editor ul.play li {text-align:center;}
+aside {position:absolute; top:1em; left:1em; background-color:rgba(0,0,0,0.2); padding:1em; }
+aside ul {list-style:none;}
+aside ul li {margin:1em 0; text-align:right;}
+aside input,
+aside select {border:none; background-color:#f8f8f8; color:#444; padding:0.5em 1em;  font:1em 'VT323', cursive; cursor:url('../media/cur.png'), auto;}
+aside input {width:4em;}
+aside button {border:none; background-color:#f8f8f8; color:#444; padding:0.5em 2em;  font:1em 'VT323', cursive; cursor:url('../media/cur.png'), auto;}
+aside button:hover {background-color:#ffec93;}
+aside button.hot {background-color:#e44; color:#fff;}
+aside .disabled {opacity:0.2;}
+aside ul.play {border: 1px dashed #fff;}
+aside ul.play li {text-align:center;}
+
+.gui.right {right:1em; left:auto;}
