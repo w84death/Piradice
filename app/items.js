@@ -43,20 +43,18 @@ Item.prototype = {
     grow: function(){
         if(this.forest && this.palms == 1){
             this.palms = 2;
-            this.sprite = 54;
+            this.sprite++;
         }
     },
     
     cut: function(){
-        if(this.forest){
-            if(this.palms > 1){
-                this.palms = 1;
-                this.sprite = 53;
-                return false;
-            }else{
-                this.palms = 0;
-                world.maps[world.map].moves[(this.x)+((this.y)*world.maps[world.map].width)] = 1;
-                this.sprite = 58; // change to cutted palm
+        if(this.forest){                        
+            if(this.palms > 0){                
+                this.palms--;
+                this.sprite--;                                      
+                if(this.palms === 0){
+                    world.maps[world.map].moves[(this.x)+((this.y)*world.maps[world.map].width)] = 1;
+                }
                 return true;
             }
         }
@@ -71,7 +69,7 @@ var Palm = function Palm(args){
     this.x = args.x;
     this.y = args.y;
     this.palms = args.palms;
-    this.sprite = 53 + args.palms - 1;  
+    this.sprite = 54 + args.palms;  
 };
 
 Palm.prototype = new Item();

@@ -68,7 +68,7 @@ var load = {
             moves: [],
             entities: [
                 new Pirate({x:1,y:3,squad:1,team:0}),
-                new RangePirate({x:1,y:5,team:0}),
+                new RangePirate({x:1,y:5,squad:1,team:0}),
                 new Pirate({x:2,y:3,squad:2,team:0}),                
                 new Pirate({x:1,y:4,squad:1,team:0}),
                 new Pirate({x:14,y:9,squad:2,team:0}),

@@ -141,7 +141,11 @@ Unit.prototype = {
                     }
                     
                     if( world.maps[world.map].entities[j].x == this.move_area[i].x && world.maps[world.map].entities[j].y == this.move_area[i].y && world.maps[world.map].entities[j].team == this.team ){ 
-                        this.move_area[i].merge = true;
+                        if(this.name == world.maps[world.map].entities[j].name){
+                            this.move_area[i].merge = true;
+                        }else{
+                            this.move_area[i].move = false;
+                        }
                     }
                 }
             }
@@ -331,10 +335,13 @@ Unit.prototype = {
     
     cut: function(x,y){
         for (var j = 0; j < world.maps[world.map].items.length; j++) {                    
-                if(world.maps[world.map].items[j].x == x && world.maps[world.map].items[j].y == y && world.maps[world.map].items[j].forest){  
-                    world.maps[world.map].items[j].cut();
-                }
+            if(world.maps[world.map].items[j].x == x && world.maps[world.map].items[j].y == y){  
+               if(world.maps[world.map].items[j].cut()){
+                   this.moves = 0;
+               }
+            }
         }
+        render.render({map:true});
     },
 };
 
@@ -374,7 +381,7 @@ var Lumberjack = function Lumberjack(args){
     this.team = args.team;
     this.lumberjack = true;
     this.squad = 1;
-    this.sprite = 55;
+    this.sprite = 53;
     this.messages = ['Cut!', 'Hmm', 'Tree'];
 };
 

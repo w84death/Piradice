@@ -19,7 +19,7 @@
 */
 
 var game = {
-    version: 'DEV 8',
+    version: 'DEV 11',
     play: false,
     editor: false,    
     preview_play: false,
@@ -87,18 +87,15 @@ var game = {
         var randomizer = new Date();
         Math.seedrandom(randomizer);
 
-        var temp = {
-            x:world.maps[world.map].entities[game.unit_selected].x,
-            y:world.maps[world.map].entities[game.unit_selected].y
-        };
-
         for (var i = 0; i < world.maps[world.map].entities[game.unit_selected].move_area.length; i++) {
             if(world.maps[world.map].entities[game.unit_selected].move_area[i].x == cX && world.maps[world.map].entities[game.unit_selected].move_area[i].y == cY){
                 if(world.maps[world.map].entities[game.unit_selected].move_area[i].attack){
                     world.maps[world.map].entities[game.unit_selected].attack(cX, cY);
                 }else
                 if(world.maps[world.map].entities[game.unit_selected].move_area[i].merge){
-                    world.maps[world.map].entities[game.unit_selected].merge(cX, cY);
+                    if(world.maps[world.map].entities[game.unit_selected].merge(cX, cY)){
+                        world.maps[world.map].entities[game.unit_selected].move(cX, cY);
+                    }
                 }else
                 if(world.maps[world.map].entities[game.unit_selected].move_area[i].forest){                    
                     world.maps[world.map].entities[game.unit_selected].cut(cX, cY);
@@ -203,9 +200,15 @@ var game = {
     },
 
     win: function(){
-        world.nextMap();        
-        this.turn.start = true;        
-        render.render({gui:true, entities:true, map:true});
+        if(this.preview_play){
+            window.alert('You win!.\nClick ok to back to editor');
+            world.restartMap();
+            editor.exitPlay();
+        }else{
+            world.nextMap();        
+            this.turn.start = true;        
+            render.render({gui:true, entities:true, map:true});
+        }
     },
 
     lose: function(){        
@@ -402,13 +405,15 @@ var render = {
             render.sprites[51] = [render.makeSprite(5,7, false),render.makeSprite(5,7, true)]; // black pearl 5
             render.sprites[52] = [render.makeSprite(6,7, false),render.makeSprite(6,7, true)]; // black pearl 6
             
-            render.sprites[53] = render.makeSprite(0,8, false); // palm
-            render.sprites[54] = render.makeSprite(1,8, false); // forest
-            render.sprites[58] = render.makeSprite(3,8, false); // cutted palm
-            render.sprites[55] = [render.makeSprite(2,8, false),render.makeSprite(2,8, true)]; // lumberjack
+            render.sprites[53] = [render.makeSprite(6,4, false),render.makeSprite(6,4, true)]; // lumberjack
+            
+            render.sprites[54] = render.makeSprite(2,8, false); // cutted palm
+            render.sprites[55] = render.makeSprite(0,8, false); // palm
+            render.sprites[56] = render.makeSprite(1,8, false); // forest
+            
 
-            render.sprites[56] = render.makeSprite(6,2, false); // shout
-            render.sprites[57] = render.makeSprite(4,2, false); // message
+            render.sprites[57] = render.makeSprite(6,2, false); // shout
+            render.sprites[58] = render.makeSprite(4,2, false); // message
 
             render.render({map:true, entities:true,});
         };
@@ -502,11 +507,13 @@ var render = {
 
     drawMessage: function(msg, x, y, important){
         if(important){
-            this.gui.ctx.drawImage(this.sprites[56], (x*this.box)-(12), (y*this.box)-(18));
-        }else{
             this.gui.ctx.drawImage(this.sprites[57], (x*this.box)-(12), (y*this.box)-(18));
+            this.gui.ctx.fillStyle = '#fff';
+        }else{
+            this.gui.ctx.drawImage(this.sprites[58], (x*this.box)-(12), (y*this.box)-(18));
+            this.gui.ctx.fillStyle = '#000';
         }
-        this.gui.ctx.fillStyle = '#000';
+        
         this.gui.ctx.font = '12px VT323, cursive';
         this.gui.ctx.textBaseline = 'top';
         this.gui.ctx.textAlign = 'center';
@@ -572,8 +579,7 @@ var render = {
         if(args.entities){            
             this.entities.ctx.clearRect(0, 0, world._W*this.box, world._H*this.box);
             for(i=0; i<world.maps[world.map].entities.length; i++){
-                if(world.maps[world.map].entities[i].squad > 0){
-                    
+                if(world.maps[world.map].entities[i].alive){                    
                     this.entities.ctx.drawImage(this.sprites[ world.maps[world.map].entities[i].sprite ][ world.maps[world.map].entities[i].flip ], world.maps[world.map].entities[i].x*this.box, world.maps[world.map].entities[i].y*this.box);
                 }
             }
