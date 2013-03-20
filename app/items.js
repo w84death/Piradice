@@ -49,14 +49,19 @@ Item.prototype = {
     
     cut: function(){
         if(this.forest){
-            this.palms--;
-            this.sprite = 53;
+            if(this.palms > 1){
+                this.palms = 1;
+                this.sprite = 53;
+                return false;
+            }else{
+                this.palms = 0;
+                world.maps[world.map].moves[(this.x)+((this.y)*world.maps[world.map].width)] = 1;
+                this.sprite = 58; // change to cutted palm
+                return true;
+            }
         }
         
-        if(this.palms < 1){
-            this.x = 0;
-            this.y = 0;
-        }
+        return false;
     },
 };
 

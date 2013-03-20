@@ -103,7 +103,7 @@ var game = {
                     world.maps[world.map].entities[i].x = 0;
                     world.maps[world.map].entities[i].y = 0;
                 }
-
+                            
                 if(world.maps[world.map].entities[i].x == world.maps[world.map].entities[game.unit_selected].x && world.maps[world.map].entities[i].y == world.maps[world.map].entities[game.unit_selected].y){
                     if(this.unit_selected != i){
                         if((world.maps[world.map].entities[this.unit_selected].pirate && world.maps[world.map].entities[i].skeleton) || (world.maps[world.map].entities[game.unit_selected].skeleton && world.maps[world.map].entities[i].pirate)){
@@ -130,12 +130,25 @@ var game = {
                                     world.maps[world.map].entities[game.unit_selected].moves = 1;
                                     world.maps[world.map].entities[game.unit_selected].x = temp.x;
                                     world.maps[world.map].entities[game.unit_selected].y = temp.y;
-
+                                    world.maps[world.map].entities[game.unit_selected].shout();
                                 }
                             }
 
                         }
                     }
+                }
+            }
+        }
+        
+        // cut tree
+        if(world.maps[world.map].entities[game.unit_selected].lumberjack){
+            for (i = 0; i < world.maps[world.map].items.length; i++) {
+                if(world.maps[world.map].items[i].forest && world.maps[world.map].items[i].x == cX && world.maps[world.map].items[i].y == cY){                    
+                    if(!world.maps[world.map].items[i].cut()){
+                        world.maps[world.map].entities[game.unit_selected].x = temp.x;
+                        world.maps[world.map].entities[game.unit_selected].y = temp.y;
+                    }
+                    render.render({map:true});
                 }
             }
         }
@@ -491,7 +504,7 @@ var render = {
             render.sprites[14] = render.makeSprite(1,2, false); // treasure open
             render.sprites[15] = render.makeSprite(5,2, false); // reloading
             render.sprites[37] = render.makeSprite(3,2, false); // big skeleton head
-            render.sprites[38] = render.makeSprite(4,2, false); // message
+            render.sprites[38] = render.makeSprite(6,3, false); // cut forest
 
             // entities
             render.sprites[17] = [render.makeSprite(0,3, false),render.makeSprite(0,3, true)]; // pirate 1
@@ -533,17 +546,19 @@ var render = {
             
             render.sprites[53] = render.makeSprite(0,8, false); // palm
             render.sprites[54] = render.makeSprite(1,8, false); // forest
+            render.sprites[58] = render.makeSprite(3,8, false); // cutted palm
             render.sprites[55] = [render.makeSprite(2,8, false),render.makeSprite(2,8, true)]; // lumberjack
 
             render.sprites[56] = render.makeSprite(6,2, false); // shout
+            render.sprites[57] = render.makeSprite(4,2, false); // message
 
             render.render({map:true, entities:true,});
-        }
+        };
 
         this.next_turn.src = "/media/next_turn.png";
         this.next_turn.onload = function(){
             render.render({gui:true});
-        }
+        };
 
     },
 
@@ -631,7 +646,7 @@ var render = {
         if(important){
             this.gui.ctx.drawImage(this.sprites[56], (x*this.box)-(12), (y*this.box)-(18));
         }else{
-            this.gui.ctx.drawImage(this.sprites[38], (x*this.box)-(12), (y*this.box)-(18));
+            this.gui.ctx.drawImage(this.sprites[57], (x*this.box)-(12), (y*this.box)-(18));
         }
         this.gui.ctx.fillStyle = '#000';
         this.gui.ctx.font = '12px VT323, cursive';
@@ -700,11 +715,17 @@ var render = {
                 if(world.maps[world.map].entities[i].selected){
                     this.gui.ctx.drawImage(this.sprites[10], world.maps[world.map].entities[i].x*this.box, world.maps[world.map].entities[i].y*this.box);
                     for (var j = 0; j < world.maps[world.map].entities[i].move_area.length; j++) {
+                        var block = 9;
                         if(world.maps[world.map].entities[i].move_area[j].attack){
-                            render.gui.ctx.drawImage(render.sprites[12], world.maps[world.map].entities[i].move_area[j].x*render.box, world.maps[world.map].entities[i].move_area[j].y*render.box);
-                        }else{
-                            render.gui.ctx.drawImage(render.sprites[9], world.maps[world.map].entities[i].move_area[j].x*render.box, world.maps[world.map].entities[i].move_area[j].y*render.box);
+                            block = 12;
                         }
+                        if(world.maps[world.map].entities[i].move_area[j].merge){
+                            block = 8;
+                        }
+                        if(world.maps[world.map].entities[i].move_area[j].forest){
+                            block = 38;
+                        }
+                        render.gui.ctx.drawImage(render.sprites[block], world.maps[world.map].entities[i].move_area[j].x*render.box, world.maps[world.map].entities[i].move_area[j].y*render.box);
                     }
                 }else{
                     if(world.maps[world.map].entities[i].message && world.maps[world.map].entities[i].squad > 0){

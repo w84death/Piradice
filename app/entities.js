@@ -75,20 +75,21 @@ Unit.prototype = {
                 this.move_area.push({x:this.x+1,y:this.y+1});
             }
             
+            if(!this.lumberjack){
+                if(world.maps[world.map].moves[(this.x-2)+((this.y)*world.maps[world.map].width)] == map_type && world.maps[world.map].moves[(this.x-1)+((this.y)*world.maps[world.map].width)] == map_type){
+                    this.move_area.push({x:this.x-2,y:this.y});            
+                }
+                if(world.maps[world.map].moves[(this.x)+((this.y-2)*world.maps[world.map].width)] == map_type && world.maps[world.map].moves[(this.x)+((this.y-1)*world.maps[world.map].width)] == map_type){
+                    this.move_area.push({x:this.x,  y:this.y-2});
+                }            
+                if(world.maps[world.map].moves[(this.x+2)+((this.y)*world.maps[world.map].width)] == map_type && world.maps[world.map].moves[(this.x+1)+((this.y)*world.maps[world.map].width)] == map_type){
+                    this.move_area.push({x:this.x+2,  y:this.y});
+                }
+                if(world.maps[world.map].moves[(this.x)+((this.y+2)*world.maps[world.map].width)] == map_type && world.maps[world.map].moves[(this.x)+((this.y+1)*world.maps[world.map].width)] == map_type){
+                    this.move_area.push({x:this.x,  y:this.y+2});
+                }            
+            }
             
-            if(world.maps[world.map].moves[(this.x-2)+((this.y)*world.maps[world.map].width)] == map_type && world.maps[world.map].moves[(this.x-1)+((this.y)*world.maps[world.map].width)] == map_type){
-                this.move_area.push({x:this.x-2,y:this.y});            
-            }
-            if(world.maps[world.map].moves[(this.x)+((this.y-2)*world.maps[world.map].width)] == map_type && world.maps[world.map].moves[(this.x)+((this.y-1)*world.maps[world.map].width)] == map_type){
-                this.move_area.push({x:this.x,  y:this.y-2});
-            }            
-            if(world.maps[world.map].moves[(this.x+2)+((this.y)*world.maps[world.map].width)] == map_type && world.maps[world.map].moves[(this.x+1)+((this.y)*world.maps[world.map].width)] == map_type){
-                this.move_area.push({x:this.x+2,  y:this.y});
-            }
-            if(world.maps[world.map].moves[(this.x)+((this.y+2)*world.maps[world.map].width)] == map_type && world.maps[world.map].moves[(this.x)+((this.y+1)*world.maps[world.map].width)] == map_type){
-                this.move_area.push({x:this.x,  y:this.y+2});
-            }            
-
             if(this.range && !this.water){
                 if(world.maps[world.map].moves[(this.x-3)+((this.y)*world.maps[world.map].width)] == map_type && world.maps[world.map].moves[(this.x-2)+((this.y)*world.maps[world.map].width)] == map_type){
                     this.move_area.push({x:this.x-3,y:this.y, shoot:true});            
@@ -127,6 +128,10 @@ Unit.prototype = {
                 for (var j = 0; j < world.maps[world.map].entities.length; j++) { 
                     if( world.maps[world.map].entities[j].x == this.move_area[i].x && world.maps[world.map].entities[j].y == this.move_area[i].y && world.maps[world.map].entities[j].team != this.team ){ 
                         this.move_area[i].attack = true;    
+                    }
+                    
+                    if( world.maps[world.map].entities[j].x == this.move_area[i].x && world.maps[world.map].entities[j].y == this.move_area[i].y && world.maps[world.map].entities[j].team == this.team ){ 
+                        this.move_area[i].merge = true;
                     }
                 }
             }
