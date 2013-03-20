@@ -1,17 +1,20 @@
 var ai = {
+    loop_id: 0,
     
     init: function(){
         for (var i = 0; i < world.maps[world.map].entities.length; i++) {
 
-            if(world.maps[world.map].entities[i].team == game.turn.team && world.maps[world.map].entities[i].ai && world.maps[world.map].entities[i].alive && world.maps[world.map].entities[i].moves > 0){
-                
+            if(world.maps[world.map].entities[i].team == game.turn.team && world.maps[world.map].entities[i].ai && world.maps[world.map].entities[i].alive && world.maps[world.map].entities[i].moves > 0){                
                 game.unit_selected = i;
-                ai.think(world.maps[world.map].entities[i]);
-                return true;
+                ai.think(world.maps[world.map].entities[i]);                 
+                if(this.loop_id++ < world.maps[world.map].entities.length){
+                    return true;    
+                }                
             }
 
         }
         
+        this.loop_id = 0;
         game.nextTurn();
         return false;
     },
@@ -26,7 +29,7 @@ var ai = {
                 for (var i = 0; i < world.maps[world.map].entities.length; i++) {
 
                     // chech if enemy and live
-                    if(world.maps[world.map].entities[i].team === 0 && world.maps[world.map].entities[i].squad > 0){
+                    if(world.maps[world.map].entities[i].team === 0 && world.maps[world.map].entities[i].alive){
 
                         // check if in sight
                         for (var j = 0; j < other.move_area.length; j++) {
@@ -80,8 +83,7 @@ var ai = {
 
                 // nothing to attack.. move somewhere
                 var r = (Math.random()*other.move_area.length)<<0;
-                game.attackOrMove(other.move_area[r].x, other.move_area[r].y);
-
+                game.attackOrMove(other.move_area[r].x, other.move_area[r].y);                
             }else{
                 other.moves = 0;
             }

@@ -198,7 +198,7 @@ Unit.prototype = {
             }
         }
         
-        return false;
+        return true;
     },
     
     open: function(){
@@ -320,6 +320,7 @@ Unit.prototype = {
     
     die: function(){        
         this.alive = false;
+        this.moves = 0;
     },
     
     shout: function(){

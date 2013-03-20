@@ -515,7 +515,7 @@ var render = {
 
     drawNextTurn: function(){
         var pos = 0.1,
-            DOM = document.getElementById('game');
+            gameGUI = document.getElementById('gameGUI');
     
         if(game.play){
             
@@ -524,27 +524,26 @@ var render = {
                 this.gui.ctx.font = 'bold 1.4em VT323, cursive';
                 this.gui.ctx.textBaseline = 'middle';
                 this.gui.ctx.textAlign = 'center';
-    
                 
                 this.gui.ctx.drawImage(this.next_turn, ((world.maps[world.map].width*0.5)<<0)*this.box - ((this.next_turn.width*0.5)<<0), ((world.maps[world.map].height*pos)<<0)*this.box - ((this.next_turn.height*0.5)<<0));
-    
-                //if(game.turn.ai){
-                    this.gui.ctx.fillText('Skeleton Army..', ((world.maps[world.map].width*0.5)<<0)*this.box, ((world.maps[world.map].height*pos)<<0)*this.box );
-                //}else{
-                //    this.gui.ctx.fillText('Your turn', ((world.maps[world.map].width*0.5)<<0)*render.box, ((world.maps[world.map].height*pos)<<0)*this.box );
-                //}
+                this.gui.ctx.fillText('Skeleton Army..', ((world.maps[world.map].width*0.5)<<0)*this.box, ((world.maps[world.map].height*pos)<<0)*this.box );
                 
-                
-                DOM.style,MozTransformStyle = 'preserve-3d';
+                gameGUI.style.display = 'none';
+                /*
+                DOM.style.MozTransformStyle = 'preserve-3d';
                 DOM.style.webkitTransformStyle = 'preserve-3d';                
                 
                 DOM.style.MozTransform = 'perspective(830px) rotateX(25deg) translate3d(0,50px,120px)';
                 DOM.style.webkitTransform = 'perspective(830px) rotateX(25deg) translate3d(0,50px,120px)';
+                */
             }else{
-                DOM.style,MozTransformStyle = '';
+                gameGUI.style.display = 'block';
+                /*
+                DOM.style.MozTransformStyle = '';
                 DOM.style.MozTransform = '';
                 DOM.style.webkitTransformStyle = '';
                 DOM.style.webkitTransform = '';
+                */
             }   
             
         }
