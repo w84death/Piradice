@@ -114,7 +114,7 @@
         <script src="/app/items.js"></script>
         <script src="/app/maps.js"></script>
         <script src="/app/ai.js"></script>
-        <script src="/app/app.js"></script>
+        <script src="/app/game.js"></script>
         <script src="/app/editor.js"></script>
         <script>
         <?php if($_GET['mode'] == 'editor'){ ?>
