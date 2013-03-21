@@ -176,7 +176,6 @@ Unit.prototype = {
     merge: function(x,y){            
         var other = null;
         
-        console.log(':: merge', x,y);
             
         for (var i = 0; i < world.maps[world.map].entities.length; i++) {
             if(world.maps[world.map].entities[i].x == x && world.maps[world.map].entities[i].y == y && world.maps[world.map].entities[i].alive){
@@ -207,7 +206,6 @@ Unit.prototype = {
     
     open: function(){
         
-        console.log(':: open');
         
         if(this.pirate){
             for (var j = 0; j < world.maps[world.map].items.length; j++) {                    
@@ -226,11 +224,11 @@ Unit.prototype = {
     attack: function(x,y){
         var other = null;
             
-        console.log(':: attack', x,y);
             
         for (var i = 0; i < world.maps[world.map].entities.length; i++) {
             if(world.maps[world.map].entities[i].x == x && world.maps[world.map].entities[i].y == y && world.maps[world.map].entities[i].alive){
                 other = world.maps[world.map].entities[i];   
+                
             }
         }
                 
@@ -245,67 +243,60 @@ Unit.prototype = {
             }else{
                 this.flip = 0;
             }
-            
-            //range pirate
-            if(this.range){
-                 for (var i = 0; i <= this.squad; i++) {
-                    dice = ((Math.random()*5)<<0)+1;
-                    dice2 = ((Math.random()*5)<<0)+1;
-                           
-                    total += dice;
-                    total2 += dice2;
-                    
+                        
+            for (var i = 0; i <= this.squad; i++) {
+                dice = ((Math.random()*5)<<0)+1;
+                dice2 = ((Math.random()*5)<<0)+1;
+                       
+                total += dice;
+                total2 += dice2;
+                                                            
+                if(this.range){
                     if(dice > dice2){
                         other.hit();
                         other.message = '!';
                         other.important = false;
                     }else
                     if(dice < dice2){
-                        if((Math.abs(this.x - other.x) < 2) && (Math.abs(this.y - other.y) < 2)){
+                        if(( (Math.abs(this.x - other.x) < 2) && (Math.abs(this.y - other.y) < 2) ) || other.range){
                             this.hit();
                         }
                         this.message = 'miss';
                         this.important = false;
                     }
-                }            
-                            
-                this.reloading = 3;            
-                
-            }else{   
-                
-            // normal unit
-            for (var i = 0; i <= this.squad; i++) {
-                    dice = ((Math.random()*5)<<0)+1;
-                    dice2 = ((Math.random()*5)<<0)+1;
-                           
-                    total += dice;
-                    total2 += dice2;
-                                
+                }else{
                     if(dice > dice2){
                         other.hit();       
                     }else
                     if(dice < dice2){                   
                         this.hit();
-                    } 
-                    
-                    if(this.squad < 1 ){
-                        other.message = total + '-' + total2;
-                        other.important = false;
-                        this.die();
-                        if(other.squad < 1){                                                 
-                            other.die();    
-                        }
-                        return false;
                     }
-                    
-                    if(other.squad < 1){                                 
-                        this.message = total + '-' + total2;
-                        this.important = false;
-                        other.die();    
-                        return true;
-                    }
-                }            
-            }        
+                }                                                    
+            }    
+            
+            if(this.range){
+                this.reloading = 3;
+            }
+        }        
+            
+            if(this.squad < 1 ){
+                other.message = total + '-' + total2;
+                other.important = false;
+                this.die();
+                if(other.squad < 1){                                                 
+                    other.die();    
+                }
+                return false;
+            }
+            
+            
+            
+            if(other.squad < 1){                                 
+                this.message = total + '-' + total2;
+                this.important = false;
+                other.die();    
+                return true;
+            }
             
             if(this.squad > 0 && other.squad > 0){
                 this.message = total;
@@ -314,17 +305,19 @@ Unit.prototype = {
                 other.important = false;
                 return false;
             }
-        }
+        
+        
     },
     
-    hit: function(){
+    hit: function(){        
         this.squad--;
-        this.sprite--;    
+        this.sprite--;
     },
     
-    die: function(){        
+    die: function(){       
         this.alive = false;
         this.moves = 0;
+        game.killZombies();
     },
     
     shout: function(){

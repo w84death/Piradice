@@ -139,16 +139,7 @@ var game = {
                 game.turn.ai = true;
             }
             
-            for (var i = 0; i < world.maps[world.map].entities.length; i++) {
-                if(!world.maps[world.map].entities[i].alive){
-                    //delete world.maps[world.map].entities[i]
-                    world.maps[world.map].entities[i].x = 0;
-                    world.maps[world.map].entities[i].y = 0;
-                    //world.maps[world.map].entities.slice(i,1);
-                }
-                
-                
-            }
+            this.killZombies();
     
             for (var i = 0; i < world.maps[world.map].entities.length; i++) {
                 world.maps[world.map].entities[i].message = null;
@@ -199,6 +190,24 @@ var game = {
         render.render({gui:true, entities:true});
     },
 
+
+    killZombies: function(){
+        console.log(':: KILLING ZOMBIES!@');    
+    
+        for (var i = 0; i < world.maps[world.map].entities.length; i++) {
+            if(!world.maps[world.map].entities[i].alive){
+                //delete world.maps[world.map].entities[i]
+                console.log(':: -> ', world.maps[world.map].entities[i]); 
+                world.maps[world.map].entities[i].x = 0;
+                world.maps[world.map].entities[i].y = 0;
+                world.maps[world.map].entities.slice(i,1);
+            }                        
+        }
+        
+        render.render({entities:true});
+        
+    },
+            
     win: function(){
         if(this.preview_play){
             window.alert('You win!.\nClick ok to back to editor');
