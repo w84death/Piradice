@@ -74,25 +74,33 @@
                 <p>Arrr! You are a pirate. Open all chests to sail to another island!</p>
                 
                 <h2>How to play?</h2>
-                <p>Every single unit = K6 dice. Double unit = 2x K6 dices and so on..</p>
-                <p>All units must be used before end turn. Same units can be grouped up (except water units).</p>
+                <p>In a nutshell its a simple turn-based strategy game.</p>
+                <p><button onclick="document.getElementById('manual').style.display='block';this.style.display = 'none';">Click here to read the game manual.</button></p>
                 
-                <h3>Land units</h3>
-                <p><span class="sprite" style="background-position: 0px -288px;"></span> <strong>Pirate</strong> Moves 1-2 klocks. Attacks only nearby units.</p>
-                <p><span class="sprite" style="background-position: 0px -134px;"></span> <strong>Range Pirate</strong> Shoots at a distance of 3 blocks. After each shot, unit must reload weapon. Waits one turn.</p>
-                <p><span class="sprite" style="background-position: 0px -160px;"></span> <strong>Skeleton</strong> They don't like You..</p>            
+                <ul id="manual" style="display:none;">
+                    <li><img src="/manual/piradice_manual_1.png" alt="Piradice manual" />
+                    <li><img src="/manual/piradice_manual_2.png" alt="Piradice manual" />
+                    <li><img src="/manual/piradice_manual_3.png" alt="Piradice manual" />
+                    <li><img src="/manual/piradice_manual_4.png" alt="Piradice manual" />
+                    <li><img src="/manual/piradice_manual_5.png" alt="Piradice manual" />
+                    <li><img src="/manual/piradice_manual_6.png" alt="Piradice manual" />
+                    <li><img src="/manual/piradice_manual_7.png" alt="Piradice manual" />
+                    <li><img src="/manual/piradice_manual_8.png" alt="Piradice manual" />
+                    <li><img src="/manual/piradice_manual_9.png" alt="Piradice manual" />
+                    <li><img src="/manual/piradice_manual_10.png" alt="Piradice manual" />
+                    <li>Scenario 3: You die :D
+                    <li><img src="/manual/piradice_manual_11.png" alt="Piradice manual" />
+                    <li><img src="/manual/piradice_manual_12.png" alt="Piradice manual" />
+                    <li><img src="/manual/piradice_manual_13.png" alt="Piradice manual" />
+                    <li><img src="/manual/piradice_manual_14.png" alt="Piradice manual" />
+                    <li><img src="/manual/piradice_manual_15.png" alt="Piradice manual" />
+                    <li>Now play!
+                </ul>
                 
-                <h3>Water units</h3>
-                <p><span class="sprite" style="background-position: 0px -288px;"></span> <strong>Pirate Ship</strong> Moves 1-2 klocks. Attacks only nearby units.</p>
-                <p><span class="sprite" style="background-position: 0px -288px;"></span> <strong>Black Pearl Ship</strong> Moves 1-2 klocks. Attacks only nearby units.</p>
-                <p><span class="sprite" style="background-position: 0px -288px;"></span> <strong>Octopus/Kraken</strong> Moves 1-2 klocks. Attacks only nearby units.</p>
                 
-                <h3>Items</h3>
-                <p class="animate"><span class="sprite" style="background-position: 0px -68px;"></span> <strong>Chest</strong> Your quest! One turn for opening.</p>
-                
-                <h2>Map Editor!</h2>
-                <p>First public test. It has bugs but it works :) And its a lot of fun to use.</p>
-                <p>Go and play at <a href="/editor/" title="Piradice Map Editor">/editor/</a></p>
+                <h2>Custom play!</h2>
+                <p>In this map editor You can make any map and put any units to play with. It has bugs but it works :) And its a lot of fun to use.</p>
+                <p>Go and create some awsom map at <button onclick="document.location = '/editor/';" title="Piradice Map Editor">/editor/</button></p>
 
                 <h2>News &amp; Discussion</h2>                
 

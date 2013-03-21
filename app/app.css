@@ -4,7 +4,8 @@ header,
 footer {margin:32px 0; text-align:center; font-size:0.8em; color:#ffec93;}
 a {color:#ffec93;text-decoration:none;}
 a:hover {text-decoration:underline;}
-
+ul {list-style:none;}
+ul li+li {margin-top:1em;}
 
 #container{background:#00c3d4 url('/media/ocean.png');}
 #loading {display:block; padding:1em 0; text-align:center;}
@@ -31,13 +32,13 @@ footer a strong {position: absolute;top: 12px;left: 3px;}
 aside {position:absolute; top:1em; left:1em; background-color:rgba(0,0,0,0.2); padding:1em; }
 aside ul {list-style:none;}
 aside ul li {margin:1em 0; text-align:right;}
-aside input,
-aside select {border:none; background-color:#f8f8f8; color:#444; padding:0.5em 1em;  font:1em 'VT323', cursive; cursor:url('../media/cur.png'), auto;}
-aside input {width:4em;}
-aside button {border:none; background-color:#f8f8f8; color:#444; padding:0.5em 2em;  font:1em 'VT323', cursive; cursor:url('../media/cur.png'), auto;}
-aside button:hover {background-color:#ffec93;}
-aside button.hot {background-color:#e44; color:#fff;}
-aside .disabled {opacity:0.2;}
+input,
+select {border:none; background-color:#f8f8f8; color:#444; padding:0.5em 1em;  font:1em 'VT323', cursive; cursor:url('../media/cur.png'), auto;}
+input {width:4em;}
+button {border:none; background-color:#f8f8f8; color:#444; padding:0.5em 2em;  font:1em 'VT323', cursive; cursor:url('../media/cur.png'), auto;}
+button:hover {background-color:#ffec93;}
+button.hot {background-color:#e44; color:#fff;}
+.disabled {opacity:0.2;}
 aside ul.play {border: 1px dashed #fff;}
 aside ul.play li {text-align:center;}
 
