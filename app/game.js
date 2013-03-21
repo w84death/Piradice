@@ -245,10 +245,21 @@ var world = {
 
     init: function(args){        
         if(args.campain){
-        this.maps = load.map({campain: true});
-        this.saved_map = utilities.clone(this.maps);
-        this._W = this.maps[this.map].width;
-        this._H = this.maps[this.map].height;
+            this.maps = load.map({campain: true});
+            this.saved_map = utilities.clone(this.maps);
+            this._W = this.maps[this.map].width;
+            this._H = this.maps[this.map].height;
+        
+            for (var i = 0; i < world.maps[world.map].entities.length; i++) {
+                world.maps[world.map].entities[i].message = null;
+                if(world.maps[world.map].entities[i].team === game.turn.team && world.maps[world.map].entities[i].reloading < 1){
+                    if(world.maps[world.map].entities[i].transport && world.maps[world.map].entities[i].on_board < 1){
+
+                    }else{
+                        world.maps[world.map].entities[i].shout();
+                    }
+                }
+            }
         }
         
         if(args.editor){

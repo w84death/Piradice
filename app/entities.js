@@ -244,7 +244,7 @@ Unit.prototype = {
                 this.flip = 0;
             }
                         
-            for (var i = 0; i <= this.squad; i++) {
+            for (var i = 1; i <= this.squad; i++) {
                 dice = ((Math.random()*5)<<0)+1;
                 dice2 = ((Math.random()*5)<<0)+1;
                        
