@@ -19,12 +19,18 @@
 */
 
 var game = {
-    version: 'PUBLIC BETA 21-03-2013',
+    version: 'PUBLIC BETA 22-03-2013',
+    teams: [{
+        ai: false,
+        wallet: 200,
+    },{
+        ai: true,
+        wallet: 200, 
+    }],
     play: false,
     editor: false,    
     preview_play: false,
     turn: {
-        id: 1,
         start: true,
         startTime: null,
         team: 0,
@@ -130,13 +136,11 @@ var game = {
             if(game.turn.team == 1){
                 // AI TURN
                 game.turn.team = 0;
-                game.turn.ai = false;
                 game.turn.id++;
 
             }else{
                 // PLAYER turn
                 game.turn.team = 1;
-                game.turn.ai = true;
             }
             
             this.killZombies();
@@ -183,7 +187,7 @@ var game = {
                 game.lose();
             }
 
-            if(game.turn.ai){
+            if(this.teams[this.turn.team].ai){
                  ai.loop();
             }        
 
@@ -231,7 +235,44 @@ var game = {
         }
         
     },
+        
+    updatePlayer: function(){
+        var team = parseInt(document.getElementById('team').value),
+            ai = parseInt(document.getElementById('ai').value);
+            
+        game.teams[team].ai = ai;            
+    },
     
+    setWallet: function(){
+        var wallet = parseInt(document.getElementById('wallet').value);
+        for (var i = 0; i < game.teams.length; i++) {
+            game.teams[i].wallet = wallet;    
+        }
+        game.updateWallet();
+    },
+    
+    updateWallet: function(){
+        var player1_dolars = document.getElementById('player1_dolars'),
+            player2_dolars = document.getElementById('player2_dolars');                
+        
+        player1_dolars.innerHTML = game.teams[0].wallet;
+        player2_dolars.innerHTML = game.teams[1].wallet;            
+    },
+    
+    updateUnits: function(){
+        var player1_units = 0,
+            player2_units = 0;
+        
+        for (var i = 0; i < world.maps[world.map].entities.length; i++) {
+            if(world.maps[world.map].entities[i].team === 0){
+                player1_units += world.maps[world.map].entities[i].squad;
+            }else{
+                player2_units += world.maps[world.map].entities[i].squad; 
+            }
+        }
+        document.getElementById('player1_units').innerHTML = player1_units;
+        document.getElementById('player2_units').innerHTML = player2_units;
+    },
 };
 
 
@@ -260,6 +301,8 @@ var world = {
                     }
                 }
             }
+            
+            this.updateUnits();
         }
         
         if(args.editor){
@@ -418,16 +461,17 @@ var render = {
             render.sprites[46] = [render.makeSprite(0,7, false),render.makeSprite(0,7, true)]; // black pearl 0
             render.sprites[47] = [render.makeSprite(1,7, false),render.makeSprite(1,7, true)]; // black pearl 1
             render.sprites[48] = [render.makeSprite(2,7, false),render.makeSprite(2,7, true)]; // black pearl 2
-            render.sprites[49] = [render.makeSprite(3,7, false),render.makeSprite(3,7, true)]; // black pearl 3
-            render.sprites[50] = [render.makeSprite(4,7, false),render.makeSprite(4,7, true)]; // black pearl 4
-            render.sprites[51] = [render.makeSprite(5,7, false),render.makeSprite(5,7, true)]; // black pearl 5
-            render.sprites[52] = [render.makeSprite(6,7, false),render.makeSprite(6,7, true)]; // black pearl 6
+            
+            render.sprites[49] = [render.makeSprite(6,5, false),render.makeSprite(6,5, true)]; // dust
+            render.sprites[50] = render.makeSprite(6,7, false); // cloud
+            render.sprites[51] = 0;
+            render.sprites[52] = 0;
             
             render.sprites[53] = [render.makeSprite(6,4, false),render.makeSprite(6,4, true)]; // lumberjack
             
-            render.sprites[54] = render.makeSprite(2,8, false); // cutted palm
-            render.sprites[55] = render.makeSprite(0,8, false); // palm
-            render.sprites[56] = render.makeSprite(1,8, false); // forest
+            render.sprites[54] = render.makeSprite(5,7, false); // cutted palm
+            render.sprites[55] = render.makeSprite(3,7, false); // palm
+            render.sprites[56] = render.makeSprite(4,7, false); // forest
             
 
             render.sprites[57] = render.makeSprite(6,2, false); // shout

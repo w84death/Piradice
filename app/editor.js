@@ -36,7 +36,7 @@ var editor = {
         game.preview_play = true;
         
         document.getElementById('gameGUI').style.display = 'block';
-        
+        document.getElementById('editorWallet').style.display = 'none';
         document.getElementById('generator').style.display = 'none';
         document.getElementById('play').innerHTML = 'Exit play';
         document.getElementById('play').setAttribute('onclick','editor.exitPlay()');
@@ -52,7 +52,7 @@ var editor = {
         render.render({gui:true, entities:true, map:true});
         
         document.getElementById('gameGUI').style.display = 'none';
-        
+        document.getElementById('editorWallet').style.display = 'block';            
         document.getElementById('generator').style.display = 'block';
         document.getElementById('play').innerHTML = 'Play this map';
         document.getElementById('play').setAttribute('onclick','editor.playMap()');
@@ -136,9 +136,9 @@ var editor = {
     },
     
     putUnit: function(x,y, unit, squad){ 
-        
-        
-        var new_unit = true;
+        var new_unit = true,
+            team = parseInt(document.getElementById('team').value),
+            ai = game.teams[team].ai;
         
         for (var i = 0; i < this.entities.length; i++) {
             if(this.entities[i].x == x && this.entities[i].y == y){
@@ -159,38 +159,43 @@ var editor = {
         if(new_unit){
             
             if(unit == 'pirate'){
-                this.entities.push(new Pirate({x:x,y:y,squad:squad,team:0}));
-                this.saved_entities.push(new Pirate({x:x,y:y,squad:squad,team:0}));                
+                this.entities.push(new Pirate({x:x,y:y,squad:squad,team:team, ai:ai}));
+                this.saved_entities.push(new Pirate({x:x,y:y,squad:squad,team:team, ai:ai}));                
             }
             
             if(unit == 'range_pirate'){
-                this.entities.push(new RangePirate({x:x,y:y,squad:squad,team:0}));
-                this.saved_entities.push(new RangePirate({x:x,y:y,squad:squad,team:0}));
+                this.entities.push(new RangePirate({x:x,y:y,squad:squad,team:team, ai:ai}));
+                this.saved_entities.push(new RangePirate({x:x,y:y,squad:squad,team:team, ai:ai}));
             }
             
             if(unit == 'lumberjack'){
-                this.entities.push(new Lumberjack({x:x,y:y,team:0}));
-                this.saved_entities.push(new Lumberjack({x:x,y:y,team:0}));
+                this.entities.push(new Lumberjack({x:x,y:y,team:team, ai:ai}));
+                this.saved_entities.push(new Lumberjack({x:x,y:y,team:team, ai:ai}));
             }
             
             if(unit == 'skeleton'){
-                this.entities.push(new Skeleton({x:x,y:y,squad:squad,team:1}));
-                this.saved_entities.push(new Skeleton({x:x,y:y,squad:squad,team:1}));
+                this.entities.push(new Skeleton({x:x,y:y,squad:squad,team:team, ai:ai}));
+                this.saved_entities.push(new Skeleton({x:x,y:y,squad:squad,team:team, ai:ai}));
+            }
+            
+            if(unit == 'dust'){
+                this.entities.push(new Dust({x:x,y:y,team:team, ai:ai}));
+                this.saved_entities.push(new Dust({x:x,y:y,team:team, ai:ai}));
             }
             
             if(unit == 'octopus'){
-                this.entities.push(new Octopus({x:x,y:y,squad:1,team:1}));
-                this.saved_entities.push(new Octopus({x:x,y:y,squad:1,team:1}));
+                this.entities.push(new Octopus({x:x,y:y,team:team, ai:ai}));
+                this.saved_entities.push(new Octopus({x:x,y:y,team:team, ai:ai}));
             }
             
             if(unit == 'ship'){
-                this.entities.push(new Ship({x:x,y:y,squad:1,team:0}));
-                this.saved_entities.push(new Ship({x:x,y:y,squad:1,team:0}));
+                this.entities.push(new Ship({x:x,y:y,team:team, ai:ai}));
+                this.saved_entities.push(new Ship({x:x,y:y,team:team, ai:ai}));
             }
             
             if(unit == 'black_pearl'){
-                this.entities.push(new BlackPearl({x:x,y:y,squad:1,team:0}));
-                this.saved_entities.push(new BlackPearl({x:x,y:y,squad:1,team:0}));
+                this.entities.push(new BlackPearl({x:x,y:y,team:team, ai:ai}));
+                this.saved_entities.push(new BlackPearl({x:x,y:y,team:team,ai:ai}));
             }
         }
         

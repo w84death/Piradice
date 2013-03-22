@@ -20,6 +20,7 @@ var Unit = function Unit(){
     this.pirate = false;
     this.skeletor = false;
     this.squad = 1;
+    this.max = 6;
     this.range = false;
     this.transport = false;
     this.on_board = [];
@@ -31,7 +32,7 @@ var Unit = function Unit(){
     this.important = false;
     this.land = true;
     this.water = false;
-    this.flip = 0;
+    this.flip = 0;    
 };
 
 Unit.prototype = {
@@ -195,6 +196,7 @@ Unit.prototype = {
                 }           
                 this.shout();            
                 other.die();
+                this.moves = 0;
                 return true;
             }else{
                 return false;
@@ -279,6 +281,8 @@ Unit.prototype = {
             }
         }        
             
+            this.moves = 0;
+            
             if(this.squad < 1 ){
                 other.message = total + '-' + total2;
                 other.important = false;
@@ -318,6 +322,7 @@ Unit.prototype = {
         this.alive = false;
         this.moves = 0;
         game.killZombies();
+        game.updateUnits();
     },
     
     shout: function(){
@@ -336,11 +341,16 @@ Unit.prototype = {
         }
         render.render({map:true});
     },
+    
+    levelUp: function(){
+        
+    },
 };
 
 var Pirate = function Pirate(args){
     this.name = 'pirate';
     this.pirate = true;
+    this.ai = args.ai || false;
     this.x = args.x;
     this.y = args.y;
     this.team = args.team;
@@ -354,6 +364,7 @@ Pirate.prototype = new Unit();
 var RangePirate = function RangePirate(args){
     this.name = 'range_pirate';
     this.pirate = true;
+    this.ai = args.ai || false;
     this.x = args.x;
     this.y = args.y;
     this.sprite = 29 + args.squad -1;
@@ -369,11 +380,13 @@ RangePirate.prototype = new Unit();
 var Lumberjack = function Lumberjack(args){
     this.name = 'lumberjack';
     this.pirate = true;
+    this.ai = args.ai || false;
     this.x = args.x;
     this.y = args.y;
     this.team = args.team;
     this.lumberjack = true;
     this.squad = 1;
+    this.max = 1;
     this.sprite = 53;
     this.messages = ['Cut!', 'Hmm', 'Tree'];
 };
@@ -382,7 +395,7 @@ Lumberjack.prototype = new Unit();
 
 var Skeleton = function Skeleton(args){
     this.name = 'skeleton';
-    this.ai = true;
+    this.ai = args.ai || true;
     this.skeleton = true;
     this.x = args.x;
     this.y = args.y;
@@ -394,9 +407,25 @@ var Skeleton = function Skeleton(args){
 
 Skeleton.prototype = new Unit();
 
+var Dust = function Dust(args){
+    this.name = 'dust';
+    this.ai = args.ai || true;
+    this.dust = true;
+    this.x = args.x;
+    this.y = args.y;
+    this.team = args.team;
+    this.squad = 1;
+    this.max = 1;
+    this.sprite = 49;
+    this.messages = ['tsss', 'puf', '!@%'];
+};
+
+Dust.prototype = new Unit();
+
 var Ship = function Ship(args){
     this.name = 'ship';
     this.pirate = true;
+    this.ai = args.ai || false;
     this.x = args.x;
     this.y = args.y;
     this.sprite = 39 + args.squad -1;
@@ -413,6 +442,7 @@ Ship.prototype = new Unit();
 var BlackPearl = function BlackPearl(args){
     this.name = 'black_pearl';
     this.pirate = true;
+    this.ai = args.ai || false;
     this.x = args.x;
     this.y = args.y;
     this.sprite = 46 + args.squad -1;
@@ -421,6 +451,7 @@ var BlackPearl = function BlackPearl(args){
     this.transport = true;
     this.team = args.team;
     this.squad = 1;
+    this.max = 3;
     this.moves = 0;
     this.messages = ['Sail', 'Ahoy'];
 };
@@ -429,14 +460,15 @@ BlackPearl.prototype = new Unit();
 
 var Octopus = function Octopus(args){
     this.name = 'octopus';
-    this.skeleton = true;
-    this.ai = true;
+    this.octopus = true;
+    this.ai = args.ai || true;
     this.x = args.x;
     this.y = args.y;
     this.sprite = 36;
     this.water = true;
     this.team = args.team;
     this.squad = 1;
+    this.max = 1;
     this.messages = ['Ooo.', 'oo..', 'o?', ':)', ':o', ':['];
 };
 

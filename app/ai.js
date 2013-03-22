@@ -97,7 +97,7 @@ var ai = {
         ai.init();
         render.render({entities:true, gui:true});
         setTimeout(function () {            
-            if (game.turn.ai) {
+            if (game.teams[game.turn.team].ai) {
                 ai.loop();
             }
     }, game.ai_speed);
