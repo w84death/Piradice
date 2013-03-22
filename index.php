@@ -23,9 +23,9 @@
                 <canvas id="gui"></canvas>                
             </section>
             <section id="multi">
-                <h2>Player<span id="playerID">1</span></h2>
+                <h2>Player <span id="playerID">1</span></h2>
                 <p>Turn <span id="turn">1</span></p>
-                <p><button onclick="multi.play()" class="hot">Play</button></p>
+                <p><button id="playButton" onclick="multi.play()" class="hot">Play</button></p>
             </section>
             <aside class="gui right">
                 <ul id="gameGUI">
@@ -59,13 +59,13 @@
                     <li><button id="save" onclick="editor.saveSettings()">Save</button><button id="load" class="disabled">Load</button>
                 </ul>
                 <ul id="shop">
-                    <li><select id="team" >
+                    <li><select id="team" onchange="game.switchPlayer();">
                                     <option value="0">Player 1</option>
                                     <option value="1">Payer 2</option>
                                 </select>
                     <li><select id="ai" onchange="game.updatePlayer();">
-                                    <option value="false">Human player</option>
-                                    <option value="true">AI</option>
+                                    <option value="0" selected>Human player</option>
+                                    <option value="1">AI</option>
                                 </select>
                     <li><select id="unit">
                                     <option value="pirate">[$10] Pirate w/ sword</option>

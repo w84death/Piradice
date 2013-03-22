@@ -31,6 +31,7 @@ var game = {
     editor: false,    
     preview_play: false,
     turn: {
+        id: 1,
         start: true,
         startTime: null,
         team: 0,
@@ -96,7 +97,11 @@ var game = {
         for (var i = 0; i < world.maps[world.map].entities[game.unit_selected].move_area.length; i++) {
             if(world.maps[world.map].entities[game.unit_selected].move_area[i].x == cX && world.maps[world.map].entities[game.unit_selected].move_area[i].y == cY){
                 if(world.maps[world.map].entities[game.unit_selected].move_area[i].attack){
-                    world.maps[world.map].entities[game.unit_selected].attack(cX, cY);
+                    if(world.maps[world.map].entities[game.unit_selected].attack(cX, cY)){
+                        if(!world.maps[world.map].entities[game.unit_selected].range){
+                            world.maps[world.map].entities[game.unit_selected].move(cX, cY);
+                        }
+                    };
                 }else
                 if(world.maps[world.map].entities[game.unit_selected].move_area[i].merge){
                     if(world.maps[world.map].entities[game.unit_selected].merge(cX, cY)){
@@ -131,8 +136,7 @@ var game = {
     },
 
     nextTurn: function(){
-        console.log('next turn..');
-
+            
             if(game.turn.team == 1){
                 // AI TURN
                 game.turn.team = 0;
@@ -145,23 +149,12 @@ var game = {
             
             this.killZombies();
     
-            for (var i = 0; i < world.maps[world.map].entities.length; i++) {
-                world.maps[world.map].entities[i].message = null;
-                if(world.maps[world.map].entities[i].team === game.turn.team && world.maps[world.map].entities[i].reloading < 1){
-                    if(world.maps[world.map].entities[i].transport && world.maps[world.map].entities[i].on_board < 1){
-
-                    }else{
-                        world.maps[world.map].entities[i].shout();
-                    }
-                }
-            }
-            
-            
+            this.shoutTeam();                        
 
             var loose = true;
 
             for (i = 0; i < world.maps[world.map].entities.length; i++) {
-                if(world.maps[world.map].entities[i].team === 0 && world.maps[world.map].entities[i].squad > 0){
+                if(world.maps[world.map].entities[i].team === this.turn.team && world.maps[world.map].entities[i].squad > 0){
                     if(world.maps[world.map].entities[i].transport && world.maps[world.map].entities[i].on_board.length < 1){
 
                     }else{
@@ -192,6 +185,7 @@ var game = {
             }        
 
         render.render({gui:true, entities:true});
+        multi.show();
     },
 
 
@@ -238,9 +232,21 @@ var game = {
         
     updatePlayer: function(){
         var team = parseInt(document.getElementById('team').value),
-            ai = parseInt(document.getElementById('ai').value);
+            ai = Boolean(parseInt(document.getElementById('ai').value));
             
         game.teams[team].ai = ai;            
+    },
+    
+    switchPlayer:function(){
+        var ai = document.getElementById('ai'),
+            team = parseInt(document.getElementById('team').value),
+            val = game.teams[team].ai ? 1 : 0;    
+    
+        for (var i = 0; i < ai.options.length; i++) {
+            if(parseInt(ai.options[i].value) == val){
+                ai.options.selectedIndex = i;
+            }
+        }    
     },
     
     setWallet: function(){
@@ -273,8 +279,36 @@ var game = {
         document.getElementById('player1_units').innerHTML = player1_units;
         document.getElementById('player2_units').innerHTML = player2_units;
     },
+    
+    shoutTeam: function(){
+        for (var i = 0; i < world.maps[world.map].entities.length; i++) {
+            world.maps[world.map].entities[i].message = null;
+            if(world.maps[world.map].entities[i].team === game.turn.team && world.maps[world.map].entities[i].reloading < 1){
+                if(world.maps[world.map].entities[i].transport && world.maps[world.map].entities[i].on_board < 1){
+
+                }else{
+                    world.maps[world.map].entities[i].shout();
+                }
+            }
+        }
+    },
 };
 
+var multi = {
+    
+    show: function(msg){ 
+        if(!game.teams[0].ai && !game.teams[1].ai){
+            document.getElementById('multi').style.display = 'block';  
+            document.getElementById('turn').innerHTML = game.turn.id;
+            document.getElementById('playerID').innerHTML = game.turn.team + 1;
+            document.getElementById('playButton').innerHTML = msg || 'Play';            
+        }
+    },
+    
+    play: function(){
+        document.getElementById('multi').style.display = 'none';
+    },
+};
 
 var world = {
     _W: 0,
@@ -291,18 +325,6 @@ var world = {
             this._W = this.maps[this.map].width;
             this._H = this.maps[this.map].height;
         
-            for (var i = 0; i < world.maps[world.map].entities.length; i++) {
-                world.maps[world.map].entities[i].message = null;
-                if(world.maps[world.map].entities[i].team === game.turn.team && world.maps[world.map].entities[i].reloading < 1){
-                    if(world.maps[world.map].entities[i].transport && world.maps[world.map].entities[i].on_board < 1){
-
-                    }else{
-                        world.maps[world.map].entities[i].shout();
-                    }
-                }
-            }
-            
-            this.updateUnits();
         }
         
         if(args.editor){
@@ -310,14 +332,18 @@ var world = {
             this._W = 32;
             this._H = 24;
             this.maps = load.map(args);
-            this.saved_map = utilities.clone(this.maps);
-        }
+            this.saved_map = utilities.clone(this.maps);                    
+        }                
+        game.shoutTeam(); 
     },
     
     loadMap: function(args){
         this.map = args.id;        
         this.maps = load.map(args);
         this.saved_map = utilities.clone(this.maps);
+        game.updateUnits();
+        game.shoutTeam();
+        multi.show();
     },
     
     restartMap: function(){

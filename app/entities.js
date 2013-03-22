@@ -234,7 +234,7 @@ Unit.prototype = {
             }
         }
                 
-        if(other){
+        if(other && !this.dust){            
             var dice = null,
                 dice2 = null,
                 total = 0,
@@ -278,9 +278,15 @@ Unit.prototype = {
             
             if(this.range){
                 this.reloading = 3;
-            }
+            }            
         }        
             
+        if(this.dust){
+            
+            other.die();
+            this.die();
+            return false;
+        }else{
             this.moves = 0;
             
             if(this.squad < 1 ){
@@ -309,8 +315,7 @@ Unit.prototype = {
                 other.important = false;
                 return false;
             }
-        
-        
+        }                
     },
     
     hit: function(){        
@@ -402,7 +407,7 @@ var Skeleton = function Skeleton(args){
     this.team = args.team;
     this.squad = args.squad;
     this.sprite = 23 + args.squad -1;
-    this.messages = ['...', '..', '.'];
+    this.messages = ['...', '..', '.'];    
 };
 
 Skeleton.prototype = new Unit();
