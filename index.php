@@ -33,16 +33,52 @@
                     <li>Player 1: <strong><span id="player1_units">0</span></strong>
                     <li>Player 2: <strong><span id="player2_units">0</span></strong>
                 </ul>
-                <ul id="editorWallet">Wallets: <select id="wallet" onchange="game.setWallet();">
-                                    <option value="30">$30</option>
-                                    <option value="50">$50</option>
-                                    <option value="100">$100</option>
-                                    <option value="200" selected>$200</option>
-                                    <option value="999">$999</option>
-                                </select>
-                    <li>Player 1: <strong>$<span id="player1_dolars">200</span></strong>
-                    <li>Player 2: <strong>$<span id="player2_dolars">200</span></strong>
-                </ul>
+                
+                <div id="shop">
+                    <h2>Wallet</h2>
+                    <ul>
+                        <li>Wallets: <select id="wallet" onchange="game.setWallet();">
+                                        <option value="30">$30</option>
+                                        <option value="50">$50</option>
+                                        <option value="100">$100</option>
+                                        <option value="200" selected>$200</option>
+                                        <option value="999">$999</option>
+                                    </select>
+                        <li>Player 1: <strong>$<span id="player1_dolars">200</span></strong>
+                        <li>Player 2: <strong>$<span id="player2_dolars">200</span></strong>
+                    </ul>
+                    
+                    <h2>Shop</h2>
+                    <ul>
+                        <li><select id="team" onchange="game.switchPlayer();">
+                                        <option value="0">Player 1</option>
+                                        <option value="1">Payer 2</option>
+                                    </select>
+                        <li><select id="ai" onchange="game.updatePlayer();">
+                                        <option value="0" selected>Human player</option>
+                                        <option value="1">AI</option>
+                                    </select>
+                        <li><select id="unit">
+                                        <option value="pirate">[$10] Pirate w/ sword</option>
+                                        <option value="range_pirate">[$15] Pirate w/ gun</option>
+                                        <option value="lumberjack">[$20] Pirate w/ axe</option>
+                                        <option value="ship">[$50] Ship</option>
+                                        <option value="black_pearl">[$65] Black Pearl</option>
+                                        <option value="skeleton">[$10] Skieleton</option>
+                                        <option value="dust">[$20] Dust</option>                                    
+                                        <option value="octopus">[$15] Octopus</option>
+                                    </select>
+                        <li>Units <select id="squad">
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                        <option value="6">6</option>
+                                    </select> in squad
+                    </ul>
+                    <p>Click on map to put unit.</p>
+                </div>
             </aside>
             <?php if($_GET['mode'] == 'editor'){ ?>
             <aside id="editor" class="gui left">
@@ -57,35 +93,7 @@
                     <li>Chests: <input id="chests" value="5"/>
                     <li><button onclick="editor.generateMap(true)" class="hot">Generate new map</button>
                     <li><button id="save" onclick="editor.saveSettings()">Save</button><button id="load" class="disabled">Load</button>
-                </ul>
-                <ul id="shop">
-                    <li><select id="team" onchange="game.switchPlayer();">
-                                    <option value="0">Player 1</option>
-                                    <option value="1">Payer 2</option>
-                                </select>
-                    <li><select id="ai" onchange="game.updatePlayer();">
-                                    <option value="0" selected>Human player</option>
-                                    <option value="1">AI</option>
-                                </select>
-                    <li><select id="unit">
-                                    <option value="pirate">[$10] Pirate w/ sword</option>
-                                    <option value="range_pirate">[$15] Pirate w/ gun</option>
-                                    <option value="lumberjack">[$20] Pirate w/ axe</option>
-                                    <option value="ship">[$50] Ship</option>
-                                    <option value="black_pearl">[$65] Black Pearl</option>
-                                    <option value="skeleton">[$10] Skieleton</option>
-                                    <option value="dust">[$20] Dust</option>                                    
-                                    <option value="octopus">[$15] Octopus</option>
-                                </select>
-                    <li>Units <select id="squad">
-                                    <option value="1">1</option>
-                                    <option value="2">2</option>
-                                    <option value="3">3</option>
-                                    <option value="4">4</option>
-                                    <option value="5">5</option>
-                                    <option value="6">6</option>
-                                </select> in squad
-                </li>
+                </ul>                
                 <ul class="play">
                     <li><button id="play" onclick="editor.playMap()">Play this map</button>
                 </ul>

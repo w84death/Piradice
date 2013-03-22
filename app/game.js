@@ -19,7 +19,7 @@
 */
 
 var game = {
-    version: 'PUBLIC BETA 22-03-2013',
+    version: 'PUBLIC BETA 23-03-2013',
     teams: [{
         ai: false,
         wallet: 200,
@@ -281,13 +281,15 @@ var game = {
     },
     
     shoutTeam: function(){
-        for (var i = 0; i < world.maps[world.map].entities.length; i++) {
-            world.maps[world.map].entities[i].message = null;
-            if(world.maps[world.map].entities[i].team === game.turn.team && world.maps[world.map].entities[i].reloading < 1){
-                if(world.maps[world.map].entities[i].transport && world.maps[world.map].entities[i].on_board < 1){
-
-                }else{
-                    world.maps[world.map].entities[i].shout();
+        if(!this.editor){
+            for (var i = 0; i < world.maps[world.map].entities.length; i++) {
+                world.maps[world.map].entities[i].message = null;
+                if(world.maps[world.map].entities[i].team === game.turn.team && world.maps[world.map].entities[i].reloading < 1){
+                    if(world.maps[world.map].entities[i].transport && world.maps[world.map].entities[i].on_board < 1){
+    
+                    }else{
+                        world.maps[world.map].entities[i].shout();
+                    }
                 }
             }
         }
@@ -298,10 +300,11 @@ var multi = {
     
     show: function(msg){ 
         if(!game.teams[0].ai && !game.teams[1].ai && !game.editor){
+            fogOfWar.refresh();            
             document.getElementById('multi').style.display = 'block';  
             document.getElementById('turn').innerHTML = game.turn.id;
             document.getElementById('playerID').innerHTML = game.turn.team + 1;
-            document.getElementById('playButton').innerHTML = msg || 'Play';            
+            document.getElementById('playButton').innerHTML = msg || 'Play';                        
         }
     },
     
@@ -333,7 +336,9 @@ var world = {
             this._H = 24;
             this.maps = load.map(args);
             this.saved_map = utilities.clone(this.maps);                    
-        }                
+        }              
+        
+        fogOfWar.init();
         game.shoutTeam(); 
     },
     
@@ -344,6 +349,7 @@ var world = {
         game.updateUnits();
         game.shoutTeam();
         multi.show();
+        fogOfWar.refresh();
     },
     
     restartMap: function(){
@@ -384,6 +390,39 @@ var utilities = {
     }
 };
 
+var fogOfWar = {
+    data: [],
+    
+    init: function(){
+    
+        for (var i = 0; i < world.maps[world.map].data.length; i++) {
+            this.data.push(true);
+        }
+    
+    },
+    
+    refresh: function(){
+        /*
+        for (var i = 0; i < world.maps.length; i++) {                                
+            
+            for (var j = 0; j < this.maps[i].data.length; j++) {
+                if(this.maps[i].data[j] === 0 || this.maps[i].data[j] == 1){
+                    this.maps[i].moves.push(0);
+                }else{
+                    this.maps[i].moves.push(1);
+                }
+            }
+        
+            for (var k = 0; k < this.maps[i].items.length; k++) {
+                if(this.maps[i].items[k].forest){
+                    this.maps[i].moves[this.maps[i].items[k].x + this.maps[i].items[k].y*this.maps[i].width] = 2;
+                }
+            }
+            
+        } 
+        */
+    },
+};
 
 var render = {
     map: {
@@ -395,6 +434,10 @@ var render = {
         ctx: null,
     },
     gui: {
+        canvas: null,
+        ctx: null,
+    },
+    sky: {
         canvas: null,
         ctx: null,
     },
@@ -426,6 +469,11 @@ var render = {
         this.gui.canvas.width = world._W*this.box;
         this.gui.canvas.height = world._H*this.box;
         this.gui.ctx = this.gui.canvas.getContext('2d');
+        
+        this.sky.canvas = document.getElementById('sky');
+        this.sky.canvas.width = world._W*this.box;
+        this.sky.canvas.height = world._H*this.box;
+        this.sky.ctx = this.sky.canvas.getContext('2d');
 
         this.noise_img = this.fastNoise(world._W*this.box, world._H*this.box, 8 ),
 
@@ -511,8 +559,8 @@ var render = {
             render.render({gui:true});
         };
 
-    },
-
+    },    
+    
     makeSprite: function(x,y, flip){
         var m_canvas = document.createElement('canvas');
             m_canvas.width = this.box;
@@ -710,7 +758,18 @@ var render = {
             }
 
             this.drawNextTurn();
-
+        }
+        
+        if(args.sky){
+            this.sky.ctx.clearRect(0, 0, world._W*this.box, world._H*this.box);
+            var f = 0;
+            for(var y=0; y<world._H; y++){
+                for(var x=0; x<world._W; x++){
+                    if(fogOfWar.data[f++]){
+                        this.sky.ctx.drawImage(this.sprites[50], x*this.box, y*this.box);
+                    }
+                }
+            }            
         }
 
         if(game.turn.start){

@@ -18,7 +18,7 @@ var editor = {
         game.editor = true;
         game.play = false;        
         this.updateButtons();        
-        
+        document.getElementById('shop').style.display = 'block'; 
     },
     
     generateMap: function(clear){
@@ -36,15 +36,18 @@ var editor = {
     
     playMap: function(){
         this.updateSettings();
-        world.loadMap(this.settings);        
+               
         game.turn.id = 1;
+        game.turn.team = 0;
         game.turn.start = true;
         game.play = true;
         game.editor = false;
         game.preview_play = true;
         
+        world.loadMap(this.settings); 
+        
         document.getElementById('gameGUI').style.display = 'block';
-        document.getElementById('editorWallet').style.display = 'none';
+        document.getElementById('shop').style.display = 'none';
         document.getElementById('generator').style.display = 'none';
         document.getElementById('play').innerHTML = 'Exit play';
         document.getElementById('play').setAttribute('onclick','editor.exitPlay()');
@@ -60,8 +63,8 @@ var editor = {
         render.render({gui:true, entities:true, map:true});
         
         document.getElementById('multi').style.display = 'none';
-        document.getElementById('gameGUI').style.display = 'none';
-        document.getElementById('editorWallet').style.display = 'block';            
+        document.getElementById('gameGUI').style.display = 'none'; 
+        document.getElementById('shop').style.display = 'block';
         document.getElementById('generator').style.display = 'block';
         document.getElementById('play').innerHTML = 'Play this map';
         document.getElementById('play').setAttribute('onclick','editor.playMap()');
@@ -120,7 +123,7 @@ var editor = {
         this.generateMap(true);
         
         for (var i = 0; i < entities_from_storage.length; i++) {
-            this.putUnit( entities_from_storage[i].x, entities_from_storage[i].y,entities_from_storage[i].name, entities_from_storage[i].squad);
+            this.putUnit( entities_from_storage[i].x, entities_from_storage[i].y,entities_from_storage[i].name, entities_from_storage[i].squad, entities_from_storage[i].team);
         }
         
         console.log(':: SETTINGS LOADED');
@@ -176,8 +179,11 @@ var editor = {
     },
     
     putUnit: function(x,y, unit, squad, team){ 
-        var new_unit = true,
-            team = parseInt(document.getElementById('team').value),
+        if(!team){
+            team = parseInt(document.getElementById('team').value);
+        }
+        
+        var new_unit = true,            
             ai = game.teams[team].ai;
         
         for (var i = 0; i < this.entities.length; i++) {
@@ -199,7 +205,7 @@ var editor = {
         
         if(new_unit){
             
-                if(this.buyUnit(unit, squad, team)){
+            if(this.buyUnit(unit, squad, team)){
                 
                 if(unit == 'pirate'){
                     this.entities.push(new Pirate({x:x,y:y,squad:squad,team:team, ai:ai}));

@@ -12,6 +12,7 @@ ul li+li {margin-top:1em;}
 #game {display:none; width:1024px; height:768px; margin:0 auto;}
 #game.editor {padding-left: 180px;}
 #gameGUI {display:none;}
+#shop {display:none;}
 canvas {display: block; position:absolute;
     image-rendering: optimizeSpeed;
     image-rendering: -moz-crisp-edges;
