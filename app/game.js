@@ -297,7 +297,7 @@ var game = {
 var multi = {
     
     show: function(msg){ 
-        if(!game.teams[0].ai && !game.teams[1].ai){
+        if(!game.teams[0].ai && !game.teams[1].ai && !game.editor){
             document.getElementById('multi').style.display = 'block';  
             document.getElementById('turn').innerHTML = game.turn.id;
             document.getElementById('playerID').innerHTML = game.turn.team + 1;
