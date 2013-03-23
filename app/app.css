@@ -5,30 +5,41 @@ footer {margin:32px 0; text-align:center; font-size:0.8em; color:#ffec93;}
 a {color:#ffec93;text-decoration:none;}
 a:hover {text-decoration:underline;}
 ul {list-style:none;}
-ul li+li {margin-top:1em;}
+article ul li+li {margin-top:1em;}
 
-#container{background:#00c3d4 url('/media/ocean.png');}
+#container{/*background:#00c3d4 url('/media/ocean.png');*/ background-color:#fff;}
 #loading {display:block; padding:1em 0; text-align:center;}
-#game {display:none; width:1024px; height:768px; margin:0 auto;}
-#game.editor {padding-left: 180px;}
-#gameGUI {display:none;}
-#shop {display:none;}
+#game {display:none; margin:0 auto; padding-top:32px;}
+
 canvas {display: block; position:absolute;
     image-rendering: optimizeSpeed;
     image-rendering: -moz-crisp-edges;
     image-rendering: -webkit-optimize-contrast;
     image-rendering: optimize-contrast;}
+
 #multi {position:fixed; width:100%; height:100%; top:0; left:0; padding-top:256px; text-align:center; display:none; 
     background-color:#f8f8f8; color:#444; line-height:40px;}
 #multi h2 {color:#000;}
+
+nav {position:fixed; top:0; left:0; width:100%; height:32px; background-color:#444;}
+nav ul {background-color:#444;}
+nav ul li {display:inline-block; padding:0 32px; line-height:32px; position:relative;}
+nav ul li:hover {background-color:#f8f8f8; color:#444;}
+nav ul li:hover ul {display:block;}
+nav ul li ul {position:absolute; top:32px; left:0; width:256px; display:none; box-shadow:0 4px 8px #000;}
+nav ul li ul li {width:192px; color:#f8f8f8; margin-top:8px;}
+nav ul li ul li:first-child {margin-top:0;}
+nav ul li ul li:hover {background-color:#f8f8f8; color:#444;}
+nav ul li ul li input{float:right;}
+nav ul li.right {float:right;}
+
 .desktop {width:512px; margin:0 auto;}    
 article {margin-top:1em;}
 article h2 {margin-top:2em;}
 article h3 {margin-top:1em;}
 article p {margin-top:1em;}
 article:first-child {margin-top:0;}
-.sprite {display:inline-block; width:32px; height:32px; margin-bottom: -14px; background-image:url('/media/sprites_web.png');}
-.animate:hover .sprite {background-position-x:-32px !important;}
+
 footer a {display:inline-block; width:32px; height:32px; background: transparent url('/media/sprites_web.png') -128px -64px; color:#000; position:relative;}
 footer a strong {position: absolute;top: 12px;left: 3px;}
 
@@ -45,4 +56,7 @@ button.hot {background-color:#e44; color:#fff;}
 aside ul.play {border: 1px dashed #fff;}
 aside ul.play li {text-align:center;}
 
-.gui.right {right:1em; left:auto;}
+#shop,
+#wallets,
+#world,
+#play {display:none;}

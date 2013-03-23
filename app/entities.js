@@ -18,7 +18,7 @@ var Unit = function Unit(){
     this.can_select = true;
     this.move_area = [];
     this.pirate = false;
-    this.skeletor = false;
+    this.skeleton = false;
     this.squad = 1;
     this.max = 6;
     this.range = false;
@@ -32,7 +32,8 @@ var Unit = function Unit(){
     this.important = false;
     this.land = true;
     this.water = false;
-    this.flip = 0;    
+    this.flip = 0; 
+    this.fow = 3;
 };
 
 Unit.prototype = {
@@ -208,19 +209,16 @@ Unit.prototype = {
     
     open: function(){
         
-        
-        if(this.pirate){
             for (var j = 0; j < world.maps[world.map].items.length; j++) {                    
                 if(world.maps[world.map].items[j].x == this.x && world.maps[world.map].items[j].y == this.y){                        
-                    if(world.maps[world.map].items[j].open()){ 
+                    if(world.maps[world.map].items[j].open(this.pirate)){ 
                         this.message = 'Gold';
                         this.important = false;
-                        render.render({items:true, gui:true});
+                        render.render({map:true, gui:true});
                         this.moves--;
                     }
                 }                    
             }
-        }
     },
     
     attack: function(x,y){
@@ -377,6 +375,7 @@ var RangePirate = function RangePirate(args){
     this.team = args.team;
     this.squad = args.squad;
     this.messages = ['Fire!', 'Aim', 'Yarr!', 'Bum!'];
+    this.fow = 4;
 };
 
 RangePirate.prototype = new Unit();
@@ -394,6 +393,7 @@ var Lumberjack = function Lumberjack(args){
     this.max = 1;
     this.sprite = 53;
     this.messages = ['Cut!', 'Hmm', 'Tree'];
+    this.fow = 2;
 };
 
 Lumberjack.prototype = new Unit();
@@ -416,6 +416,7 @@ var Dust = function Dust(args){
     this.name = 'dust';
     this.ai = args.ai || true;
     this.dust = true;
+    this.skeleton = true;
     this.x = args.x;
     this.y = args.y;
     this.team = args.team;
@@ -423,6 +424,7 @@ var Dust = function Dust(args){
     this.max = 1;
     this.sprite = 49;
     this.messages = ['tsss', 'puf', '!@%'];
+    this.fow = 4;
 };
 
 Dust.prototype = new Unit();
@@ -433,24 +435,25 @@ var Ship = function Ship(args){
     this.ai = args.ai || false;
     this.x = args.x;
     this.y = args.y;
-    this.sprite = 39 + args.squad -1;
+    this.sprite = 39;
     this.water = true;
     this.range = true;    
     this.transport = true;
     this.squad = 1;
     this.moves = 0;
     this.messages = ['Sail', 'Ahoy'];
+    this.fow = 5;
 };
 
 Ship.prototype = new Unit();
 
 var BlackPearl = function BlackPearl(args){
-    this.name = 'black_pearl';
+    this.name = 'black_pearl';    
     this.pirate = true;
     this.ai = args.ai || false;
     this.x = args.x;
     this.y = args.y;
-    this.sprite = 46 + args.squad -1;
+    this.sprite = 46;
     this.water = true;
     this.range = true;    
     this.transport = true;
@@ -459,6 +462,7 @@ var BlackPearl = function BlackPearl(args){
     this.max = 3;
     this.moves = 0;
     this.messages = ['Sail', 'Ahoy'];
+    this.fow = 5;
 };
 
 BlackPearl.prototype = new Unit();
@@ -466,6 +470,7 @@ BlackPearl.prototype = new Unit();
 var Octopus = function Octopus(args){
     this.name = 'octopus';
     this.octopus = true;
+    this.skeleton = true;
     this.ai = args.ai || true;
     this.x = args.x;
     this.y = args.y;

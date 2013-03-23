@@ -18,8 +18,8 @@ var Item = function Item(){
 };
 
 Item.prototype = {        
-    open: function(){        
-        if(this.can_open && this.close){            
+    open: function(pirate){    
+        if(pirate && this.can_open && this.close){            
             this.sprite = this.sprite_open;
             this.close = false; 
         
@@ -33,6 +33,11 @@ Item.prototype = {
                 game.win();            
             }
             
+            return true;
+        }else
+        if(this.can_open && !this.close){
+            this.sprite = this.sprite_open-1;
+            this.close = true;
             return true;
         }else{
             return false;

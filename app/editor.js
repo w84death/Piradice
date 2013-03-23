@@ -18,7 +18,6 @@ var editor = {
         game.editor = true;
         game.play = false;        
         this.updateButtons();        
-        document.getElementById('shop').style.display = 'block'; 
     },
     
     generateMap: function(clear){
@@ -46,10 +45,8 @@ var editor = {
         
         world.loadMap(this.settings); 
         
-        document.getElementById('gameGUI').style.display = 'block';
-        document.getElementById('shop').style.display = 'none';
-        document.getElementById('generator').style.display = 'none';
-        document.getElementById('play').innerHTML = 'Exit play';
+        
+        document.getElementById('play').innerHTML = 'QUIT GAME';
         document.getElementById('play').setAttribute('onclick','editor.exitPlay()');
     },
     
@@ -60,13 +57,9 @@ var editor = {
         
         editor.generateMap(false);
         
-        render.render({gui:true, entities:true, map:true});
+        render.render({gui:true, entities:true, map:true, clearSky:true});
         
-        document.getElementById('multi').style.display = 'none';
-        document.getElementById('gameGUI').style.display = 'none'; 
-        document.getElementById('shop').style.display = 'block';
-        document.getElementById('generator').style.display = 'block';
-        document.getElementById('play').innerHTML = 'Play this map';
+        document.getElementById('play').innerHTML = 'PLAY';
         document.getElementById('play').setAttribute('onclick','editor.playMap()');
     },
     
@@ -80,18 +73,27 @@ var editor = {
             grass: parseInt(document.getElementById('grass').value),
             palms: parseInt(document.getElementById('palms').value),
             chests: parseInt(document.getElementById('chests').value),
+            wallet: parseInt(document.getElementById('wallet').value),
             entities: this.entities,               
         }
     },
     
     updateButtons: function(){
+        document.getElementById('nextTurn').style.display = 'none';
+        document.getElementById('play').style.display = 'inline-block';
+        
+        
+        document.getElementById('world').style.display = 'inline-block';
+        document.getElementById('wallets').style.display = 'inline-block';
+        document.getElementById('shop').style.display = 'inline-block';
+        
         if(localStorage.getItem("save")){
             document.getElementById('load').removeAttribute('class');
             document.getElementById('load').setAttribute('onclick','editor.loadSettings()');
         }else{
             document.getElementById('load').setAttribute('class','disabled');
             document.getElementById('load').removeAttribute('onclick');
-        }
+        }        
     },
     
     loadSettings: function(){
@@ -105,6 +107,7 @@ var editor = {
             grass: localStorage.getItem("grass"),
             palms: localStorage.getItem("palms"),
             chests: localStorage.getItem("chests"),
+            wallet: localStorage.getItem("wallet"),
             entities: [],               
         }
         
@@ -114,6 +117,8 @@ var editor = {
         document.getElementById('grass').value = this.settings.grass;
         document.getElementById('palms').value = this.settings.palms;
         document.getElementById('chests').value = this.settings.chests;
+        
+        document.getElementById('wallet').value = this.settings.wallet;
          
          
         this.saved_entities = [];   
@@ -140,6 +145,8 @@ var editor = {
         localStorage.setItem("grass",this.settings.grass);
         localStorage.setItem("palms",this.settings.palms);
         localStorage.setItem("chests",this.settings.chests);
+        
+        localStorage.setItem("wallet",this.settings.wallet);
                 
         localStorage.setItem("entities",JSON.stringify(this.entities));
         this.updateButtons(); 

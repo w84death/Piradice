@@ -120,6 +120,8 @@ var game = {
       
         world.maps[world.map].entities[game.unit_selected].unselect();
         this.unit_selected = -1;
+        
+        fogOfWar.update();
 
     },
 
@@ -184,7 +186,8 @@ var game = {
                  ai.loop();
             }        
 
-        render.render({gui:true, entities:true});
+        render.render({gui:true, entities:true, sky:true});
+        fogOfWar.update();
         multi.show();
     },
 
@@ -300,7 +303,7 @@ var multi = {
     
     show: function(msg){ 
         if(!game.teams[0].ai && !game.teams[1].ai && !game.editor){
-            fogOfWar.refresh();            
+            fogOfWar.update();            
             document.getElementById('multi').style.display = 'block';  
             document.getElementById('turn').innerHTML = game.turn.id;
             document.getElementById('playerID').innerHTML = game.turn.team + 1;
@@ -332,14 +335,14 @@ var world = {
         
         if(args.editor){
             this.map = 0;
-            this._W = 32;
-            this._H = 24;
+            this._W = ((((window.innerWidth)/(render.box*render.scale)))<<0);
+            this._H = ((((window.innerHeight)/(render.box*render.scale)))<<0)-1; // 1 for top menu 
             this.maps = load.map(args);
             this.saved_map = utilities.clone(this.maps);                    
         }              
         
-        fogOfWar.init();
-        game.shoutTeam(); 
+        fogOfWar.init();        
+        game.shoutTeam();
     },
     
     loadMap: function(args){
@@ -349,7 +352,7 @@ var world = {
         game.updateUnits();
         game.shoutTeam();
         multi.show();
-        fogOfWar.refresh();
+        fogOfWar.update();
     },
     
     restartMap: function(){
@@ -394,34 +397,54 @@ var fogOfWar = {
     data: [],
     
     init: function(){
-    
-        for (var i = 0; i < world.maps[world.map].data.length; i++) {
-            this.data.push(true);
+        for (var t = 0; t < game.teams.length; t++) {
+            this.data[t] = [];
+            for (var i = 0; i < world.maps[world.map].data.length; i++) {
+                this.data[t].push(50);
+            }        
         }
-    
     },
     
-    refresh: function(){
-        /*
-        for (var i = 0; i < world.maps.length; i++) {                                
-            
-            for (var j = 0; j < this.maps[i].data.length; j++) {
-                if(this.maps[i].data[j] === 0 || this.maps[i].data[j] == 1){
-                    this.maps[i].moves.push(0);
-                }else{
-                    this.maps[i].moves.push(1);
-                }
-            }
+    update: function(){
         
-            for (var k = 0; k < this.maps[i].items.length; k++) {
-                if(this.maps[i].items[k].forest){
-                    this.maps[i].moves[this.maps[i].items[k].x + this.maps[i].items[k].y*this.maps[i].width] = 2;
+        for (var i = 0; i < world.maps[world.map].data.length; i++) {
+            for (var t = 0; t < game.teams.length; t++) {
+                this.data[t][i] = 50;
+            }
+        }
+        
+        
+        for (var i = 0; i < world.maps[world.map].entities.length; i++) {                                
+            
+            if(world.maps[world.map].entities[i].alive){
+                var size = world.maps[world.map].entities[i].fow;
+                for (var y = world.maps[world.map].entities[i].y+1 - size; y <= world.maps[world.map].entities[i].y + size; y++) {
+                    for (var x = world.maps[world.map].entities[i].x - size; x <= world.maps[world.map].entities[i].x + size; x++) {
+                        this.data[world.maps[world.map].entities[i].team][x + (y*world.maps[world.map].width)] = false;                
+                    }
+                }
+                
+            }                    
+        } 
+        
+        
+    
+        for (var y = 0; y < world.maps[world.map].height; y++) {
+            for (var x = 0; x < world.maps[world.map].width; x++) {
+                for (var t = 0; t < game.teams.length; t++) {
+                    if(this.data[t][x + (y*world.maps[world.map].width)] == 50 && this.data[t][x + ((y+1)*world.maps[world.map].width)] == false && this.data[t][x + ((y-1)*world.maps[world.map].width)] == false ){
+                        this.data[t][x + (y*world.maps[world.map].width)] = false; // clear artefacts
+                    }else
+                    if(this.data[t][x + (y*world.maps[world.map].width)] == 50 && this.data[t][x + ((y+1)*world.maps[world.map].width)] == false ){
+                        this.data[t][x + (y*world.maps[world.map].width)] = 51; // bottom shadow
+                    }    
                 }
             }
-            
-        } 
-        */
+        }
+
+        render.render({sky:true});
     },
+    
 };
 
 var render = {
@@ -498,7 +521,7 @@ var render = {
             render.sprites[13] = render.makeSprite(0,2, false); // treasure
             render.sprites[14] = render.makeSprite(1,2, false); // treasure open
             render.sprites[15] = render.makeSprite(5,2, false); // reloading
-            //16
+            render.sprites[16] = null;//16
             render.sprites[37] = render.makeSprite(3,2, false); // big skeleton head
             render.sprites[38] = render.makeSprite(6,3, false); // cut forest
 
@@ -537,16 +560,15 @@ var render = {
             render.sprites[48] = [render.makeSprite(2,7, false),render.makeSprite(2,7, true)]; // black pearl 2
             
             render.sprites[49] = [render.makeSprite(6,5, false),render.makeSprite(6,5, true)]; // dust
-            render.sprites[50] = render.makeSprite(6,7, false); // cloud
-            render.sprites[51] = 0;
-            render.sprites[52] = 0;
+            render.sprites[50] = render.makeSprite(7,0, false); // cloud 0
+            render.sprites[51] = render.makeSprite(7,1, false); // cloud bottom
+            render.sprites[52] = render.makeSprite(7,2, false); // cloud right
             
             render.sprites[53] = [render.makeSprite(6,4, false),render.makeSprite(6,4, true)]; // lumberjack
             
             render.sprites[54] = render.makeSprite(5,7, false); // cutted palm
             render.sprites[55] = render.makeSprite(3,7, false); // palm
-            render.sprites[56] = render.makeSprite(4,7, false); // forest
-            
+            render.sprites[56] = render.makeSprite(4,7, false); // forest            
 
             render.sprites[57] = render.makeSprite(6,2, false); // shout
             render.sprites[58] = render.makeSprite(4,2, false); // message
@@ -658,11 +680,11 @@ var render = {
 
     drawNextTurn: function(){
         var pos = 0.1,
-            gameGUI = document.getElementById('gameGUI');
+            nextTurn = document.getElementById('nextTurn');
     
         if(game.play){
             
-            if(game.turn.ai){
+            if(game.teams[game.turn.team].ai){
                 this.gui.ctx.fillStyle = '#f8f8f8';
                 this.gui.ctx.font = 'bold 1.4em VT323, cursive';
                 this.gui.ctx.textBaseline = 'middle';
@@ -671,22 +693,9 @@ var render = {
                 this.gui.ctx.drawImage(this.next_turn, ((world.maps[world.map].width*0.5)<<0)*this.box - ((this.next_turn.width*0.5)<<0), ((world.maps[world.map].height*pos)<<0)*this.box - ((this.next_turn.height*0.5)<<0));
                 this.gui.ctx.fillText('Skeleton Army..', ((world.maps[world.map].width*0.5)<<0)*this.box, ((world.maps[world.map].height*pos)<<0)*this.box );
                 
-                gameGUI.style.display = 'none';
-                /*
-                DOM.style.MozTransformStyle = 'preserve-3d';
-                DOM.style.webkitTransformStyle = 'preserve-3d';                
-                
-                DOM.style.MozTransform = 'perspective(830px) rotateX(25deg) translate3d(0,50px,120px)';
-                DOM.style.webkitTransform = 'perspective(830px) rotateX(25deg) translate3d(0,50px,120px)';
-                */
+                nextTurn.style.display = 'none';
             }else{
-                gameGUI.style.display = 'block';
-                /*
-                DOM.style.MozTransformStyle = '';
-                DOM.style.MozTransform = '';
-                DOM.style.webkitTransformStyle = '';
-                DOM.style.webkitTransform = '';
-                */
+                nextTurn.style.display = 'inline-block';
             }   
             
         }
@@ -723,53 +732,60 @@ var render = {
 
         if(args.gui){
             this.gui.ctx.clearRect(0, 0, world._W*this.box, world._H*this.box);
-            for(i=0; i<world.maps[world.map].entities.length; i++){
-                if(world.maps[world.map].entities[i].selected){
-                    this.gui.ctx.drawImage(this.sprites[10], world.maps[world.map].entities[i].x*this.box, world.maps[world.map].entities[i].y*this.box);
-                    for (var j = 0; j < world.maps[world.map].entities[i].move_area.length; j++) {
-                        var block = null;
-                        if(world.maps[world.map].entities[i].move_area[j].move){
-                            block = 9;
+            if(!game.teams[game.turn.team].ai){
+                for(i=0; i<world.maps[world.map].entities.length; i++){
+                    if(world.maps[world.map].entities[i].selected){
+                        this.gui.ctx.drawImage(this.sprites[10], world.maps[world.map].entities[i].x*this.box, world.maps[world.map].entities[i].y*this.box);
+                        for (var j = 0; j < world.maps[world.map].entities[i].move_area.length; j++) {
+                            var block = null;
+                            if(world.maps[world.map].entities[i].move_area[j].move){
+                                block = 9;
+                            }
+                            if(world.maps[world.map].entities[i].move_area[j].attack){
+                                block = 12;
+                            }
+                            if(world.maps[world.map].entities[i].move_area[j].merge){
+                                block = 8;
+                            }
+                            if(world.maps[world.map].entities[i].move_area[j].forest){
+                                block = 38;
+                            }
+                            if(block){
+                                render.gui.ctx.drawImage(render.sprites[block], world.maps[world.map].entities[i].move_area[j].x*render.box, world.maps[world.map].entities[i].move_area[j].y*render.box);
+                            }
                         }
-                        if(world.maps[world.map].entities[i].move_area[j].attack){
-                            block = 12;
-                        }
-                        if(world.maps[world.map].entities[i].move_area[j].merge){
-                            block = 8;
-                        }
-                        if(world.maps[world.map].entities[i].move_area[j].forest){
-                            block = 38;
-                        }
-                        if(block){
-                            render.gui.ctx.drawImage(render.sprites[block], world.maps[world.map].entities[i].move_area[j].x*render.box, world.maps[world.map].entities[i].move_area[j].y*render.box);
+                    }else{
+                        if(world.maps[world.map].entities[i].message && world.maps[world.map].entities[i].alive){
+                            this.drawMessage(world.maps[world.map].entities[i].message,world.maps[world.map].entities[i].x, world.maps[world.map].entities[i].y, world.maps[world.map].entities[i].important)
                         }
                     }
-                }else{
-                    if(world.maps[world.map].entities[i].message && world.maps[world.map].entities[i].squad > 0){
-                        this.drawMessage(world.maps[world.map].entities[i].message,world.maps[world.map].entities[i].x, world.maps[world.map].entities[i].y, world.maps[world.map].entities[i].important)
+                    if(world.maps[world.map].entities[i].reloading > 0 && world.maps[world.map].entities[i].alive ){
+                        render.gui.ctx.drawImage(render.sprites[15], world.maps[world.map].entities[i].x*render.box, world.maps[world.map].entities[i].y*render.box);
                     }
-                }
-                if(world.maps[world.map].entities[i].reloading > 0 && world.maps[world.map].entities[i].squad > 0 ){
-                    render.gui.ctx.drawImage(render.sprites[15], world.maps[world.map].entities[i].x*render.box, world.maps[world.map].entities[i].y*render.box);
-                }
-                if(world.maps[world.map].entities[i].moves < 1 && world.maps[world.map].entities[i].squad > 0){
-                    render.gui.ctx.drawImage(render.sprites[11], world.maps[world.map].entities[i].x*render.box, world.maps[world.map].entities[i].y*render.box);
+                    if(world.maps[world.map].entities[i].moves < 1 && world.maps[world.map].entities[i].alive){
+                        render.gui.ctx.drawImage(render.sprites[11], world.maps[world.map].entities[i].x*render.box, world.maps[world.map].entities[i].y*render.box);
+                    }
                 }
             }
 
             this.drawNextTurn();
         }
         
-        if(args.sky){
+        if(args.sky && game.play && !game.teams[game.turn.team].ai){
             this.sky.ctx.clearRect(0, 0, world._W*this.box, world._H*this.box);
             var f = 0;
             for(var y=0; y<world._H; y++){
                 for(var x=0; x<world._W; x++){
-                    if(fogOfWar.data[f++]){
-                        this.sky.ctx.drawImage(this.sprites[50], x*this.box, y*this.box);
+                    if(fogOfWar.data[game.turn.team][f]){
+                        this.sky.ctx.drawImage(this.sprites[fogOfWar.data[game.turn.team][f]], x*this.box, y*this.box);
                     }
+                    f++;
                 }
             }            
+        }
+        
+        if(args.clearSky){
+            this.sky.ctx.clearRect(0, 0, world._W*this.box, world._H*this.box);
         }
 
         if(game.turn.start){

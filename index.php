@@ -15,7 +15,7 @@
     </head>
     <body>
         <div id="container">
-            <p id="loading"><strong>Loading game..</strong></p>
+            <p id="loading"><strong>LOADING..</strong></p>
             <section id="game" <?php if($_GET['mode'] == 'editor'){ echo('class=editor'); }?>>                        
                 <canvas id="map"></canvas>
                 <canvas id="entities"></canvas>                
@@ -23,82 +23,77 @@
                 <canvas id="gui"></canvas>                
             </section>
             <section id="multi">
-                <h2>Player <span id="playerID">1</span></h2>
-                <p>Turn <span id="turn">1</span></p>
-                <p><button id="playButton" onclick="multi.play()" class="hot">Play</button></p>
+                <h2>PLAYER<span id="playerID">1</span></h2>
+                <p>TURN <span id="turn">1</span></p>
+                <p><button id="playButton" onclick="multi.play()" class="hot">PLAY</button></p>
             </section>
-            <aside class="gui right">
-                <ul id="gameGUI">
-                    <li><button onclick="game.nextTurn()" class="hot">NEXT TURN</button>
-                    <li>Player 1: <strong><span id="player1_units">0</span></strong>
-                    <li>Player 2: <strong><span id="player2_units">0</span></strong>
+            <nav>
+                <ul>
+                    <li>PIRADICE
+                        <ul>
+                            <li>PLAY WITH FRIEND
+                            <li>PLAY SOLO VS AI
+                            <li>STORY
+                            <li>HELP
+                            <li>CREDITS
+                        </ul>
+                    <li id="world">WORLD
+                        <ul>
+                            <li>SEED:  <input id="seed" value="piradice"/>
+                            <li>ISLAND: <input id="islands" value="5"/>
+                            <li>SIZE: <input id="islands_size" value="20"/>
+                            <li>GRASS: <input id="grass" value="16"/>
+                            <li>PALMS: <input id="palms" value="40"/>
+                            <li>CHESTS: <input id="chests" value="5"/>
+                            <li><button onclick="editor.generateMap(true)" class="hot">GENERATE</button>
+                            <li><button id="save" onclick="editor.saveSettings()">SAVE</button><button id="load" class="disabled">LOAD</button>                            
+                        </ul>
+                    <li id="wallets">WALLETS
+                        <ul>
+                            <li>SET CAP: <select id="wallet" onchange="game.setWallet();">
+                                            <option value="30">$30</option>
+                                            <option value="50">$50</option>
+                                            <option value="100">$100</option>
+                                            <option value="200" selected>$200</option>
+                                            <option value="999">$999</option>
+                                        </select>
+                            <li>PLAYER1: <strong>$<span id="player1_dolars">200</span></strong>
+                            <li>PLAYER2: <strong>$<span id="player2_dolars">200</span></strong>
+                        </ul>
+                    <li id="shop">SHOP
+                        <ul>
+                            <li><select id="team" onchange="game.switchPlayer();">
+                                            <option value="0">PLAYER1</option>
+                                            <option value="1">PLAYER2</option>
+                                        </select>
+                            <select id="ai" onchange="game.updatePlayer();">
+                                            <option value="0" selected>HUMAN</option>
+                                            <option value="1">AI</option>
+                                        </select>
+                            <li><select id="unit">
+                                            <option value="pirate">[$10] PIRATE</option>
+                                            <option value="range_pirate">[$15] PIRATE WITH GUN</option>
+                                            <option value="lumberjack">[$20] LUMBERJACK</option>
+                                            <option value="ship">[$50] CARGO SHIP</option>
+                                            <option value="black_pearl">[$65] BLACK PEARL</option>
+                                            <option value="skeleton">[$10] SKELETON</option>
+                                            <option value="dust">[$20] DUST</option>                                    
+                                            <option value="octopus">[$15] OCTOPUS</option>
+                                        </select>
+                            <li>UNITS <select id="squad">
+                                            <option value="1">1</option>
+                                            <option value="2">2</option>
+                                            <option value="3">3</option>
+                                            <option value="4">4</option>
+                                            <option value="5">5</option>
+                                            <option value="6">6</option>
+                                        </select> IN SQUAD
+                        </ul>
+                    <li id="stats"><strong class="progress"><em id="player1_units">0</em></strong> vs <strong class="progress"><em id="player2_units">0</em></strong>
+                    <li class="right"><button id="nextTurn" onclick="game.nextTurn()" class="hot">NEXT TURN</button>
+                    <li class="right"><button id="play" onclick="editor.playMap()" class="hot">PLAY</button>
                 </ul>
-                
-                <div id="shop">
-                    <h2>Wallet</h2>
-                    <ul>
-                        <li>Wallets: <select id="wallet" onchange="game.setWallet();">
-                                        <option value="30">$30</option>
-                                        <option value="50">$50</option>
-                                        <option value="100">$100</option>
-                                        <option value="200" selected>$200</option>
-                                        <option value="999">$999</option>
-                                    </select>
-                        <li>Player 1: <strong>$<span id="player1_dolars">200</span></strong>
-                        <li>Player 2: <strong>$<span id="player2_dolars">200</span></strong>
-                    </ul>
-                    
-                    <h2>Shop</h2>
-                    <ul>
-                        <li><select id="team" onchange="game.switchPlayer();">
-                                        <option value="0">Player 1</option>
-                                        <option value="1">Payer 2</option>
-                                    </select>
-                        <li><select id="ai" onchange="game.updatePlayer();">
-                                        <option value="0" selected>Human player</option>
-                                        <option value="1">AI</option>
-                                    </select>
-                        <li><select id="unit">
-                                        <option value="pirate">[$10] Pirate w/ sword</option>
-                                        <option value="range_pirate">[$15] Pirate w/ gun</option>
-                                        <option value="lumberjack">[$20] Pirate w/ axe</option>
-                                        <option value="ship">[$50] Ship</option>
-                                        <option value="black_pearl">[$65] Black Pearl</option>
-                                        <option value="skeleton">[$10] Skieleton</option>
-                                        <option value="dust">[$20] Dust</option>                                    
-                                        <option value="octopus">[$15] Octopus</option>
-                                    </select>
-                        <li>Units <select id="squad">
-                                        <option value="1">1</option>
-                                        <option value="2">2</option>
-                                        <option value="3">3</option>
-                                        <option value="4">4</option>
-                                        <option value="5">5</option>
-                                        <option value="6">6</option>
-                                    </select> in squad
-                    </ul>
-                    <p>Click on map to put unit.</p>
-                </div>
-            </aside>
-            <?php if($_GET['mode'] == 'editor'){ ?>
-            <aside id="editor" class="gui left">
-                <h2>Map Editor</h2>
-                <p>For pirates use only</p>                                
-                <ul id="generator">
-                    <li>Seed:  <input id="seed" value="piradice"/>
-                    <li>Islands: <input id="islands" value="5"/>
-                    <li>Islands size: <input id="islands_size" value="20"/>
-                    <li>Grass: <input id="grass" value="16"/>
-                    <li>Palms: <input id="palms" value="40"/>
-                    <li>Chests: <input id="chests" value="5"/>
-                    <li><button onclick="editor.generateMap(true)" class="hot">Generate new map</button>
-                    <li><button id="save" onclick="editor.saveSettings()">Save</button><button id="load" class="disabled">Load</button>
-                </ul>                
-                <ul class="play">
-                    <li><button id="play" onclick="editor.playMap()">Play this map</button>
-                </ul>
-            </aside>
-            <?php } ?>
+            </nav>
         </div>
         <section class="desktop">
             <article>

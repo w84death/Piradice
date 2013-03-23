@@ -250,8 +250,8 @@ var load = {
         Math.seedrandom(args.seed);
         
         var procMap = { name:   'Procedural Map',
-                width:  32,
-                height: 24,
+                width:  world._W,
+                height: world._H,
                 data: [],
                 moves: [],
                 entities: [],
