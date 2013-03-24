@@ -267,11 +267,22 @@ var game = {
     },
     
     updateWallet: function(){
-        var player1_dolars = document.getElementById('player1_dolars'),
-            player2_dolars = document.getElementById('player2_dolars');                
+        var player1_gold = document.getElementById('player1_gold'),
+            player2_gold = document.getElementById('player2_gold');                
         
-        player1_dolars.innerHTML = game.teams[0].wallet;
-        player2_dolars.innerHTML = game.teams[1].wallet;            
+        player1_gold.innerHTML = game.teams[0].wallet;
+        player2_gold.innerHTML = game.teams[1].wallet;            
+    },
+
+    updateGold: function(args){    
+        if(args.player1){
+            game.teams[0].wallet = args.player1;
+        }
+        if(args.player2){
+            game.teams[1].wallet = args.player2;
+        }
+        document.getElementById('player1_gold').innerHTML = game.teams[0].wallet;
+        document.getElementById('player2_gold').innerHTML = game.teams[1].wallet;        
     },
     
     updateUnits: function(){
@@ -299,16 +310,7 @@ var game = {
         document.getElementById('player2_units').setAttribute('style','width: ' + percent(player2_units, player1_units+player2_units) + '%');
     },
 
-    updateGold: function(args){    
-        if(args.player1){
-            game.teams[0].wallet = args.player1;
-        }
-        if(args.player2){
-            game.teams[1].wallet = args.player2;
-        }
-        document.getElementById('player1_gold').innerHTML = game.teams[0].wallet;
-        document.getElementById('player2_gold').innerHTML = game.teams[1].wallet;        
-    },
+
     
     shoutTeam: function(){
         if(!this.editor){

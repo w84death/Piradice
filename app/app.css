@@ -44,7 +44,7 @@ nav ul li ul li:hover ul {display:block !important;}
 nav ul li ul li ul {display:none !important; left:256px; top:0;}
 nav ul.right {position: fixed;bottom: 0;right: 0;}
 
-.progress {display:inline-block; width:80px; background-color:#777;}
+.progress {display:inline-block; width:80px; background-color:#777; text-align: left;}
 .progress em {display: inline-block; background-color: #e44; padding-left:8px;}
 .progress.right {text-align:right;}
 .progress.right em {padding-right:8px; padding-left:0;}

@@ -15,14 +15,12 @@ var editor = {
             {unit: 'octopus',price: 15,}],
     
     init: function(args){
-        if(args.load){
-            this.loadSettings();
-        }
         if(args.random){
             this.randomSettings();
-        }else{
-            this.updateSettings();                        
+            this.updateButtons();
         }
+        
+        this.updateSettings();                        
         game.init(this.settings);        
         game.editor = true;
         game.play = false;
@@ -106,7 +104,7 @@ var editor = {
             palms: 10 + (Math.random()*80)<<0,
             chests: 1 + (Math.random()*4)<<0,
             wallet: parseInt(document.getElementById('wallet').value),
-            entities: this.entities,               
+            entities: [],               
         }
     },
     
@@ -130,9 +128,10 @@ var editor = {
         document.getElementById('islands_size').value = this.settings.islands_size;
         document.getElementById('grass').value = this.settings.grass;
         document.getElementById('palms').value = this.settings.palms;
-        document.getElementById('chests').value = this.settings.chests;
-        
-        document.getElementById('wallet').value = this.settings.wallet;      
+        document.getElementById('chests').value = this.settings.chests;        
+        document.getElementById('wallet').value = this.settings.wallet;  
+        document.getElementById('player1_gold').value = this.settings.player1_gold;  
+        document.getElementById('player2_gold').value = this.settings.player2_gold;      
     },
     
     loadSettings: function(){
