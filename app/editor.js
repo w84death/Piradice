@@ -3,6 +3,7 @@ var editor = {
     entities: [],
     saved_entities: [],
     basket: null,
+    initalized: false,
     
     prices: [
             {unit: 'pirate',price: 10,},
@@ -19,12 +20,17 @@ var editor = {
             this.randomSettings();
             this.updateButtons();
         }
-        
-        this.updateSettings();                        
-        game.init(this.settings);        
-        game.editor = true;
-        game.play = false;
-        this.updateButtons();        
+
+        if(!this.initalized){
+            this.updateSettings();                        
+            game.init(this.settings);        
+            game.editor = true;
+            game.play = false;
+            this.updateButtons();
+            this.initalized = true;
+        }else{
+            this.generateMap();
+        }        
     },
     
     generateMap: function(clear){
@@ -87,8 +93,8 @@ var editor = {
             palms: parseInt(document.getElementById('palms').value),
             chests: parseInt(document.getElementById('chests').value),
             wallet: parseInt(document.getElementById('wallet').value),
-            player1_gold: parseInt(document.getElementById('player1_gold').value),
-            player2_gold: parseInt(document.getElementById('player2_gold').value),
+            player1_gold: game.teams[0].wallet,
+            player2_gold: game.teams[1].wallet,
             entities: this.entities,               
         }
     },

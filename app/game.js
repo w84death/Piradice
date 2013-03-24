@@ -368,7 +368,7 @@ var world = {
         if(args.editor){
             this.map = 0;
             this._W = ((((window.innerWidth)/(render.box*render.scale)))<<0);
-            this._H = ((((window.innerHeight)/(render.box*render.scale)))<<0)-1; // 1 for top menu 
+            this._H = ((((window.innerHeight)/(render.box*render.scale)))<<0)-2; // 2 for top & bottom menu 
             this.maps = load.map(args);
             this.saved_map = utilities.clone(this.maps);                    
         }              
