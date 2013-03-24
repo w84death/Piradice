@@ -36,11 +36,11 @@
                                     <li onclick="editor.init({mapset:0})">2 PLAYERS MAPS
                                     <li onclick="editor.init({mapset:1})">AI MAP SET                                  
                                 </ul>                            
-                            <li><a href="javascript:void(0);">CREDITS</a>
+                            <li><a href="javascript:void(0);">CREDITS <span>></span></a>
                                 <ul>
-                                    <li>SUNO
-                                    <li>DESIGN & CODE:
-                                    <li>KRZYSZTOF JANKOWSK
+                                    <li><h3>SUNO</h3>
+                                    <p>DESIGN, CODE, PIXELS:
+                                    KRZYSZTOF JANKOWSK</p>
                                 </ul>
                         </ul>
                     <li id="world"><a href="javascript:void(0);">WORLD</a>
@@ -60,52 +60,46 @@
                         </ul>                    
                     <li id="settings"><a href="javascript:void(0);">SETTINGS</a>
                         <ul>
-                            <li><select id="team" onchange="game.switchPlayer();">
-                                            <option value="0">PLAYER1</option>
-                                            <option value="1">PLAYER2</option>
-                                        </select>                                        
-                            <select id="ai" onchange="game.updatePlayer();">
-                                            <option value="0" selected>HUMAN</option>
-                                            <option value="1">AI</option>
-                                        </select>
-                            <li>SET WALLET CAP: <select id="wallet" onchange="game.setWallet();">
-                                            <option value="30">$30</option>
-                                            <option value="50">$50</option>
-                                            <option value="100">$100</option>
-                                            <option value="200" selected>$200</option>
-                                            <option value="999">$999</option>
-                                        </select>
-                            <li><a href="javascript:void(0);">BUY PIRATES UNITS: <span>></span></a>
+                            <li><a href="javascript:void(0);">PLAYER1 <span>></span></a>
                                 <ul>
-                                    <li onclick="editor.addToBasket('pirate');">PIRATE <span>$10</span>
-                                    <li onclick="editor.addToBasket('range_pirate');">PIRATE WITH GUN <span>$15</span>
-                                    <li onclick="editor.addToBasket('lumberjack');">LUMBERJACK <span>$20</span>
-                                    <li onclick="editor.addToBasket('ship');">MOTHERSHIP <span>$50</span>
+                                    <li onchange="game.updatePlayer({player:0, ai:false});">HUMAN
+                                    <li onchange="game.updatePlayer({player:0, ai:true});">AI
                                 </ul>
-                            <li><a href="javascript:void(0);">BUY SKELETON UNITS: <span>></span></a>
-                            <ul>
-                                <li onclick="editor.addToBasket('skeleton');">SKELETON <span>$10</span>
-                                <li onclick="editor.addToBasket('dust');">DUST <span>$20</span>
-                                <li onclick="editor.addToBasket('octopus');">OCTOPUS <span>$15</span>
-                                <li onclick="editor.addToBasket('cementary');">CEMENTARY <span>$50</span>
-                            </ul>
-                            <li>UNITS <select id="squad">
-                                            <option value="1">1</option>
-                                            <option value="2">2</option>
-                                            <option value="3">3</option>
-                                            <option value="4">4</option>
-                                            <option value="5">5</option>
-                                            <option value="6">6</option>
-                                        </select> IN SQUAD
+                            <li><a href="javascript:void(0);">PLAYER2 <span>></span></a>
+                                <ul>
+                                    <li onchange="game.updatePlayer({player:1, ai:false});">HUMAN
+                                    <li onchange="game.updatePlayer({player:1, ai:true});">AI
+                                </ul>
+                            <li><a href="javascript:void(0);">WALLET <span>></span></a> 
+                                <ul>
+                                    <li onchange="game.setWallet(30);">$30
+                                    <li onchange="game.setWallet(50);">#50
+                                    <li onchange="game.setWallet(100);">#100
+                                    <li onchange="game.setWallet(200);">#200
+                                    <li onchange="game.setWallet(500);">#500
+                                    <li onchange="game.setWallet(1000);">#1000                                            
+                                </ul>                            
                         </ul>                                        
                     <li class="right"><button id="play" onclick="editor.playMap()" class="hot">PLAY</button>
                 </ul>
             </nav>
             <nav class="bottom">
                 <ul>
-                    <li>PLAYER1: $<strong id="player1_gold">200</strong>
+                    <li><a href="javascript:void(0);">PLAYER1: $<strong id="player1_gold">200</strong> <span>></span></a>
+                        <ul>
+                            <li onclick="editor.addToBasket('pirate');">PIRATE <span>$10</span>
+                            <li onclick="editor.addToBasket('range_pirate');">PIRATE WITH GUN <span>$15</span>
+                            <li onclick="editor.addToBasket('lumberjack');">LUMBERJACK <span>$20</span>
+                            <li onclick="editor.addToBasket('ship');">MOTHERSHIP <span>$50</span>
+                        </ul>
                     <li id="stats"><strong class="progress right"><em id="player1_units">0</em></strong> vs <strong class="progress"><em id="player2_units">0</em></strong>                    
-                    <li>PLAYER2: $<strong id="player2_gold">200</strong>                    
+                    <li><a href="javascript:void(0);">PLAYER2: $<strong id="player2_gold">200</strong> <span>></span></a>    
+                        <ul>
+                            <li onclick="editor.addToBasket('skeleton');">SKELETON <span>$10</span>
+                            <li onclick="editor.addToBasket('dust');">DUST <span>$20</span>
+                            <li onclick="editor.addToBasket('octopus');">OCTOPUS <span>$15</span>
+                            <li onclick="editor.addToBasket('cementary');">CEMENTARY <span>$50</span>
+                        </ul>               
                 </ul>
                 <ul class="right">
                     <li><button id="nextTurn" onclick="game.nextTurn()" class="hot">NEXT TURN</button>

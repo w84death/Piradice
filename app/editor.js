@@ -109,7 +109,7 @@ var editor = {
             grass: 0 + (Math.random()*80)<<0,
             palms: 10 + (Math.random()*80)<<0,
             chests: 1 + (Math.random()*4)<<0,
-            wallet: parseInt(document.getElementById('wallet').value),
+            wallet: 200,
             entities: [],               
         }
     },
@@ -134,8 +134,7 @@ var editor = {
         document.getElementById('islands_size').value = this.settings.islands_size;
         document.getElementById('grass').value = this.settings.grass;
         document.getElementById('palms').value = this.settings.palms;
-        document.getElementById('chests').value = this.settings.chests;        
-        document.getElementById('wallet').value = this.settings.wallet;  
+        document.getElementById('chests').value = this.settings.chests;          
         document.getElementById('player1_gold').value = this.settings.player1_gold;  
         document.getElementById('player2_gold').value = this.settings.player2_gold;      
     },
@@ -188,8 +187,8 @@ var editor = {
         localStorage.setItem("chests",this.settings.chests);        
         localStorage.setItem("wallet",this.settings.wallet);            
         localStorage.setItem("entities",JSON.stringify(this.entities));
-        localStorage.setItem("player1_gold",this.settings.player1_gold);
-        localStorage.setItem("player2_gold",this.settings.player2_gold);
+        localStorage.setItem("player1_gold",game.teams[0].wallet);
+        localStorage.setItem("player2_gold",game.teams[1].wallet);
         this.updateButtons(); 
         
         console.log(':: SETTINGS SAVED...');

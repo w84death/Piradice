@@ -47,7 +47,7 @@ var game = {
             world.init(args);
             render.init();
             render.gui.canvas.addEventListener('mousedown', game.click, false);
-            this.play = true;            
+            this.play = true;                                
         }else{
             world.restartMap(args);
             this.turn.start = true;        
