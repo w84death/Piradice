@@ -41,15 +41,19 @@ var game = {
     unit_selected: -1,
     select_area: [],
 
-    init: function(args){
+    init: function(args){        
         
-        console.log('\nWELCOME TO PIRADICE\n' + this.version);
-
-        world.init(args);
-        render.init(); 
-        render.gui.canvas.addEventListener('mousedown', game.click, false);
-                
-        this.play = true;
+        if(!this.play){
+            world.init(args);
+            render.init(); 
+            render.gui.canvas.addEventListener('mousedown', game.click, false);
+            this.play = true;
+        }else{
+            world.restartMap(args);
+            this.turn.start = true;        
+            game.shoutTeam();            
+            render.render({gui:true, entities:true, map:true});            
+        }        
         
     },
 
@@ -326,6 +330,9 @@ var world = {
 
     init: function(args){        
         if(args.campain){
+            if(args.newgame){
+                this.map = 0;
+            }
             this.maps = load.map({campain: true});
             this.saved_map = utilities.clone(this.maps);
             this._W = this.maps[this.map].width;
@@ -355,7 +362,10 @@ var world = {
         fogOfWar.update();
     },
     
-    restartMap: function(){
+    restartMap: function(args){
+        if(args.newgame){
+            this.map = 0;
+        }
         this.maps[this.map] = utilities.clone(this.saved_map[this.map]);
     },
     
@@ -471,118 +481,146 @@ var render = {
     noise_img: null,
     next_turn: new Image(),
     sprites: [],
+    render_initialized: false,
 
     init: function(){
-        this.box = this.box * this.scale;
-
-        document.getElementById('game').style.width = (world._W*this.box)+'px';
-        document.getElementById('game').style.height = (world._H*this.box)+'px';
-
-        this.map.canvas = document.getElementById('map');
-        this.map.canvas.width = world._W*this.box;
-        this.map.canvas.height = world._H*this.box;
-        this.map.ctx = this.map.canvas.getContext('2d');
-
-        this.entities.canvas = document.getElementById('entities');
-        this.entities.canvas.width = world._W*this.box;
-        this.entities.canvas.height = world._H*this.box;
-        this.entities.ctx = this.entities.canvas.getContext('2d');
-
-        this.gui.canvas = document.getElementById('gui');
-        this.gui.canvas.width = world._W*this.box;
-        this.gui.canvas.height = world._H*this.box;
-        this.gui.ctx = this.gui.canvas.getContext('2d');
-        
-        this.sky.canvas = document.getElementById('sky');
-        this.sky.canvas.width = world._W*this.box;
-        this.sky.canvas.height = world._H*this.box;
-        this.sky.ctx = this.sky.canvas.getContext('2d');
-
-        this.noise_img = this.fastNoise(world._W*this.box, world._H*this.box, 8 ),
-
-        this.sprites_img.src = "/media/sprites.png";
-        this.sprites_img.onload = function(){
-            render.sprites_img = render.resize(render.sprites_img, render.scale);
-
-            // map & items & GUI
-            render.sprites[0] = render.makeSprite(0,0, false); // sea
-            render.sprites[1] = render.makeSprite(1,0, false); // water
-            render.sprites[2] = render.makeSprite(2,0, false); // beach
-            render.sprites[3] = render.makeSprite(3,0, false); // beach rif
-            render.sprites[4] = render.makeSprite(0,1, false); // grass
-            render.sprites[5] = render.makeSprite(1,1, false); // grass rif
-            render.sprites[6] = render.makeSprite(3,1, false); // bridge east west
-            render.sprites[7] = render.makeSprite(4,1, false); // bridge north south
-            render.sprites[8] = render.makeSprite(6,1, false); // merge
-            render.sprites[9] = render.makeSprite(4,0, false); // move
-            render.sprites[10] = render.makeSprite(5,0, false); // select
-            render.sprites[11] = render.makeSprite(5,1, false); // done
-            render.sprites[12] = render.makeSprite(6,0, false); // attack
-            render.sprites[13] = render.makeSprite(0,2, false); // treasure
-            render.sprites[14] = render.makeSprite(1,2, false); // treasure open
-            render.sprites[15] = render.makeSprite(5,2, false); // reloading
-            render.sprites[16] = null;//16
-            render.sprites[37] = render.makeSprite(3,2, false); // big skeleton head
-            render.sprites[38] = render.makeSprite(6,3, false); // cut forest
-
-            // entities
-            render.sprites[17] = [render.makeSprite(0,3, false),render.makeSprite(0,3, true)]; // pirate 1
-            render.sprites[18] = [render.makeSprite(1,3, false),render.makeSprite(1,3, true)]; // pirate 2
-            render.sprites[19] = [render.makeSprite(2,3, false),render.makeSprite(2,3, true)]; // pirate 3
-            render.sprites[20] = [render.makeSprite(3,3, false),render.makeSprite(3,3, true)]; // pirate 4
-            render.sprites[21] = [render.makeSprite(4,3, false),render.makeSprite(4,3, true)]; // pirate 5
-            render.sprites[22] = [render.makeSprite(5,3, false),render.makeSprite(5,3, true)]; // pirate 6
-            render.sprites[23] = [render.makeSprite(0,5, false),render.makeSprite(0,5, true)]; // skeletor 1
-            render.sprites[24] = [render.makeSprite(1,5, false),render.makeSprite(1,5, true)]; // skeletor 2
-            render.sprites[25] = [render.makeSprite(2,5, false),render.makeSprite(2,5, true)]; // skeletor 3
-            render.sprites[26] = [render.makeSprite(3,5, false),render.makeSprite(3,5, true)]; // skeletor 4
-            render.sprites[27] = [render.makeSprite(4,5, false),render.makeSprite(4,5, true)]; // skeletor 5
-            render.sprites[28] = [render.makeSprite(5,5, false),render.makeSprite(5,5, true)]; // skeletor 6
-            render.sprites[29] = [render.makeSprite(0,4, false),render.makeSprite(0,4, true)]; // range pirate 1
-            render.sprites[30] = [render.makeSprite(1,4, false),render.makeSprite(1,4, true)]; // range pirate 2
-            render.sprites[31] = [render.makeSprite(2,4, false),render.makeSprite(2,4, true)]; // range pirate 3
-            render.sprites[32] = [render.makeSprite(3,4, false),render.makeSprite(3,4, true)]; // range pirate 4
-            render.sprites[33] = [render.makeSprite(4,4, false),render.makeSprite(4,4, true)]; // range pirate 5
-            render.sprites[34] = [render.makeSprite(5,4, false),render.makeSprite(5,4, true)]; // range pirate 6
-
-            render.sprites[36] = [render.makeSprite(2,2, false),render.makeSprite(2,2, true)]; // octopus
-
-            render.sprites[39] = [render.makeSprite(0,6, false),render.makeSprite(0,6, true)]; // ship 0
-            render.sprites[40] = [render.makeSprite(1,6, false),render.makeSprite(1,6, true)]; // ship 1
-            render.sprites[41] = [render.makeSprite(2,6, false),render.makeSprite(2,6, true)]; // ship 2
-            render.sprites[42] = [render.makeSprite(3,6, false),render.makeSprite(3,6, true)]; // ship 3
-            render.sprites[43] = [render.makeSprite(4,6, false),render.makeSprite(4,6, true)]; // ship 4
-            render.sprites[44] = [render.makeSprite(5,6, false),render.makeSprite(5,6, true)]; // ship 5
-            render.sprites[45] = [render.makeSprite(6,6, false),render.makeSprite(6,6, true)]; // ship 6
-
-            render.sprites[46] = [render.makeSprite(0,7, false),render.makeSprite(0,7, true)]; // black pearl 0
-            render.sprites[47] = [render.makeSprite(1,7, false),render.makeSprite(1,7, true)]; // black pearl 1
-            render.sprites[48] = [render.makeSprite(2,7, false),render.makeSprite(2,7, true)]; // black pearl 2
+        if(!this.render_initialized){
+            this.box = this.box * this.scale;
+            document.getElementById('game').innerHTML = '<p id="loading"><strong>LOADING..</strong></p>';        
+            this.createDOM();
+    
+            this.noise_img = this.fastNoise(world._W*this.box, world._H*this.box, 8 ),
+    
+            this.sprites_img.src = "/media/sprites.png";
+            this.sprites_img.onload = function(){
+                render.sprites_img = render.resize(render.sprites_img, render.scale);
+    
+                // map & items & GUI
+                render.sprites[0] = render.makeSprite(0,0, false); // sea
+                render.sprites[1] = render.makeSprite(1,0, false); // water
+                render.sprites[2] = render.makeSprite(2,0, false); // beach
+                render.sprites[3] = render.makeSprite(3,0, false); // beach rif
+                render.sprites[4] = render.makeSprite(0,1, false); // grass
+                render.sprites[5] = render.makeSprite(1,1, false); // grass rif
+                render.sprites[6] = render.makeSprite(3,1, false); // bridge east west
+                render.sprites[7] = render.makeSprite(4,1, false); // bridge north south
+                render.sprites[8] = render.makeSprite(6,1, false); // merge
+                render.sprites[9] = render.makeSprite(4,0, false); // move
+                render.sprites[10] = render.makeSprite(5,0, false); // select
+                render.sprites[11] = render.makeSprite(5,1, false); // done
+                render.sprites[12] = render.makeSprite(6,0, false); // attack
+                render.sprites[13] = render.makeSprite(0,2, false); // treasure
+                render.sprites[14] = render.makeSprite(1,2, false); // treasure open
+                render.sprites[15] = render.makeSprite(5,2, false); // reloading
+                render.sprites[16] = null;//16
+                render.sprites[37] = render.makeSprite(3,2, false); // big skeleton head
+                render.sprites[38] = render.makeSprite(6,3, false); // cut forest
+    
+                // entities
+                render.sprites[17] = [render.makeSprite(0,3, false),render.makeSprite(0,3, true)]; // pirate 1
+                render.sprites[18] = [render.makeSprite(1,3, false),render.makeSprite(1,3, true)]; // pirate 2
+                render.sprites[19] = [render.makeSprite(2,3, false),render.makeSprite(2,3, true)]; // pirate 3
+                render.sprites[20] = [render.makeSprite(3,3, false),render.makeSprite(3,3, true)]; // pirate 4
+                render.sprites[21] = [render.makeSprite(4,3, false),render.makeSprite(4,3, true)]; // pirate 5
+                render.sprites[22] = [render.makeSprite(5,3, false),render.makeSprite(5,3, true)]; // pirate 6
+                render.sprites[23] = [render.makeSprite(0,5, false),render.makeSprite(0,5, true)]; // skeletor 1
+                render.sprites[24] = [render.makeSprite(1,5, false),render.makeSprite(1,5, true)]; // skeletor 2
+                render.sprites[25] = [render.makeSprite(2,5, false),render.makeSprite(2,5, true)]; // skeletor 3
+                render.sprites[26] = [render.makeSprite(3,5, false),render.makeSprite(3,5, true)]; // skeletor 4
+                render.sprites[27] = [render.makeSprite(4,5, false),render.makeSprite(4,5, true)]; // skeletor 5
+                render.sprites[28] = [render.makeSprite(5,5, false),render.makeSprite(5,5, true)]; // skeletor 6
+                render.sprites[29] = [render.makeSprite(0,4, false),render.makeSprite(0,4, true)]; // range pirate 1
+                render.sprites[30] = [render.makeSprite(1,4, false),render.makeSprite(1,4, true)]; // range pirate 2
+                render.sprites[31] = [render.makeSprite(2,4, false),render.makeSprite(2,4, true)]; // range pirate 3
+                render.sprites[32] = [render.makeSprite(3,4, false),render.makeSprite(3,4, true)]; // range pirate 4
+                render.sprites[33] = [render.makeSprite(4,4, false),render.makeSprite(4,4, true)]; // range pirate 5
+                render.sprites[34] = [render.makeSprite(5,4, false),render.makeSprite(5,4, true)]; // range pirate 6
+    
+                render.sprites[36] = [render.makeSprite(2,2, false),render.makeSprite(2,2, true)]; // octopus
+    
+                render.sprites[39] = [render.makeSprite(0,6, false),render.makeSprite(0,6, true)]; // ship 0
+                render.sprites[40] = [render.makeSprite(1,6, false),render.makeSprite(1,6, true)]; // ship 1
+                render.sprites[41] = [render.makeSprite(2,6, false),render.makeSprite(2,6, true)]; // ship 2
+                render.sprites[42] = [render.makeSprite(3,6, false),render.makeSprite(3,6, true)]; // ship 3
+                render.sprites[43] = [render.makeSprite(4,6, false),render.makeSprite(4,6, true)]; // ship 4
+                render.sprites[44] = [render.makeSprite(5,6, false),render.makeSprite(5,6, true)]; // ship 5
+                render.sprites[45] = [render.makeSprite(6,6, false),render.makeSprite(6,6, true)]; // ship 6
+    
+                render.sprites[46] = [render.makeSprite(0,7, false),render.makeSprite(0,7, true)]; // black pearl 0
+                render.sprites[47] = [render.makeSprite(1,7, false),render.makeSprite(1,7, true)]; // black pearl 1
+                render.sprites[48] = [render.makeSprite(2,7, false),render.makeSprite(2,7, true)]; // black pearl 2
+                
+                render.sprites[49] = [render.makeSprite(6,5, false),render.makeSprite(6,5, true)]; // dust
+                render.sprites[50] = render.makeSprite(7,0, false); // cloud 0
+                render.sprites[51] = render.makeSprite(7,1, false); // cloud bottom
+                render.sprites[52] = render.makeSprite(7,2, false); // cloud right
+                
+                render.sprites[53] = [render.makeSprite(6,4, false),render.makeSprite(6,4, true)]; // lumberjack
+                
+                render.sprites[54] = render.makeSprite(5,7, false); // cutted palm
+                render.sprites[55] = render.makeSprite(3,7, false); // palm
+                render.sprites[56] = render.makeSprite(4,7, false); // forest            
+    
+                render.sprites[57] = render.makeSprite(6,2, false); // shout
+                render.sprites[58] = render.makeSprite(4,2, false); // message
+    
+                render.render({map:true, entities:true,});
+            };
+    
+            this.next_turn.src = "/media/next_turn.png";
+            this.next_turn.onload = function(){
+                var el = document.getElementById('loading');
+                el.parentNode.removeChild( el );
+                render.render({gui:true});
+            };
             
-            render.sprites[49] = [render.makeSprite(6,5, false),render.makeSprite(6,5, true)]; // dust
-            render.sprites[50] = render.makeSprite(7,0, false); // cloud 0
-            render.sprites[51] = render.makeSprite(7,1, false); // cloud bottom
-            render.sprites[52] = render.makeSprite(7,2, false); // cloud right
-            
-            render.sprites[53] = [render.makeSprite(6,4, false),render.makeSprite(6,4, true)]; // lumberjack
-            
-            render.sprites[54] = render.makeSprite(5,7, false); // cutted palm
-            render.sprites[55] = render.makeSprite(3,7, false); // palm
-            render.sprites[56] = render.makeSprite(4,7, false); // forest            
-
-            render.sprites[57] = render.makeSprite(6,2, false); // shout
-            render.sprites[58] = render.makeSprite(4,2, false); // message
-
-            render.render({map:true, entities:true,});
-        };
-
-        this.next_turn.src = "/media/next_turn.png";
-        this.next_turn.onload = function(){
-            render.render({gui:true});
-        };
+            this.render_initialized = true;
+        }
 
     },    
     
+    createDOM: function(){
+        
+            var gameDiv = document.getElementById('game'),
+                mapDiv = document.createElement('canvas'),
+                entitiesDiv = document.createElement('canvas'),
+                skyDiv = document.createElement('canvas'),
+                guiDiv = document.createElement('canvas');
+            
+            mapDiv.setAttribute('id','map');
+            entitiesDiv.setAttribute('id','entities');
+            skyDiv.setAttribute('id','sky');
+            guiDiv.setAttribute('id','gui');
+                        
+            gameDiv.appendChild(mapDiv);
+            gameDiv.appendChild(entitiesDiv);
+            gameDiv.appendChild(skyDiv);
+            gameDiv.appendChild(guiDiv);            
+                    
+            gameDiv.style.width = (world._W*this.box)+'px';
+            gameDiv.style.height = (world._H*this.box)+'px';
+    
+            this.map.canvas = document.getElementById('map');
+            this.map.canvas.width = world._W*this.box;
+            this.map.canvas.height = world._H*this.box;
+            this.map.ctx = this.map.canvas.getContext('2d');
+    
+            this.entities.canvas = document.getElementById('entities');
+            this.entities.canvas.width = world._W*this.box;
+            this.entities.canvas.height = world._H*this.box;
+            this.entities.ctx = this.entities.canvas.getContext('2d');
+    
+            this.gui.canvas = document.getElementById('gui');
+            this.gui.canvas.width = world._W*this.box;
+            this.gui.canvas.height = world._H*this.box;
+            this.gui.ctx = this.gui.canvas.getContext('2d');
+            
+            this.sky.canvas = document.getElementById('sky');
+            this.sky.canvas.width = world._W*this.box;
+            this.sky.canvas.height = world._H*this.box;
+            this.sky.ctx = this.sky.canvas.getContext('2d');
+        },
+        
     makeSprite: function(x,y, flip){
         var m_canvas = document.createElement('canvas');
             m_canvas.width = this.box;
@@ -786,12 +824,8 @@ var render = {
         
         if(args.clearSky){
             this.sky.ctx.clearRect(0, 0, world._W*this.box, world._H*this.box);
-        }
-
-        if(game.turn.start){
-            document.getElementById('loading').style.display = 'none';
-            document.getElementById('game').style.display = 'block';
-        }
+        }    
+                
     },
 
 };

@@ -208,16 +208,17 @@ Unit.prototype = {
     },
     
     open: function(){
-        
-            for (var j = 0; j < world.maps[world.map].items.length; j++) {                    
-                if(world.maps[world.map].items[j].x == this.x && world.maps[world.map].items[j].y == this.y){                        
-                    if(world.maps[world.map].items[j].open(this.pirate)){ 
-                        this.message = 'Gold';
-                        this.important = false;
-                        render.render({map:true, gui:true});
-                        this.moves--;
-                    }
-                }                    
+            if(this.moves > 0){
+                for (var j = 0; j < world.maps[world.map].items.length; j++) {                    
+                    if(world.maps[world.map].items[j].x == this.x && world.maps[world.map].items[j].y == this.y){                        
+                        if(world.maps[world.map].items[j].open(this.pirate)){ 
+                            this.message = 'Gold';
+                            this.important = false;
+                            render.render({map:true, gui:true});
+                            this.moves--;
+                        }
+                    }                    
+                }
             }
     },
     

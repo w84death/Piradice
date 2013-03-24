@@ -185,6 +185,8 @@ var load = {
                 new RangePirate({x:13,y:2,squad:1,team:0}),
                 new RangePirate({x:13,y:3,squad:1,team:0}),
                 new RangePirate({x:14,y:3,squad:3,team:0}),
+                new Lumberjack({x:14,y:4,team:0}),
+                new Lumberjack({x:1,y:2,team:0}),
                 
                 new Skeleton({x:14,y:6,squad:3,team:1}),
                 new Skeleton({x:13,y:7,squad:1,team:1}),

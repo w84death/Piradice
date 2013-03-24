@@ -9,7 +9,7 @@ article ul li+li {margin-top:1em;}
 
 #container{/*background:#00c3d4 url('/media/ocean.png');*/ background-color:#fff;}
 #loading {display:block; padding:1em 0; text-align:center;}
-#game {display:none; margin:0 auto; padding-top:32px;}
+#game {margin:0 auto; padding-top:32px; color:#444; text-align:center;}
 
 canvas {display: block; position:absolute;
     image-rendering: optimizeSpeed;
@@ -24,14 +24,24 @@ canvas {display: block; position:absolute;
 nav {position:fixed; top:0; left:0; width:100%; height:32px; background-color:#444;}
 nav ul {background-color:#444;}
 nav ul li {display:inline-block; padding:0 32px; line-height:32px; position:relative;}
+nav ul li a {display:block; text-decoration:none; color:#f8f8f8;}
+nav ul li:hover a  {text-decoration:none; color:#444;}
 nav ul li:hover {background-color:#f8f8f8; color:#444;}
-nav ul li:hover ul {display:block;}
+nav ul li ul li a {color:#f8f8f8 !important;}
+nav ul li ul li:hover a {color:#444 !important;}
+nav ul li:hover ul,
+nav ul li:active ul,
+nav ul li::focus ul {display:block;}
 nav ul li ul {position:absolute; top:32px; left:0; width:256px; display:none; box-shadow:0 4px 8px #000;}
 nav ul li ul li {width:192px; color:#f8f8f8; margin-top:8px;}
 nav ul li ul li:first-child {margin-top:0;}
 nav ul li ul li:hover {background-color:#f8f8f8; color:#444;}
 nav ul li ul li input{float:right;}
 nav ul li.right {float:right;}
+nav ul li span {float:right;}
+nav ul li ul li:hover ul {display:block !important;}
+nav ul li ul li ul {display:none !important; left:256px; top:0;}
+
 
 .desktop {width:512px; margin:0 auto;}    
 article {margin-top:1em;}

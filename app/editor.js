@@ -2,6 +2,8 @@ var editor = {
     settings: null,
     entities: [],
     saved_entities: [],
+    basket: null,
+    
     prices: [
             {unit: 'pirate',price: 10,},
             {unit: 'range_pirate',price: 15,},
@@ -45,7 +47,7 @@ var editor = {
         
         world.loadMap(this.settings); 
         
-        
+        document.getElementById('nextTurn').style.display = 'inline-block';
         document.getElementById('play').innerHTML = 'QUIT GAME';
         document.getElementById('play').setAttribute('onclick','editor.exitPlay()');
     },
@@ -59,6 +61,7 @@ var editor = {
         
         render.render({gui:true, entities:true, map:true, clearSky:true});
         
+        document.getElementById('nextTurn').style.display = 'none';
         document.getElementById('play').innerHTML = 'PLAY';
         document.getElementById('play').setAttribute('onclick','editor.playMap()');
     },
@@ -154,6 +157,11 @@ var editor = {
         console.log(':: SETTINGS SAVED...');
     },
     
+    addToBasket: function(unit){
+        editor.basket = unit;   
+        console.log(unit);
+    },
+    
     buyUnit: function(unit, squad, team){        
         var price = 0;
             
@@ -161,7 +169,7 @@ var editor = {
             if(this.prices[i].unit == unit){
                 price = this.prices[i].price;
             }
-        }
+        }            
         
         if(price*squad > game.teams[team].wallet){
             return false;
@@ -183,6 +191,7 @@ var editor = {
         
         game.teams[team].wallet += price*squad;
         game.updateWallet();
+        game.updateUnits();
     },
     
     putUnit: function(x,y, unit, squad, team){ 
@@ -207,7 +216,7 @@ var editor = {
         }
         
         if(!unit){
-            unit = document.getElementById('unit').value;
+            unit = this.basket;
         }
         
         if(new_unit){
@@ -256,6 +265,7 @@ var editor = {
             }
         }
         
+        game.updateUnits();
         render.render({entities:true});
     },
     

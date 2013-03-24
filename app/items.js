@@ -35,7 +35,7 @@ Item.prototype = {
             
             return true;
         }else
-        if(this.can_open && !this.close){
+        if(this.skeleton && this.can_open && !this.close){
             this.sprite = this.sprite_open-1;
             this.close = true;
             return true;

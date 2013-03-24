@@ -14,14 +14,8 @@
         <link rel="stylesheet" href="/app/app.css">        
     </head>
     <body>
-        <div id="container">
-            <p id="loading"><strong>LOADING..</strong></p>
-            <section id="game" <?php if($_GET['mode'] == 'editor'){ echo('class=editor'); }?>>                        
-                <canvas id="map"></canvas>
-                <canvas id="entities"></canvas>                
-                <canvas id="sky"></canvas>
-                <canvas id="gui"></canvas>                
-            </section>
+        <div id="container">            
+            <section id="game"></section>
             <section id="multi">
                 <h2>PLAYER<span id="playerID">1</span></h2>
                 <p>TURN <span id="turn">1</span></p>
@@ -29,15 +23,26 @@
             </section>
             <nav>
                 <ul>
-                    <li>PIRADICE
+                    <li><a href="javascript:void(0);">PIRADICE</a>
                         <ul>
-                            <li>PLAY WITH FRIEND
-                            <li>PLAY SOLO VS AI
-                            <li>STORY
-                            <li>HELP
-                            <li>CREDITS
+                            <li><a href="javascript:void(0);">TUTORIAL <span>></span></a>
+                                <ul>
+                                    <li  onclick="game.init({campain:true, continue:true})">LOAD GAME
+                                    <li  onclick="game.init({campain:true, newgame:true})">NEW GAME
+                                </ul>
+                            <li><a href="javascript:void(0);">CUSTOM MAP <span>></span></a>
+                                <ul>
+                                    <li onclick="editor.init({random:true})">NEW RANDOM MAP
+                                    <li onclick="editor.init({load:true})">LOAD MAP                                   
+                                </ul>                            
+                            <li><a href="javascript:void(0);">CREDITS</a>
+                                <ul>
+                                    <li>SUNO
+                                    <li>DESIGN & CODE:
+                                    <li>KRZYSZTOF JANKOWSK
+                                </ul>
                         </ul>
-                    <li id="world">WORLD
+                    <li id="world"><a href="javascript:void(0);">WORLD</a>
                         <ul>
                             <li>SEED:  <input id="seed" value="piradice"/>
                             <li>ISLAND: <input id="islands" value="5"/>
@@ -46,30 +51,54 @@
                             <li>PALMS: <input id="palms" value="40"/>
                             <li>CHESTS: <input id="chests" value="5"/>
                             <li><button onclick="editor.generateMap(true)" class="hot">GENERATE</button>
-                            <li><button id="save" onclick="editor.saveSettings()">SAVE</button><button id="load" class="disabled">LOAD</button>                            
-                        </ul>
-                    <li id="wallets">WALLETS
+                            <li>LOCAL STORAGE <span>></span>
+                                <ul>
+                                    <li id="save" onclick="editor.saveSettings()">SAVE
+                                    <li id="load" class="disabled">LOAD
+                                </ul>                                    
+                        </ul>                    
+                    <li id="wallets"><a href="javascript:void(0);">SETTINGS</a>
                         <ul>
-                            <li>SET CAP: <select id="wallet" onchange="game.setWallet();">
+                            <li><select id="team" onchange="game.switchPlayer();">
+                                            <option value="0">PLAYER1</option>
+                                            <option value="1">PLAYER2</option>
+                                        </select>                                        
+                            <select id="ai" onchange="game.updatePlayer();">
+                                            <option value="0" selected>HUMAN</option>
+                                            <option value="1">AI</option>
+                                        </select>
+                            <li>SET WALLET CAP: <select id="wallet" onchange="game.setWallet();">
                                             <option value="30">$30</option>
                                             <option value="50">$50</option>
                                             <option value="100">$100</option>
                                             <option value="200" selected>$200</option>
                                             <option value="999">$999</option>
                                         </select>
-                            <li>PLAYER1: <strong>$<span id="player1_dolars">200</span></strong>
-                            <li>PLAYER2: <strong>$<span id="player2_dolars">200</span></strong>
+                            <li><a href="javascript:void(0);">BUY PIRATES UNITS: <span>></span></a>
+                                <ul>
+                                    <li onclick="editor.addToBasket('pirate');">PIRATE <span>$10</span>
+                                    <li onclick="editor.addToBasket('range_pirate');">PIRATE WITH GUN <span>$15</span>
+                                    <li onclick="editor.addToBasket('lumberjack');">LUMBERJACK <span>$20</span>
+                                    <li onclick="editor.addToBasket('ship');">CARGO SHIP <span>$50</span>
+                                    <li onclick="editor.addToBasket('black_pearl');">BLACK PEARL <span>$65</span>
+                                </ul>
+                            <li><a href="javascript:void(0);">BUY SKELETON UNITS: <span>></span></a>
+                            <ul>
+                                <li onclick="editor.addToBasket('skeleton');">SKELETON <span>$10</span>
+                                <li onclick="editor.addToBasket('dust');">DUST <span>$20</span>
+                                <li onclick="editor.addToBasket('octopus');">OCTOPUS <span>$15</span>
+                            </ul>
+                            <li>UNITS <select id="squad">
+                                            <option value="1">1</option>
+                                            <option value="2">2</option>
+                                            <option value="3">3</option>
+                                            <option value="4">4</option>
+                                            <option value="5">5</option>
+                                            <option value="6">6</option>
+                                        </select> IN SQUAD
                         </ul>
-                    <li id="shop">SHOP
-                        <ul>
-                            <li><select id="team" onchange="game.switchPlayer();">
-                                            <option value="0">PLAYER1</option>
-                                            <option value="1">PLAYER2</option>
-                                        </select>
-                            <select id="ai" onchange="game.updatePlayer();">
-                                            <option value="0" selected>HUMAN</option>
-                                            <option value="1">AI</option>
-                                        </select>
+                    <li id="shop">UNITS
+                        <ul>                                                      
                             <li><select id="unit">
                                             <option value="pirate">[$10] PIRATE</option>
                                             <option value="range_pirate">[$15] PIRATE WITH GUN</option>
@@ -90,6 +119,8 @@
                                         </select> IN SQUAD
                         </ul>
                     <li id="stats"><strong class="progress"><em id="player1_units">0</em></strong> vs <strong class="progress"><em id="player2_units">0</em></strong>
+                    <li>PLAYER1: $<strong id="player1_dolars">200</strong>
+                    <li>PLAYER2: $<strong id="player2_dolars">200</strong>
                     <li class="right"><button id="nextTurn" onclick="game.nextTurn()" class="hot">NEXT TURN</button>
                     <li class="right"><button id="play" onclick="editor.playMap()" class="hot">PLAY</button>
                 </ul>
@@ -128,14 +159,8 @@
                     <li><img src="/manual/piradice_manual_15.png" alt="Piradice manual" />
                     <li>Now play!
                 </ul>
-                
-                
-                <h2>Custom play!</h2>
-                <p>In this map editor You can make any map and put any units to play with. It has bugs but it works :) And its a lot of fun to use.</p>
-                <p>Go and create some awsom map at <button onclick="document.location = '/editor/';" title="Piradice Map Editor">/editor/</button></p>
-
+                                                
                 <h2>News &amp; Discussion</h2>                
-
                 <p>Explore <a href="https://twitter.com/search?q=%23piradice&src=typd" alt="twitter">#piradice</a>, follow <a href="https://twitter.com/w84death" alt="Krzysztof Jankowski on twitter">@w84death</a> and join the discussion on <a href="http://www.reddit.com/r/WebGames/comments/19zlc5/piradice_pirates_pixelart_turnbased_strategy_game/" alt="reddit">reddit</a>.</p>                            
                 
                 <h2>Development</h2>
@@ -156,12 +181,9 @@
         <script src="/app/ai.js"></script>
         <script src="/app/game.js"></script>
         <script src="/app/editor.js"></script>
-        <script>
-        <?php if($_GET['mode'] == 'editor'){ ?>
-            editor.init();        
-        <?php }else{ ?>
-            game.init({campain:true});
-        <?php } ?>
+        <script src="/app/app.js"></script>
+        <script>    
+            app.init({ads:true});
         </script>
         
         <script type="text/javascript">
