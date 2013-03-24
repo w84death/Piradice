@@ -14,11 +14,18 @@ var editor = {
             {unit: 'black_pearl',price: 65,},
             {unit: 'octopus',price: 15,}],
     
-    init: function(){
-        this.updateSettings();
+    init: function(args){
+        if(args.load){
+            this.loadSettings();
+        }
+        if(args.random){
+            this.randomSettings();
+        }else{
+            this.updateSettings();                        
+        }
         game.init(this.settings);        
         game.editor = true;
-        game.play = false;        
+        game.play = false;
         this.updateButtons();        
     },
     
@@ -30,7 +37,7 @@ var editor = {
         }else {
             this.entities = utilities.clone(this.saved_entities);
         }
-        this.updateSettings();
+        this.updateSettings();        
         world.loadMap(this.settings);
         render.render({gui:true, entities:true, map:true});
     },
@@ -46,6 +53,8 @@ var editor = {
         game.preview_play = true;
         
         world.loadMap(this.settings); 
+        document.getElementById('settings').style.display = 'none';
+        document.getElementById('world').style.display = 'none';
         
         document.getElementById('nextTurn').style.display = 'inline-block';
         document.getElementById('play').innerHTML = 'QUIT GAME';
@@ -61,6 +70,9 @@ var editor = {
         
         render.render({gui:true, entities:true, map:true, clearSky:true});
         
+        document.getElementById('settings').style.display = 'inline-block';
+        document.getElementById('world').style.display = 'inline-block';
+
         document.getElementById('nextTurn').style.display = 'none';
         document.getElementById('play').innerHTML = 'PLAY';
         document.getElementById('play').setAttribute('onclick','editor.playMap()');
@@ -77,6 +89,23 @@ var editor = {
             palms: parseInt(document.getElementById('palms').value),
             chests: parseInt(document.getElementById('chests').value),
             wallet: parseInt(document.getElementById('wallet').value),
+            player1_gold: parseInt(document.getElementById('player1_gold').value),
+            player2_gold: parseInt(document.getElementById('player2_gold').value),
+            entities: this.entities,               
+        }
+    },
+
+    randomSettings: function(){
+        this.settings = { 
+            editor: true,
+            id: 0,
+            seed: (Math.random()*1024)<<0,
+            islands: 1 + (Math.random()*12)<<0,
+            islands_size: 10 + (Math.random()*70)<<0,      
+            grass: 0 + (Math.random()*80)<<0,
+            palms: 10 + (Math.random()*80)<<0,
+            chests: 1 + (Math.random()*4)<<0,
+            wallet: parseInt(document.getElementById('wallet').value),
             entities: this.entities,               
         }
     },
@@ -84,19 +113,26 @@ var editor = {
     updateButtons: function(){
         document.getElementById('nextTurn').style.display = 'none';
         document.getElementById('play').style.display = 'inline-block';
-        
-        
+                
+        document.getElementById('settings').style.display = 'inline-block';
         document.getElementById('world').style.display = 'inline-block';
-        document.getElementById('wallets').style.display = 'inline-block';
-        document.getElementById('shop').style.display = 'inline-block';
-        
+
         if(localStorage.getItem("save")){
             document.getElementById('load').removeAttribute('class');
             document.getElementById('load').setAttribute('onclick','editor.loadSettings()');
         }else{
             document.getElementById('load').setAttribute('class','disabled');
             document.getElementById('load').removeAttribute('onclick');
-        }        
+        }  
+
+        document.getElementById('seed').value = this.settings.seed;
+        document.getElementById('islands').value = this.settings.islands;
+        document.getElementById('islands_size').value = this.settings.islands_size;
+        document.getElementById('grass').value = this.settings.grass;
+        document.getElementById('palms').value = this.settings.palms;
+        document.getElementById('chests').value = this.settings.chests;
+        
+        document.getElementById('wallet').value = this.settings.wallet;      
     },
     
     loadSettings: function(){
@@ -111,19 +147,16 @@ var editor = {
             palms: localStorage.getItem("palms"),
             chests: localStorage.getItem("chests"),
             wallet: localStorage.getItem("wallet"),
+            player1_gold: localStorage.getItem("player1_gold"),
+            player2_gold: localStorage.getItem("player2_gold"),
             entities: [],               
         }
-        
-        document.getElementById('seed').value = this.settings.seed;
-        document.getElementById('islands').value = this.settings.islands;
-        document.getElementById('islands_size').value = this.settings.islands_size;
-        document.getElementById('grass').value = this.settings.grass;
-        document.getElementById('palms').value = this.settings.palms;
-        document.getElementById('chests').value = this.settings.chests;
-        
-        document.getElementById('wallet').value = this.settings.wallet;
-         
-         
+                
+        this.updateButtons();
+        game.updateGold({
+            player1: player1_gold,
+            player2: player2_gold
+        });
         this.saved_entities = [];   
         
         var entities_from_storage = JSON.parse(localStorage.getItem("entities"));
@@ -147,11 +180,11 @@ var editor = {
         localStorage.setItem("islands_size",this.settings.islands_size);
         localStorage.setItem("grass",this.settings.grass);
         localStorage.setItem("palms",this.settings.palms);
-        localStorage.setItem("chests",this.settings.chests);
-        
-        localStorage.setItem("wallet",this.settings.wallet);
-                
+        localStorage.setItem("chests",this.settings.chests);        
+        localStorage.setItem("wallet",this.settings.wallet);            
         localStorage.setItem("entities",JSON.stringify(this.entities));
+        localStorage.setItem("player1_gold",this.settings.player1_gold);
+        localStorage.setItem("player2_gold",this.settings.player2_gold);
         this.updateButtons(); 
         
         console.log(':: SETTINGS SAVED...');

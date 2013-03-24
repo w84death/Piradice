@@ -45,14 +45,15 @@ var game = {
         
         if(!this.play){
             world.init(args);
-            render.init(); 
+            render.init();
             render.gui.canvas.addEventListener('mousedown', game.click, false);
-            this.play = true;
+            this.play = true;            
         }else{
             world.restartMap(args);
             this.turn.start = true;        
-            game.shoutTeam();            
-            render.render({gui:true, entities:true, map:true});            
+            game.shoutTeam(); 
+            fogOfWar.update();           
+            render.render({gui:true, entities:true, map:true,sky:true});            
         }        
         
     },
@@ -190,8 +191,9 @@ var game = {
                  ai.loop();
             }        
 
-        render.render({gui:true, entities:true, sky:true});
+        
         fogOfWar.update();
+        render.render({gui:true, entities:true, sky:true});
         multi.show();
     },
 
@@ -277,10 +279,12 @@ var game = {
             player2_units = 0;
         
         for (var i = 0; i < world.maps[world.map].entities.length; i++) {
-            if(world.maps[world.map].entities[i].team === 0){
-                player1_units += world.maps[world.map].entities[i].squad;
-            }else{
-                player2_units += world.maps[world.map].entities[i].squad; 
+            if(world.maps[world.map].entities[i].alive){
+                if(world.maps[world.map].entities[i].team === 0){
+                    player1_units += world.maps[world.map].entities[i].squad;
+                }else{
+                    player2_units += world.maps[world.map].entities[i].squad; 
+                }
             }
         }
         
@@ -290,9 +294,20 @@ var game = {
         }
         
         document.getElementById('player1_units').innerHTML = player1_units;
-        document.getElementById('player1_units').setAttribute('width',percent(player1_units, player1_units+player2_units) + '%');
+        document.getElementById('player1_units').setAttribute('style','width: ' + percent(player1_units, player1_units+player2_units) + '%');
         document.getElementById('player2_units').innerHTML = player2_units;
-        document.getElementById('player2_units').setAttribute('width',percent(player2_units, player1_units+player2_units) + '%');
+        document.getElementById('player2_units').setAttribute('style','width: ' + percent(player2_units, player1_units+player2_units) + '%');
+    },
+
+    updateGold: function(args){    
+        if(args.player1){
+            game.teams[0].wallet = args.player1;
+        }
+        if(args.player2){
+            game.teams[1].wallet = args.player2;
+        }
+        document.getElementById('player1_gold').innerHTML = game.teams[0].wallet;
+        document.getElementById('player2_gold').innerHTML = game.teams[1].wallet;        
     },
     
     shoutTeam: function(){
@@ -358,6 +373,7 @@ var world = {
         
         fogOfWar.init();        
         game.shoutTeam();
+        fogOfWar.update();  
     },
     
     loadMap: function(args){
@@ -366,8 +382,8 @@ var world = {
         this.saved_map = utilities.clone(this.maps);
         game.updateUnits();
         game.shoutTeam();
-        multi.show();
         fogOfWar.update();
+        multi.show();        
     },
     
     restartMap: function(args){

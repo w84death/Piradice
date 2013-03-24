@@ -21,7 +21,7 @@
                 <p>TURN <span id="turn">1</span></p>
                 <p><button id="playButton" onclick="multi.play()" class="hot">PLAY</button></p>
             </section>
-            <nav>
+            <nav class="top">
                 <ul>
                     <li><a href="javascript:void(0);">PIRADICE</a>
                         <ul>
@@ -30,10 +30,11 @@
                                     <li  onclick="game.init({campain:true, continue:true})">LOAD GAME
                                     <li  onclick="game.init({campain:true, newgame:true})">NEW GAME
                                 </ul>
-                            <li><a href="javascript:void(0);">CUSTOM MAP <span>></span></a>
+                            <li><a href="javascript:void(0);">SKIRMISH <span>></span></a>
                                 <ul>
-                                    <li onclick="editor.init({random:true})">NEW RANDOM MAP
-                                    <li onclick="editor.init({load:true})">LOAD MAP                                   
+                                    <li onclick="editor.init({random:true})">NEW RANDOM MAP                                  
+                                    <li onclick="editor.init({mapset:0})">2 PLAYERS MAPS
+                                    <li onclick="editor.init({mapset:1})">AI MAP SET                                  
                                 </ul>                            
                             <li><a href="javascript:void(0);">CREDITS</a>
                                 <ul>
@@ -57,7 +58,7 @@
                                     <li id="load" class="disabled">LOAD
                                 </ul>                                    
                         </ul>                    
-                    <li id="wallets"><a href="javascript:void(0);">SETTINGS</a>
+                    <li id="settings"><a href="javascript:void(0);">SETTINGS</a>
                         <ul>
                             <li><select id="team" onchange="game.switchPlayer();">
                                             <option value="0">PLAYER1</option>
@@ -96,12 +97,18 @@
                                             <option value="5">5</option>
                                             <option value="6">6</option>
                                         </select> IN SQUAD
-                        </ul>                    
-                    <li id="stats"><strong class="progress"><em id="player1_units">0</em></strong> vs <strong class="progress"><em id="player2_units">0</em></strong>
-                    <li>PLAYER1: $<strong id="player1_dolars">200</strong>
-                    <li>PLAYER2: $<strong id="player2_dolars">200</strong>
-                    <li class="right"><button id="nextTurn" onclick="game.nextTurn()" class="hot">NEXT TURN</button>
+                        </ul>                                        
                     <li class="right"><button id="play" onclick="editor.playMap()" class="hot">PLAY</button>
+                </ul>
+            </nav>
+            <nav class="bottom">
+                <ul>
+                    <li>PLAYER1: $<strong id="player1_gold">200</strong>
+                    <li id="stats"><strong class="progress right"><em id="player1_units">0</em></strong> vs <strong class="progress"><em id="player2_units">0</em></strong>                    
+                    <li>PLAYER2: $<strong id="player2_gold">200</strong>                    
+                </ul>
+                <ul class="right">
+                    <li><button id="nextTurn" onclick="game.nextTurn()" class="hot">NEXT TURN</button>
                 </ul>
             </nav>
         </div>

@@ -215,7 +215,10 @@ Unit.prototype = {
                             this.message = 'Gold';
                             this.important = false;
                             render.render({map:true, gui:true});
-                            this.moves--;
+                            this.moves--;                            
+                            game.teams[game.turn.team].wallet += 20;
+                            game.updateGold();
+                            this.unselect();
                         }
                     }                    
                 }
