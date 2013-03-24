@@ -42,6 +42,7 @@ nav ul li span {float:right;}
 nav ul li ul li:hover ul {display:block !important;}
 nav ul li ul li ul {display:none !important; left:256px; top:0;}
 
+.progress {}
 
 .desktop {width:512px; margin:0 auto;}    
 article {margin-top:1em;}

@@ -283,8 +283,16 @@ var game = {
                 player2_units += world.maps[world.map].entities[i].squad; 
             }
         }
+        
+        function percent(val, total){
+            var per = ((val*100)/total)<<0;                    
+            return per;
+        }
+        
         document.getElementById('player1_units').innerHTML = player1_units;
+        document.getElementById('player1_units').setAttribute('width',percent(player1_units, player1_units+player2_units) + '%');
         document.getElementById('player2_units').innerHTML = player2_units;
+        document.getElementById('player2_units').setAttribute('width',percent(player2_units, player1_units+player2_units) + '%');
     },
     
     shoutTeam: function(){
@@ -421,8 +429,7 @@ var fogOfWar = {
             for (var t = 0; t < game.teams.length; t++) {
                 this.data[t][i] = 50;
             }
-        }
-        
+        }                
         
         for (var i = 0; i < world.maps[world.map].entities.length; i++) {                                
             

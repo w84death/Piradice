@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-        <title>Piradice <?php if($_GET['mode'] == 'editor'){ echo('EDITOR'); }?> - Turn-based strategy game in HTML5</title>
+        <title>Piradice - Turn-based strategy game in HTML5</title>
         <meta name="description" content="Pirates and dices in paradise! Free turn-based strategy game in Your browser.">        
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black" />
@@ -79,14 +79,14 @@
                                     <li onclick="editor.addToBasket('pirate');">PIRATE <span>$10</span>
                                     <li onclick="editor.addToBasket('range_pirate');">PIRATE WITH GUN <span>$15</span>
                                     <li onclick="editor.addToBasket('lumberjack');">LUMBERJACK <span>$20</span>
-                                    <li onclick="editor.addToBasket('ship');">CARGO SHIP <span>$50</span>
-                                    <li onclick="editor.addToBasket('black_pearl');">BLACK PEARL <span>$65</span>
+                                    <li onclick="editor.addToBasket('ship');">MOTHERSHIP <span>$50</span>
                                 </ul>
                             <li><a href="javascript:void(0);">BUY SKELETON UNITS: <span>></span></a>
                             <ul>
                                 <li onclick="editor.addToBasket('skeleton');">SKELETON <span>$10</span>
                                 <li onclick="editor.addToBasket('dust');">DUST <span>$20</span>
                                 <li onclick="editor.addToBasket('octopus');">OCTOPUS <span>$15</span>
+                                <li onclick="editor.addToBasket('cementary');">CEMENTARY <span>$50</span>
                             </ul>
                             <li>UNITS <select id="squad">
                                             <option value="1">1</option>
@@ -96,28 +96,7 @@
                                             <option value="5">5</option>
                                             <option value="6">6</option>
                                         </select> IN SQUAD
-                        </ul>
-                    <li id="shop">UNITS
-                        <ul>                                                      
-                            <li><select id="unit">
-                                            <option value="pirate">[$10] PIRATE</option>
-                                            <option value="range_pirate">[$15] PIRATE WITH GUN</option>
-                                            <option value="lumberjack">[$20] LUMBERJACK</option>
-                                            <option value="ship">[$50] CARGO SHIP</option>
-                                            <option value="black_pearl">[$65] BLACK PEARL</option>
-                                            <option value="skeleton">[$10] SKELETON</option>
-                                            <option value="dust">[$20] DUST</option>                                    
-                                            <option value="octopus">[$15] OCTOPUS</option>
-                                        </select>
-                            <li>UNITS <select id="squad">
-                                            <option value="1">1</option>
-                                            <option value="2">2</option>
-                                            <option value="3">3</option>
-                                            <option value="4">4</option>
-                                            <option value="5">5</option>
-                                            <option value="6">6</option>
-                                        </select> IN SQUAD
-                        </ul>
+                        </ul>                    
                     <li id="stats"><strong class="progress"><em id="player1_units">0</em></strong> vs <strong class="progress"><em id="player2_units">0</em></strong>
                     <li>PLAYER1: $<strong id="player1_dolars">200</strong>
                     <li>PLAYER2: $<strong id="player2_dolars">200</strong>
