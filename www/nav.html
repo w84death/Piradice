@@ -1,0 +1,69 @@
+<nav class="top">
+    <ul>
+        <li><a href="javascript:void(0);">PIRADICE</a>
+            <ul>
+                <li><a href="/help/">HELP</a>
+                <li><a href="/credits/">CREDITS</a>
+            </ul>
+        <li id="world"><a href="javascript:void(0);">WORLD</a>
+            <ul>
+                <li>SEED:  <input id="seed" value="piradice"/>
+                <li>ISLAND: <input id="islands" value="5"/>
+                <li>SIZE: <input id="islands_size" value="20"/>
+                <li>GRASS: <input id="grass" value="16"/>
+                <li>PALMS: <input id="palms" value="40"/>
+                <li>CHESTS: <input id="chests" value="5"/>
+                <li><button onclick="editor.generateMap(true)" class="hot">GENERATE</button>
+                <li>LOCAL STORAGE <span>></span>
+                    <ul>
+                        <li id="save" onclick="editor.saveSettings()">SAVE
+                        <li id="load" class="disabled">LOAD
+                    </ul>                                    
+            </ul>                    
+        <li id="settings"><a href="javascript:void(0);">SETTINGS</a>
+            <ul>
+                <li><a href="javascript:void(0);">PLAYER1 <span>></span></a>
+                    <ul>
+                        <li onchange="game.updatePlayer({player:0, ai:false});">HUMAN
+                        <li onchange="game.updatePlayer({player:0, ai:true});">AI
+                    </ul>
+                <li><a href="javascript:void(0);">PLAYER2 <span>></span></a>
+                    <ul>
+                        <li onchange="game.updatePlayer({player:1, ai:false});">HUMAN
+                        <li onchange="game.updatePlayer({player:1, ai:true});">AI
+                    </ul>
+                <li><a href="javascript:void(0);">WALLET <span>></span></a> 
+                    <ul>
+                        <li onchange="game.setWallet(30);">$30
+                        <li onchange="game.setWallet(50);">$50
+                        <li onchange="game.setWallet(100);">$100
+                        <li onchange="game.setWallet(200);">$200
+                        <li onchange="game.setWallet(500);">$500
+                        <li onchange="game.setWallet(1000);">$1000                                            
+                    </ul>                            
+            </ul>                                        
+        <li class="right"><button id="play" onclick="editor.playMap()" class="hot">PLAY</button>
+    </ul>
+</nav>
+<nav class="bottom">
+    <ul class="buy">
+        <li><a href="javascript:void(0);">PLAYER1: $<strong id="player1_gold">200</strong> <span>></span></a>
+            <ul>
+                <li onclick="editor.addToBasket('ship');">SHIP <span>$50</span>
+                <li onclick="editor.addToBasket('lumberjack');">LUMBERJACK <span>$20</span>
+                <li onclick="editor.addToBasket('range_pirate');">PIRATE WITH GUN <span>$15</span>                            
+                <li onclick="editor.addToBasket('pirate');">PIRATE <span>$10</span>
+            </ul>
+        <li id="stats"><strong class="progress right"><em id="player1_units">0</em></strong> vs <strong class="progress"><em id="player2_units">0</em></strong>                    
+        <li><a href="javascript:void(0);">PLAYER2: $<strong id="player2_gold">200</strong> <span>></span></a>    
+            <ul>
+                <li onclick="editor.addToBasket('cementary');">CEMENTARY <span>$50</span>
+                <li onclick="editor.addToBasket('octopus');">OCTOPUS <span>$15</span>
+                <li onclick="editor.addToBasket('dust');">DUST <span>$20</span>
+                <li onclick="editor.addToBasket('skeleton');">SKELETON <span>$10</span>
+            </ul>               
+    </ul>
+    <ul class="right">
+        <li><button id="nextTurn" onclick="game.nextTurn()" class="hot">NEXT TURN</button>
+    </ul>
+</nav>

@@ -92,7 +92,7 @@ var editor = {
             grass: parseInt(document.getElementById('grass').value),
             palms: parseInt(document.getElementById('palms').value),
             chests: parseInt(document.getElementById('chests').value),
-            wallet: parseInt(document.getElementById('wallet').value),
+            wallet: 200,
             player1_gold: game.teams[0].wallet,
             player2_gold: game.teams[1].wallet,
             entities: this.entities,               
@@ -231,14 +231,19 @@ var editor = {
         game.updateUnits();
     },
     
-    putUnit: function(x,y, unit, squad, team){ 
-        if(!team){
-            team = parseInt(document.getElementById('team').value);
-        }
+    putUnit: function(x,y, unit, squad, team){         
         
+        if(unit == 'ship'){
+            team = 0;            
+        }
+        if(unit == 'cementary'){
+            team = 1;            
+        }
+
         var new_unit = true,            
             ai = game.teams[team].ai;
         
+
         for (var i = 0; i < this.entities.length; i++) {
             if(this.entities[i].x == x && this.entities[i].y == y){
                 this.sellUnit(this.entities[i].name, this.entities[i].squad, this.entities[i].team);
@@ -249,7 +254,7 @@ var editor = {
         }
         
         if(!squad){
-            squad = parseInt(document.getElementById('squad').value);
+            squad = 1;
         }
         
         if(!unit){
@@ -261,44 +266,45 @@ var editor = {
             if(this.buyUnit(unit, squad, team)){
                 
                 if(unit == 'pirate'){
-                    this.entities.push(new Pirate({x:x,y:y,squad:squad,team:team, ai:ai}));
-                    this.saved_entities.push(new Pirate({x:x,y:y,squad:squad,team:team, ai:ai}));                
+                    this.entities.push(new Pirate({x:x,y:y,squad:1,team:0, ai:ai}));
+                    this.saved_entities.push(new Pirate({x:x,y:y,squad:1,team:0, ai:ai}));                
                 }
                 
                 if(unit == 'range_pirate'){
-                    this.entities.push(new RangePirate({x:x,y:y,squad:squad,team:team, ai:ai}));
-                    this.saved_entities.push(new RangePirate({x:x,y:y,squad:squad,team:team, ai:ai}));
+                    this.entities.push(new RangePirate({x:x,y:y,squad:1,team:0, ai:ai}));
+                    this.saved_entities.push(new RangePirate({x:x,y:y,squad:1,team:0, ai:ai}));
                 }
                 
                 if(unit == 'lumberjack'){
-                    this.entities.push(new Lumberjack({x:x,y:y,team:team, ai:ai}));
-                    this.saved_entities.push(new Lumberjack({x:x,y:y,team:team, ai:ai}));
-                }
-                
-                if(unit == 'skeleton'){
-                    this.entities.push(new Skeleton({x:x,y:y,squad:squad,team:team, ai:ai}));
-                    this.saved_entities.push(new Skeleton({x:x,y:y,squad:squad,team:team, ai:ai}));
-                }
-                
-                if(unit == 'dust'){
-                    this.entities.push(new Dust({x:x,y:y,team:team, ai:ai}));
-                    this.saved_entities.push(new Dust({x:x,y:y,team:team, ai:ai}));
-                }
-                
-                if(unit == 'octopus'){
-                    this.entities.push(new Octopus({x:x,y:y,team:team, ai:ai}));
-                    this.saved_entities.push(new Octopus({x:x,y:y,team:team, ai:ai}));
+                    this.entities.push(new Lumberjack({x:x,y:y,team:0, ai:ai}));
+                    this.saved_entities.push(new Lumberjack({x:x,y:y,team:0, ai:ai}));
                 }
                 
                 if(unit == 'ship'){
-                    this.entities.push(new Ship({x:x,y:y,team:team, ai:ai}));
-                    this.saved_entities.push(new Ship({x:x,y:y,team:team, ai:ai}));
+                    this.entities.push(new Ship({x:x,y:y,team:0, ai:ai}));
+                    this.saved_entities.push(new Ship({x:x,y:y,team:0, ai:ai}));
+                }
+
+                if(unit == 'skeleton'){
+                    this.entities.push(new Skeleton({x:x,y:y,squad:1,team:1, ai:ai}));
+                    this.saved_entities.push(new Skeleton({x:x,y:y,squad:1,team:1, ai:ai}));
                 }
                 
-                if(unit == 'black_pearl'){
-                    this.entities.push(new BlackPearl({x:x,y:y,team:team, ai:ai}));
-                    this.saved_entities.push(new BlackPearl({x:x,y:y,team:team,ai:ai}));
+                if(unit == 'dust'){
+                    this.entities.push(new Dust({x:x,y:y,team:1, ai:ai}));
+                    this.saved_entities.push(new Dust({x:x,y:y,team:1, ai:ai}));
                 }
+                
+                if(unit == 'octopus'){
+                    this.entities.push(new Octopus({x:x,y:y,team:1, ai:ai}));
+                    this.saved_entities.push(new Octopus({x:x,y:y,team:1, ai:ai}));
+                }
+                
+                if(unit == 'cementary'){
+                    //this.entities.push(new Cementary({x:x,y:y,team:1, ai:ai}));
+                    //this.saved_entities.push(new Cementary({x:x,y:y,team:1, ai:ai}));
+                }
+                
             }
         }
         

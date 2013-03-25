@@ -439,10 +439,10 @@ var Ship = function Ship(args){
     this.ai = args.ai || false;
     this.x = args.x;
     this.y = args.y;
-    this.sprite = 39;
+    this.sprite = 35;
     this.water = true;
     this.range = true;    
-    this.transport = true;
+    this.create_unit = true;
     this.squad = 1;
     this.moves = 0;
     this.messages = ['Sail', 'Ahoy'];
@@ -451,25 +451,23 @@ var Ship = function Ship(args){
 
 Ship.prototype = new Unit();
 
-var BlackPearl = function BlackPearl(args){
-    this.name = 'black_pearl';    
-    this.pirate = true;
-    this.ai = args.ai || false;
+var Cementary = function Cementary(args){
+    this.name = 'Cementary';
+    this.ai = args.ai || true;
+    this.cementary = true;
+    this.skeleton = true;
+    this.create_unit = true;
     this.x = args.x;
     this.y = args.y;
-    this.sprite = 46;
-    this.water = true;
-    this.range = true;    
-    this.transport = true;
     this.team = args.team;
     this.squad = 1;
-    this.max = 3;
-    this.moves = 0;
-    this.messages = ['Sail', 'Ahoy'];
+    this.max = 1;
+    this.sprite = 39;
+    this.messages = ['uuu', 'ooo'];
     this.fow = 5;
 };
 
-BlackPearl.prototype = new Unit();
+Cementary.prototype = new Unit();
 
 var Octopus = function Octopus(args){
     this.name = 'octopus';

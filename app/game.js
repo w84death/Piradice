@@ -24,7 +24,7 @@ var game = {
         ai: false,
         wallet: 200,
     },{
-        ai: true,
+        ai: false,
         wallet: 200, 
     }],
     play: false,
@@ -43,6 +43,9 @@ var game = {
 
     init: function(args){        
         
+        document.getElementById('hideThis').style.display = 'none';
+        document.getElementById('mainMenu').style.display = 'none';
+
         if(!this.play){
             world.init(args);
             render.init();
@@ -239,11 +242,8 @@ var game = {
         
     },
         
-    updatePlayer: function(){
-        var team = parseInt(document.getElementById('team').value),
-            ai = Boolean(parseInt(document.getElementById('ai').value));
-            
-        game.teams[team].ai = ai;            
+    updatePlayer: function(args){        
+        game.teams[args.player].ai = args.ai;            
     },
     
     switchPlayer:function(){
@@ -258,10 +258,9 @@ var game = {
         }    
     },
     
-    setWallet: function(){
-        var wallet = parseInt(document.getElementById('wallet').value);
+    setWallet: function(gold){
         for (var i = 0; i < game.teams.length; i++) {
-            game.teams[i].wallet = wallet;    
+            game.teams[i].wallet = gold;    
         }
         game.updateWallet();
     },
@@ -368,7 +367,7 @@ var world = {
         if(args.editor){
             this.map = 0;
             this._W = ((((window.innerWidth)/(render.box*render.scale)))<<0);
-            this._H = ((((window.innerHeight)/(render.box*render.scale)))<<0)-2; // 2 for top & bottom menu 
+            this._H = ((((window.innerHeight)/(render.box*render.scale)))<<0)-1; // 2 for top & bottom menu 
             this.maps = load.map(args);
             this.saved_map = utilities.clone(this.maps);                    
         }              
@@ -537,7 +536,7 @@ var render = {
                 render.sprites[13] = render.makeSprite(0,2, false); // treasure
                 render.sprites[14] = render.makeSprite(1,2, false); // treasure open
                 render.sprites[15] = render.makeSprite(5,2, false); // reloading
-                render.sprites[16] = null;//16
+                render.sprites[16] = render.makeSprite(2,1, false); // pirate flag
                 render.sprites[37] = render.makeSprite(3,2, false); // big skeleton head
                 render.sprites[38] = render.makeSprite(6,3, false); // cut forest
     
@@ -560,10 +559,10 @@ var render = {
                 render.sprites[32] = [render.makeSprite(3,4, false),render.makeSprite(3,4, true)]; // range pirate 4
                 render.sprites[33] = [render.makeSprite(4,4, false),render.makeSprite(4,4, true)]; // range pirate 5
                 render.sprites[34] = [render.makeSprite(5,4, false),render.makeSprite(5,4, true)]; // range pirate 6
-    
-                render.sprites[36] = [render.makeSprite(2,2, false),render.makeSprite(2,2, true)]; // octopus
-    
-                render.sprites[39] = [render.makeSprite(0,6, false),render.makeSprite(0,6, true)]; // ship 0
+                render.sprites[35] = [render.makeSprite(2,2, false),render.makeSprite(2,2, true)]; // ship
+                render.sprites[36] = [render.makeSprite(0,6, false),render.makeSprite(0,6, true)]; // octopus
+                render.sprites[39] = [render.makeSprite(3,2, false),render.makeSprite(3,2, false)]; // cementary
+                /*
                 render.sprites[40] = [render.makeSprite(1,6, false),render.makeSprite(1,6, true)]; // ship 1
                 render.sprites[41] = [render.makeSprite(2,6, false),render.makeSprite(2,6, true)]; // ship 2
                 render.sprites[42] = [render.makeSprite(3,6, false),render.makeSprite(3,6, true)]; // ship 3
@@ -574,7 +573,8 @@ var render = {
                 render.sprites[46] = [render.makeSprite(0,7, false),render.makeSprite(0,7, true)]; // black pearl 0
                 render.sprites[47] = [render.makeSprite(1,7, false),render.makeSprite(1,7, true)]; // black pearl 1
                 render.sprites[48] = [render.makeSprite(2,7, false),render.makeSprite(2,7, true)]; // black pearl 2
-                
+                */
+
                 render.sprites[49] = [render.makeSprite(6,5, false),render.makeSprite(6,5, true)]; // dust
                 render.sprites[50] = render.makeSprite(7,0, false); // cloud 0
                 render.sprites[51] = render.makeSprite(7,1, false); // cloud bottom

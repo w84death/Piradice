@@ -10,13 +10,15 @@ article ul li+li {margin-top:1em;}
 #container{/*background:#00c3d4 url('/media/ocean.png');*/ background-color:#fff;}
 #loading {display:block; padding:1em 0; text-align:center;}
 #game {margin:0 auto; padding-top:32px; color:#444; text-align:center;}
-
 canvas {display: block; position:absolute;
     image-rendering: optimizeSpeed;
     image-rendering: -moz-crisp-edges;
     image-rendering: -webkit-optimize-contrast;
     image-rendering: optimize-contrast;}
 
+#mainMenu {min-height:480px; background-size: cover; padding:2em 4em;
+		background:#58bdcd url('../media/background.jpg') no-repeat center center fixed; }
+#mainMenu p {margin: 2em 0;}
 #multi {position:fixed; width:100%; height:100%; top:0; left:0; padding-top:256px; text-align:center; display:none; 
     background-color:#f8f8f8; color:#444; line-height:40px;}
 #multi h2 {color:#000;}
@@ -71,6 +73,9 @@ button.hot {background-color:#e44; color:#fff;}
 .disabled {opacity:0.2;}
 aside ul.play {border: 1px dashed #fff;}
 aside ul.play li {text-align:center;}
+button.big {padding: 1em 2em;font-size: 2em;}
+
+.ad {position:absolute; right:4em; bottom:2em;}
 
 #shop,
 #settings,
