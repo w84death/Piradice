@@ -357,7 +357,7 @@ var shop = {
                 }
             };
 
-            if(cementars < chests.length){
+            if(chests.length > 0){
                 var r = (Math.random()*chests.length)<<0;
                 world.maps[world.map].items[chests[r]].hasCementary = true;
                 newX = world.maps[world.map].items[chests[r]].x + 1;
