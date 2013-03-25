@@ -25,7 +25,7 @@ var Unit = function Unit(){
     this.transport = false;
     this.on_board = [];
     this.team = 0;
-    this.moves = 1;
+    this.moves = 0;
     this.disable_moves = false;
     this.reloading = 0;    
     this.message = null;
@@ -56,7 +56,7 @@ Unit.prototype = {
                         }
                     }
                 };
-                if(open){ shop.open({team:this.team}); }
+                if(open){ shop.open({team:this.team, more:true}); }
             }
 
             if(this.water){
@@ -155,17 +155,19 @@ Unit.prototype = {
                 }
             }  
               
-            for (var i = 0; i < this.move_area.length; i++) {
-                for (var j = 0; j < world.maps[world.map].entities.length; j++) { 
-                    if( world.maps[world.map].entities[j].x == this.move_area[i].x && world.maps[world.map].entities[j].y == this.move_area[i].y && world.maps[world.map].entities[j].team != this.team ){ 
-                        this.move_area[i].attack = true;    
-                    }
-                    
-                    if( world.maps[world.map].entities[j].x == this.move_area[i].x && world.maps[world.map].entities[j].y == this.move_area[i].y && world.maps[world.map].entities[j].team == this.team ){ 
-                        if(this.name == world.maps[world.map].entities[j].name){
-                            this.move_area[i].merge = true;
-                        }else{
-                            this.move_area[i].move = false;
+            if(!this.disable_moves){
+                for (var i = 0; i < this.move_area.length; i++) {
+                    for (var j = 0; j < world.maps[world.map].entities.length; j++) { 
+                        if( world.maps[world.map].entities[j].x == this.move_area[i].x && world.maps[world.map].entities[j].y == this.move_area[i].y && world.maps[world.map].entities[j].team != this.team ){ 
+                            this.move_area[i].attack = true;    
+                        }
+                        
+                        if( world.maps[world.map].entities[j].x == this.move_area[i].x && world.maps[world.map].entities[j].y == this.move_area[i].y && world.maps[world.map].entities[j].team == this.team ){ 
+                            if(this.name == world.maps[world.map].entities[j].name){
+                                this.move_area[i].merge = true;
+                            }else{
+                                this.move_area[i].move = false;
+                            }
                         }
                     }
                 }
@@ -176,6 +178,7 @@ Unit.prototype = {
     
     unselect: function(){
         this.selected = false;
+        shop.close();
     },
     
     move: function(x,y){
@@ -250,8 +253,7 @@ Unit.prototype = {
             
         for (var i = 0; i < world.maps[world.map].entities.length; i++) {
             if(world.maps[world.map].entities[i].x == x && world.maps[world.map].entities[i].y == y && world.maps[world.map].entities[i].alive){
-                other = world.maps[world.map].entities[i];   
-                
+                other = world.maps[world.map].entities[i];                   
             }
         }
                 
@@ -377,12 +379,11 @@ Unit.prototype = {
 var Pirate = function Pirate(args){
     this.name = 'pirate';
     this.pirate = true;
-    this.ai = args.ai || false;
     this.x = args.x;
     this.y = args.y;
-    this.team = args.team;
-    this.squad = args.squad;
-    this.sprite = 17 + args.squad -1;
+    this.team = 0;
+    this.squad = 1;
+    this.sprite = 17;
     this.messages = ['Arr..', 'Yes?', '..y', 'Go!', 'ye!'];
 };
 
@@ -391,13 +392,12 @@ Pirate.prototype = new Unit();
 var RangePirate = function RangePirate(args){
     this.name = 'range_pirate';
     this.pirate = true;
-    this.ai = args.ai || false;
     this.x = args.x;
     this.y = args.y;
-    this.sprite = 29 + args.squad -1;
+    this.sprite = 29;
     this.range = true;
-    this.team = args.team;
-    this.squad = args.squad;
+    this.team = 0;
+    this.squad = 1;
     this.messages = ['Fire!', 'Aim', 'Yarr!', 'Bum!'];
     this.fow = 4;
 };
@@ -408,10 +408,9 @@ RangePirate.prototype = new Unit();
 var Lumberjack = function Lumberjack(args){
     this.name = 'lumberjack';
     this.pirate = true;
-    this.ai = args.ai || false;
     this.x = args.x;
     this.y = args.y;
-    this.team = args.team;
+    this.team = 0;
     this.lumberjack = true;
     this.squad = 1;
     this.max = 1;
@@ -428,9 +427,9 @@ var Skeleton = function Skeleton(args){
     this.skeleton = true;
     this.x = args.x;
     this.y = args.y;
-    this.team = args.team;
-    this.squad = args.squad;
-    this.sprite = 23 + args.squad -1;
+    this.team = 1;
+    this.squad = 1;
+    this.sprite = 23;
     this.messages = ['...', '..', '.'];    
 };
 
@@ -443,7 +442,7 @@ var Dust = function Dust(args){
     this.skeleton = true;
     this.x = args.x;
     this.y = args.y;
-    this.team = args.team;
+    this.team = 1;
     this.squad = 1;
     this.max = 1;
     this.sprite = 49;
@@ -456,8 +455,8 @@ Dust.prototype = new Unit();
 var Ship = function Ship(args){
     this.name = 'ship';
     this.pirate = true;
-    this.ai = args.ai || false;
-    this.x = args.x;
+    this.team = 0;
+    this.x = args.x;    
     this.y = args.y;
     this.sprite = 35;
     this.water = true;
@@ -478,7 +477,7 @@ var Cementary = function Cementary(args){
     this.create_unit = true;
     this.x = args.x;
     this.y = args.y;
-    this.team = args.team;
+    this.team = 1;
     this.disable_moves = true;
     this.squad = 1;
     this.max = 1;
@@ -498,7 +497,7 @@ var Octopus = function Octopus(args){
     this.y = args.y;
     this.sprite = 36;
     this.water = true;
-    this.team = args.team;
+    this.team = 1;
     this.squad = 1;
     this.max = 1;
     this.messages = ['Ooo.', 'oo..', 'o?', ':)', ':o', ':['];

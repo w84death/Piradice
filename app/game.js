@@ -47,11 +47,12 @@ var game = {
             world.init(args);
             render.init();
             render.gui.canvas.addEventListener('mousedown', game.click, false);
-            this.play = true;                                
+            this.play = true;                                            
         }else{
             world.restartMap(args);
             this.turn.start = true;        
-            game.shoutTeam(); 
+            game.shoutTeam();
+            shop.open();
             fogOfWar.update();           
             render.render({gui:true, entities:true, map:true,sky:true});            
         }        
@@ -191,6 +192,7 @@ var game = {
                 fogOfWar.update();
                 render.render({gui:true, entities:true, sky:true});
                 multi.show();
+                shop.open({team:game.turn.team, more:false}); 
             }
     },
 
@@ -283,6 +285,7 @@ var game = {
             player2_units = 0;
         
         for (var i = 0; i < world.maps[world.map].entities.length; i++) {
+            console.log(world.maps[world.map].entities[i]);
             if(world.maps[world.map].entities[i].alive){
                 if(world.maps[world.map].entities[i].team === 0){
                     player1_units += world.maps[world.map].entities[i].squad;
@@ -372,9 +375,16 @@ var shop = {
             }
 
         }else{       
-            var r = (Math.random()*world.maps[world.map].entities[unit_selected].move_area.length)<<0;
-            newX = world.maps[world.map].entities[unit_selected].move_area[r].x
-            newY = world.maps[world.map].entities[unit_selected].move_area[r].y;
+            var buy_spot = [];
+
+            for (var i = 0; i < world.maps[world.map].entities[game.unit_selected].move_area.length; i++) {
+                if(world.maps[world.map].entities[game.unit_selected].move_area[i].buy){
+                    buy_spot.push(i);
+                }
+            };
+            var r = (Math.random()*buy_spot.length)<<0;
+            newX = world.maps[world.map].entities[game.unit_selected].move_area[buy_spot[r]].x
+            newY = world.maps[world.map].entities[game.unit_selected].move_area[buy_spot[r]].y;
         }
 
         if(this.makeTransaction({team:team, unit:args.unit})){
@@ -409,7 +419,7 @@ var shop = {
             if(args.unit == 'cementary'){
                 world.maps[world.map].entities.push(new Cementary({x:newX,y:newY,team:team, ai:ai}));
             }
-                        
+
             game.updateUnits();
             fogOfWar.update();
             render.render({entities:true});
@@ -433,17 +443,34 @@ var shop = {
         return false;
     },
 
-    open: function(args){
+    open: function(args){        
         if(args.team === 0){
-            document.getElementById('player1_shop').setAttribute('class','buy');
+
+            document.getElementById('player1_shop').style.display = 'inline-block';            
+            document.getElementById('player2_shop').style.display = 'none';            
             document.getElementById('player2_shop').removeAttribute('class');
-        }
-        if(args.team == 1){
+
+            if(args.more){
+                document.getElementById('player1_shop').setAttribute('class','buy');            
+            }
+              
+        }else{
+            document.getElementById('player2_shop').style.display = 'inline-block';            
+            document.getElementById('player1_shop').style.display = 'none';            
             document.getElementById('player1_shop').removeAttribute('class');
-            document.getElementById('player2_shop').setAttribute('class','buy');
+            if(args.more){
+                document.getElementById('player2_shop').setAttribute('class','buy');
+            }            
+            
         }
     },
 
+    close: function(){
+        document.getElementById('player1_shop').removeAttribute('class');
+        document.getElementById('player1_shop').style.display = 'none'; 
+        document.getElementById('player2_shop').removeAttribute('class');
+        document.getElementById('player2_shop').style.display = 'none'; 
+    },
 };
 
 var multi = {
@@ -453,8 +480,13 @@ var multi = {
             fogOfWar.update();            
             document.getElementById('multi').style.display = 'block';  
             document.getElementById('turn').innerHTML = game.turn.id;
-            document.getElementById('playerID').innerHTML = game.turn.team + 1;
-            document.getElementById('playButton').innerHTML = msg || 'Play';                        
+            if(game.turn.team === 0){
+                document.getElementById('playerID').innerHTML = 'PIRATES';
+            }else
+            if(game.turn.team == 1){
+                document.getElementById('playerID').innerHTML = 'SKELETONS';
+            }
+            document.getElementById('playButton').innerHTML = msg || 'PLAY';                        
         }
     },
     
@@ -493,7 +525,8 @@ var world = {
         
         fogOfWar.init();        
         game.shoutTeam();
-        fogOfWar.update();  
+        fogOfWar.update();
+        shop.open({team:game.turn.team, more:false});  
     },
     
     loadMap: function(args){

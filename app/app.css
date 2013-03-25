@@ -46,6 +46,7 @@ nav ul.right {position: fixed;bottom: 0;right: 0;}
 .desktop {width:512px; margin:0 auto;}    
 li.hide {display:none;}
 .buy li.hide {display:inline-block;}
+.buy {background-color:#e44; color:#fff; }
 
 
 article {margin-top:32px; padding:2em 4em; }
@@ -75,4 +76,6 @@ button.big {padding: 1em 2em;font-size: 2em;}
 #settings,
 #play,
 #nextTurn,
-#bottom {display:none;}
+#bottom,
+#player1_shop,
+#player2_shop {display:none;}
