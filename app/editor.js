@@ -12,7 +12,7 @@ var editor = {
             {unit: 'skeleton',price: 10,},
             {unit: 'dust',price: 20,},
             {unit: 'ship',price: 50,},
-            {unit: 'black_pearl',price: 65,},
+            {unit: 'cementary',price: 40,},
             {unit: 'octopus',price: 15,}],
     
     init: function(args){

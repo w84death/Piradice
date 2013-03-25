@@ -36,6 +36,7 @@ var Unit = function Unit(){
     this.flip = 0; 
     this.fow = 3;
     this.create_unit = false;
+    this.hasCementary = false;
 };
 
 Unit.prototype = {
@@ -155,6 +156,17 @@ Unit.prototype = {
                 }
             }  
               
+            if(this.dust){
+                this.move_area = [];
+                for (var x = this.x - 2; x <= this.x + 2; x++) {
+                    for (var y = this.y - 2; y <= this.y + 2; y++) {
+                         if(world.maps[world.map].moves[(x)+((y)*world.maps[world.map].width)] == map_type){           
+                            this.move_area.push({x:x,y:y, move:true});
+                        }
+                    }   
+                }
+            }
+
             if(!this.disable_moves){
                 for (var i = 0; i < this.move_area.length; i++) {
                     for (var j = 0; j < world.maps[world.map].entities.length; j++) { 
@@ -257,7 +269,7 @@ Unit.prototype = {
             }
         }
                 
-        if(other && !this.dust){            
+        if(other && !this.dust && !other.cementary){            
             var dice = null,
                 dice2 = null,
                 total = 0,
@@ -304,10 +316,16 @@ Unit.prototype = {
             }            
         }        
             
-        if(this.dust){
-            
+        if(this.dust){            
             other.die();
             this.die();
+            return false;
+        }else
+        if(other.cementary){
+            if(this.lumberjack){
+                other.die();
+                return true;
+            }
             return false;
         }else{
             this.moves = 0;
@@ -351,6 +369,9 @@ Unit.prototype = {
         this.moves = 0;
         game.killZombies();
         game.updateUnits();
+        if(this.cementary){
+            world.maps[world.map].items[hasCementary].hasCementary = false;
+        }
     },
     
     shout: function(){
@@ -484,6 +505,7 @@ var Cementary = function Cementary(args){
     this.sprite = 39;
     this.messages = ['uuu', 'ooo'];
     this.fow = 5;
+    this.hasCementary = args.hasCementary || false;
 };
 
 Cementary.prototype = new Unit();

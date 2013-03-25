@@ -192,7 +192,7 @@ var game = {
                 fogOfWar.update();
                 render.render({gui:true, entities:true, sky:true});
                 multi.show();
-                shop.open({team:game.turn.team, more:false}); 
+                shop.open({team:game.turn.team, more:false});                 
             }
     },
 
@@ -285,7 +285,6 @@ var game = {
             player2_units = 0;
         
         for (var i = 0; i < world.maps[world.map].entities.length; i++) {
-            console.log(world.maps[world.map].entities[i]);
             if(world.maps[world.map].entities[i].alive){
                 if(world.maps[world.map].entities[i].team === 0){
                     player1_units += world.maps[world.map].entities[i].squad;
@@ -326,34 +325,48 @@ var game = {
 
 var shop = {
     prices: [
-        {unit: 'pirate',price: 10,},
-        {unit: 'range_pirate',price: 15,},
-        {unit: 'lumberjack',price: 20,},
-        {unit: 'skeleton',price: 10,},
-        {unit: 'dust',price: 20,},
-        {unit: 'ship',price: 50,},
-        {unit: 'cementary',price: 50,},
-        {unit: 'octopus',price: 15,}],
+        {unit: 'pirate',price: 10},
+        {unit: 'range_pirate',price: 15},
+        {unit: 'lumberjack',price: 20},
+        {unit: 'skeleton',price: 10},
+        {unit: 'dust',price: 20},
+        {unit: 'ship',price: 50},
+        {unit: 'cementary',price: 40},
+        {unit: 'octopus',price: 15}],
 
     buy: function(args){
         var newX = 0,
             newY = 0;
             ai = game.teams[game.turn.team].ai,
-            team = game.turn.team;            
+            team = game.turn.team,
+            hasCementary = 0;            
         
         if(args.unit == 'cementary'){
-            var chests = [];
+            var chests = [],
+                cementars = 0;
 
             for (var i = 0; i < world.maps[world.map].items.length; i++) {
-                if(world.maps[world.map].items[i].chest){
+                if(world.maps[world.map].items[i].chest && !world.maps[world.map].items[i].hasCementary){
                     chests.push(i);
                 }
             };
 
-            var r = (Math.random()*chests.length)<<0;
-            newX = world.maps[world.map].items[r].x + 1;
-            newY = world.maps[world.map].items[r].y + 1; 
+            for (var i = 0; i < world.maps[world.map].entities.length; i++) {
+                if(world.maps[world.map].entities[i].cementary){
+                    cementars++;
+                }
+            };
 
+            if(cementars < chests.length){
+                var r = (Math.random()*chests.length)<<0;
+                world.maps[world.map].items[chests[r]].hasCementary = true;
+                newX = world.maps[world.map].items[chests[r]].x + 1;
+                newY = world.maps[world.map].items[chests[r]].y + 1; 
+                hasCementary = chests[r];
+            }else{
+                return false;
+            }
+            
         }else
         if(args.unit == 'ship' || args.unit == 'octopus'){
             var side = (Math.random()*4)<<00;            
@@ -387,6 +400,7 @@ var shop = {
             newY = world.maps[world.map].entities[game.unit_selected].move_area[buy_spot[r]].y;
         }
 
+
         if(this.makeTransaction({team:team, unit:args.unit})){
             if(args.unit == 'pirate'){            
                 world.maps[world.map].entities.push(new Pirate({x:newX,y:newY,team:team, ai:ai}));              
@@ -417,12 +431,21 @@ var shop = {
             }
             
             if(args.unit == 'cementary'){
-                world.maps[world.map].entities.push(new Cementary({x:newX,y:newY,team:team, ai:ai}));
+                world.clearTerrain(newX, newY);
+                world.maps[world.map].entities.push(new Cementary({x:newX,y:newY,team:team, ai:ai, hasCementary:hasCementary}));
             }
 
+            if(game.unit_selected > -1 ){
+                world.maps[world.map].entities[game.unit_selected].moves = 0;
+                world.maps[world.map].entities[game.unit_selected].unselect();
+                world.maps[world.map].entities[game.unit_selected].important = false;
+                world.maps[world.map].entities[game.unit_selected].message = '+1';
+                game.unit_selected = -1;  
+
+            }
             game.updateUnits();
             fogOfWar.update();
-            render.render({entities:true});
+            render.render({entities:true, gui:true});
         }else{
             console.log('need more gold!');
         }
@@ -430,7 +453,7 @@ var shop = {
     },
 
     makeTransaction: function(args){
-        for (var i = 0; i < this.prices.length; i++) {
+        for (var i = 0; i <= this.prices.length; i++) {
             if(this.prices[i].unit == args.unit){
                 if(game.teams[args.team].wallet > this.prices[i].price){
                     game.teams[args.team].wallet -= this.prices[i].price;
@@ -476,6 +499,7 @@ var shop = {
 var multi = {
     
     show: function(msg){ 
+        document.getElementById('nextTurn').style.display = 'none';
         if(!game.teams[0].ai && !game.teams[1].ai && !game.editor){
             fogOfWar.update();            
             document.getElementById('multi').style.display = 'block';  
@@ -486,12 +510,13 @@ var multi = {
             if(game.turn.team == 1){
                 document.getElementById('playerID').innerHTML = 'SKELETONS';
             }
-            document.getElementById('playButton').innerHTML = msg || 'PLAY';                        
+            document.getElementById('playButton').innerHTML = msg || 'PLAY';                                 
         }
     },
     
     play: function(){
         document.getElementById('multi').style.display = 'none';
+        document.getElementById('nextTurn').style.display = 'inline-block';
     },
 };
 
@@ -556,8 +581,17 @@ var world = {
         }
         
         localStorage.setItem("map", world.map);        
-    },    
-        
+    },      
+
+    clearTerrain: function(x,y){
+        for (var i = 0; i < this.maps[this.map].items.length; i++) {
+            if(this.maps[this.map].items[i].x == x && this.maps[this.map].items[i].y == y){
+                this.maps[this.map].items.slice(i,1); 
+                this.maps[this.map].moves[x+(y*this.maps[this.map].width)] = 1;        
+            }
+        };
+        render.render({map:true});
+    },  
 };
 
 var utilities = {
