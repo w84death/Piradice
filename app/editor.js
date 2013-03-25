@@ -232,14 +232,7 @@ var editor = {
     },
     
     putUnit: function(x,y, unit, squad, team){         
-        
-        if(unit == 'ship'){
-            team = 0;            
-        }
-        if(unit == 'cementary'){
-            team = 1;            
-        }
-
+                
         var new_unit = true,            
             ai = game.teams[team].ai;
         

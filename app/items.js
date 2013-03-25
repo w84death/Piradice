@@ -15,6 +15,7 @@
 var Item = function Item(){        
     this.can_open = false;
     this.forest = false;
+    this.chest = false;
 };
 
 Item.prototype = {        
@@ -81,7 +82,8 @@ var Palm = function Palm(args){
 Palm.prototype = new Item();
 
 var Chest = function Chest(args){
-    this.name = 'Ship';
+    this.name = 'Chest';
+    this.chest = true;
     this.x = args.x;
     this.y = args.y;
     this.sprite = 13;

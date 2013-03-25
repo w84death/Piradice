@@ -1,3 +1,4 @@
+<?php include_once('app/engine.php'); ?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -13,30 +14,49 @@
   <link href='http://fonts.googleapis.com/css?family=VT323' rel='stylesheet' type='text/css'>
   <link rel="stylesheet" href="/app/app.css">        
 </head>
-<body id="container">
-             
-  <div id="mainMenu">
-      <h1>WELCOME TO PIRADICE</h1>
-      <p>Turn-based strategy game in Your browser. Pirates and dices in paradise!</p>
-      <ul>
-          <li><button class="big" onclick="editor.init({random:true})">PLAYER VS PLAYER</button>
-          <li><button class="big disabled">PLAY VS AI</button>
-      </ul>
-      <h2>News &amp; Discussion</h2>                
-      <p>Explore <a href="https://twitter.com/search?q=%23piradice&src=typd" alt="twitter">#piradice</a>, follow <a href="https://twitter.com/w84death" alt="Krzysztof Jankowski on twitter">@w84death</a> and join the discussion on <a href="http://www.reddit.com/r/WebGames/comments/19zlc5/piradice_pirates_pixelart_turnbased_strategy_game/" alt="reddit">reddit</a>.</p>                            
+<body>
       
-      <h2>Development</h2>
-      <p>Full source code avilable at <a href="https://github.com/w84death/Piradice">github.com/w84death/Piradice</a></p>
-      <div class="ad">
-          <p><small>SPONSORED BY</small></p>
-          <p><a href="https://www.etsy.com/shop/VintageVanillaShop" title="Vintage Vanilla Shop on Etsy"><img src="/media/vintage_vanilla_logo.png" alt="VintageVanillaShop" /></a></p>
-      </div>
-  </div>
   
-  <?php article(); ?>
-  <?php element('nav'); ?>
 
-  <script src="app/jquery.min.js"></script>
-  <script src="app/app.js"></script>
+  <article class="<?php echo pwd(); ?>">       
+    <?php article(); ?>
+  </article>
+    
+  <?php element('nav'); ?>
+  <script src="/app/seed.js"></script>
+  <script src="/app/entities.js"></script>
+  <script src="/app/items.js"></script>
+  <script src="/app/maps.js"></script>
+  <script src="/app/ai.js"></script>
+  <script src="/app/game.js"></script>
+  <script src="/app/editor.js"></script>
+  <script src="/app/app.js"></script>
+  <script>    
+    app.init({ads:true});
+  </script>
+
+  <?php if($_GET['sub']=='random'){ ?>        
+  <script>
+      editor.init({random:true});
+  </script>
+  <?php } ?>
+  <?php if($_GET['sub']=='solo'){ ?>        
+      <h2>SOLO PLAY</h2>
+      <strong>not ready..</strong>
+  <?php } ?>
+  
+  <script type="text/javascript">
+  
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-39133686-1']);
+    _gaq.push(['_trackPageview']);
+  
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  
+  </script> 
 </body>
 </html>

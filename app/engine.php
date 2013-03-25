@@ -11,7 +11,7 @@
 session_start();
 
 if(!isset($_GET['nav'])){
-		$_GET['nav'] = 'game';
+		$_GET['nav'] = 'home';
 	}
 
 function pwd(){

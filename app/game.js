@@ -41,10 +41,7 @@ var game = {
     unit_selected: -1,
     select_area: [],
 
-    init: function(args){        
-        
-        document.getElementById('hideThis').style.display = 'none';
-        document.getElementById('mainMenu').style.display = 'none';
+    init: function(args){                    
 
         if(!this.play){
             world.init(args);
@@ -59,6 +56,7 @@ var game = {
             render.render({gui:true, entities:true, map:true,sky:true});            
         }        
         
+        document.getElementById('bottom').style.display = 'block';
     },
 
     click: function(e){
@@ -147,40 +145,19 @@ var game = {
 
     nextTurn: function(){
             
-            if(game.turn.team == 1){
-                // AI TURN
-                game.turn.team = 0;
-                game.turn.id++;
-
-            }else{
-                // PLAYER turn
-                game.turn.team = 1;
-            }
-            
-            this.killZombies();
-    
-            this.shoutTeam();                        
-
             var loose = true;
+            // change to true!
 
             for (i = 0; i < world.maps[world.map].entities.length; i++) {
-                if(world.maps[world.map].entities[i].team === this.turn.team && world.maps[world.map].entities[i].squad > 0){
-                    if(world.maps[world.map].entities[i].transport && world.maps[world.map].entities[i].on_board.length < 1){
-
-                    }else{
-                        loose = false;
-                    }
+                if(world.maps[world.map].entities[i].team === this.turn.team && world.maps[world.map].entities[i].alive){                    
+                    loose = false;                    
                 }
 
                 if(world.maps[world.map].entities[i].range){
                     world.maps[world.map].entities[i].reloading--;
                 }
-                if(world.maps[world.map].entities[i].transport && world.maps[world.map].entities[i].on_board.length  < 1){
-                    world.maps[world.map].entities[i].moves = 0;
-                }else{
-                    world.maps[world.map].entities[i].moves = 1;
-                }
-
+                
+                world.maps[world.map].entities[i].moves = 1;                
                 world.maps[world.map].entities[i].selected = false;
             }
 
@@ -188,16 +165,33 @@ var game = {
 
             if(loose){
                 game.lose();
-            }
+            }else{
 
-            if(this.teams[this.turn.team].ai){
-                 ai.loop();
-            }        
+                if(game.turn.team == 1){
+                    // AI TURN
+                    game.turn.team = 0;
+                    game.turn.id++;
 
+                }else{
+                    // PLAYER turn
+                    game.turn.team = 1;
+                }
+                
+                this.killZombies();
         
-        fogOfWar.update();
-        render.render({gui:true, entities:true, sky:true});
-        multi.show();
+                this.shoutTeam();                        
+
+                
+
+                if(this.teams[this.turn.team].ai){
+                     ai.loop();
+                }        
+
+            
+                fogOfWar.update();
+                render.render({gui:true, entities:true, sky:true});
+                multi.show();
+            }
     },
 
 
@@ -327,6 +321,131 @@ var game = {
     },
 };
 
+var shop = {
+    prices: [
+        {unit: 'pirate',price: 10,},
+        {unit: 'range_pirate',price: 15,},
+        {unit: 'lumberjack',price: 20,},
+        {unit: 'skeleton',price: 10,},
+        {unit: 'dust',price: 20,},
+        {unit: 'ship',price: 50,},
+        {unit: 'cementary',price: 50,},
+        {unit: 'octopus',price: 15,}],
+
+    buy: function(args){
+        var newX = 0,
+            newY = 0;
+            ai = game.teams[game.turn.team].ai,
+            team = game.turn.team;            
+        
+        if(args.unit == 'cementary'){
+            var chests = [];
+
+            for (var i = 0; i < world.maps[world.map].items.length; i++) {
+                if(world.maps[world.map].items[i].chest){
+                    chests.push(i);
+                }
+            };
+
+            var r = (Math.random()*chests.length)<<0;
+            newX = world.maps[world.map].items[r].x + 1;
+            newY = world.maps[world.map].items[r].y + 1; 
+
+        }else
+        if(args.unit == 'ship' || args.unit == 'octopus'){
+            var side = (Math.random()*4)<<00;            
+
+            if(side == 1){
+                newX = 1;
+                newY = 1 + (Math.random()*(world.maps[world.map].height-1))<<0;
+            }else
+            if(side == 2){
+                newX = world._W-1;
+                newY = 1 + (Math.random()*(world.maps[world.map].height-1))<<0;
+            }else
+            if(side == 3){
+                newX = 1 + (Math.random()*(world.maps[world.map].width-1))<<0;
+                newY = 1;                
+            }else{
+                newX = 1 + (Math.random()*(world.maps[world.map].width-1))<<0;
+                newY = world._H-1;
+            }
+
+        }else{       
+            var r = (Math.random()*world.maps[world.map].entities[unit_selected].move_area.length)<<0;
+            newX = world.maps[world.map].entities[unit_selected].move_area[r].x
+            newY = world.maps[world.map].entities[unit_selected].move_area[r].y;
+        }
+
+        if(this.makeTransaction({team:team, unit:args.unit})){
+            if(args.unit == 'pirate'){            
+                world.maps[world.map].entities.push(new Pirate({x:newX,y:newY,team:team, ai:ai}));              
+            }
+            
+            if(args.unit == 'range_pirate'){            
+                world.maps[world.map].entities.push(new RangePirate({x:newX,y:newY,team:team, ai:ai}));
+            }
+            
+            if(args.unit == 'lumberjack'){
+                world.maps[world.map].entities.push(new Lumberjack({x:newX,y:newY,team:team, ai:ai}));
+            }
+            
+            if(args.unit == 'ship'){
+                world.maps[world.map].entities.push(new Ship({x:newX,y:newY,team:team, ai:ai}));
+            }
+
+            if(args.unit == 'skeleton'){
+                world.maps[world.map].entities.push(new Skeleton({x:newX,y:newY,team:team, ai:ai}));
+            }
+            
+            if(args.unit == 'dust'){
+                world.maps[world.map].entities.push(new Dust({x:newX,y:newY,team:team, ai:ai}));
+            }
+            
+            if(args.unit == 'octopus'){
+                world.maps[world.map].entities.push(new Octopus({x:newX,y:newY,team:team, ai:ai}));
+            }
+            
+            if(args.unit == 'cementary'){
+                world.maps[world.map].entities.push(new Cementary({x:newX,y:newY,team:team, ai:ai}));
+            }
+                        
+            game.updateUnits();
+            fogOfWar.update();
+            render.render({entities:true});
+        }else{
+            console.log('need more gold!');
+        }
+        
+    },
+
+    makeTransaction: function(args){
+        for (var i = 0; i < this.prices.length; i++) {
+            if(this.prices[i].unit == args.unit){
+                if(game.teams[args.team].wallet > this.prices[i].price){
+                    game.teams[args.team].wallet -= this.prices[i].price;
+                    game.updateWallet();
+                    return true;  
+                }
+            }
+        };
+        
+        return false;
+    },
+
+    open: function(args){
+        if(args.team === 0){
+            document.getElementById('player1_shop').setAttribute('class','buy');
+            document.getElementById('player2_shop').removeAttribute('class');
+        }
+        if(args.team == 1){
+            document.getElementById('player1_shop').removeAttribute('class');
+            document.getElementById('player2_shop').setAttribute('class','buy');
+        }
+    },
+
+};
+
 var multi = {
     
     show: function(msg){ 
@@ -367,7 +486,7 @@ var world = {
         if(args.editor){
             this.map = 0;
             this._W = ((((window.innerWidth)/(render.box*render.scale)))<<0);
-            this._H = ((((window.innerHeight)/(render.box*render.scale)))<<0)-1; // 2 for top & bottom menu 
+            this._H = ((((window.innerHeight)/(render.box*render.scale)))<<0)-1; // padding for top & bottom menu 
             this.maps = load.map(args);
             this.saved_map = utilities.clone(this.maps);                    
         }              

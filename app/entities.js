@@ -26,6 +26,7 @@ var Unit = function Unit(){
     this.on_board = [];
     this.team = 0;
     this.moves = 1;
+    this.disable_moves = false;
     this.reloading = 0;    
     this.message = null;
     this.messages = [];
@@ -34,19 +35,37 @@ var Unit = function Unit(){
     this.water = false;
     this.flip = 0; 
     this.fow = 3;
+    this.create_unit = false;
 };
 
 Unit.prototype = {
     select: function(){
         if(this.can_select){
             this.selected = true;
-            var map_type = 1;
+            var map_type = 1;                                    
             
+            this.move_area = [];
+
+            if(this.create_unit){
+                var open = false;
+                for (var x = this.x - 1; x <= this.x + 1; x++) {
+                    for (var y = this.y - 1; y <= this.y + 1; y++) {
+                        if(world.maps[world.map].moves[(x)+((y)*world.maps[world.map].width)] == map_type){           
+                            this.move_area.push({x:x,y:y, buy:true});
+                            open = true;
+                        }
+                    }
+                };
+                if(open){ shop.open({team:this.team}); }
+            }
+
             if(this.water){
                 map_type = 0;
             }
-            
-            this.move_area = [];
+
+            if(this.disable_moves){
+                map_type = -1;
+            }
             
             if(world.maps[world.map].moves[(this.x-1)+((this.y)*world.maps[world.map].width)] == map_type){           
                 this.move_area.push({x:this.x-1,y:this.y, move:true});
@@ -352,6 +371,7 @@ Unit.prototype = {
     levelUp: function(){
         
     },
+
 };
 
 var Pirate = function Pirate(args){
@@ -404,7 +424,7 @@ Lumberjack.prototype = new Unit();
 
 var Skeleton = function Skeleton(args){
     this.name = 'skeleton';
-    this.ai = args.ai || true;
+    this.ai = args.ai || false;
     this.skeleton = true;
     this.x = args.x;
     this.y = args.y;
@@ -418,7 +438,7 @@ Skeleton.prototype = new Unit();
 
 var Dust = function Dust(args){
     this.name = 'dust';
-    this.ai = args.ai || true;
+    this.ai = args.ai || false;
     this.dust = true;
     this.skeleton = true;
     this.x = args.x;
@@ -444,7 +464,6 @@ var Ship = function Ship(args){
     this.range = true;    
     this.create_unit = true;
     this.squad = 1;
-    this.moves = 0;
     this.messages = ['Sail', 'Ahoy'];
     this.fow = 5;
 };
@@ -453,13 +472,14 @@ Ship.prototype = new Unit();
 
 var Cementary = function Cementary(args){
     this.name = 'Cementary';
-    this.ai = args.ai || true;
+    this.ai = args.ai || false;
     this.cementary = true;
     this.skeleton = true;
     this.create_unit = true;
     this.x = args.x;
     this.y = args.y;
     this.team = args.team;
+    this.disable_moves = true;
     this.squad = 1;
     this.max = 1;
     this.sprite = 39;
