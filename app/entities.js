@@ -37,6 +37,7 @@ var Unit = function Unit(){
     this.fow = 3;
     this.create_unit = false;
     this.hasCementary = false;
+    this.merging = true;
 };
 
 Unit.prototype = {
@@ -195,7 +196,7 @@ Unit.prototype = {
                         }
                         
                         if( world.maps[world.map].entities[j].x == this.move_area[i].x && world.maps[world.map].entities[j].y == this.move_area[i].y && world.maps[world.map].entities[j].team == this.team ){ 
-                            if(this.name == world.maps[world.map].entities[j].name){
+                            if(this.name == world.maps[world.map].entities[j].name && this.merging){
                                 this.move_area[i].merge = true;
                             }else{
                                 this.move_area[i].move = false;
@@ -210,7 +211,7 @@ Unit.prototype = {
     
     unselect: function(){
         this.selected = false;
-        shop.close();
+        shop.close({all:false});
     },
     
     move: function(x,y){
@@ -458,6 +459,7 @@ var Lumberjack = function Lumberjack(args){
     this.sprite = 53;
     this.messages = ['Cut!', 'Hmm', 'Tree'];
     this.fow = 2;
+    this.merging = false;
 };
 
 Lumberjack.prototype = new Unit();
@@ -489,6 +491,7 @@ var Dust = function Dust(args){
     this.sprite = 49;
     this.messages = ['tsss', 'puf', '!@%'];
     this.fow = 4;
+    this.merging = false;
 };
 
 Dust.prototype = new Unit();
@@ -506,6 +509,7 @@ var Ship = function Ship(args){
     this.squad = 1;
     this.messages = ['Sail', 'Ahoy'];
     this.fow = 5;
+    this.merging = false;
 };
 
 Ship.prototype = new Unit();
@@ -526,6 +530,7 @@ var Cementary = function Cementary(args){
     this.messages = ['uuu', 'ooo'];
     this.fow = 5;
     this.hasCementary = args.hasCementary || false;
+    this.merging = false;
 };
 
 Cementary.prototype = new Unit();
@@ -543,6 +548,7 @@ var Octopus = function Octopus(args){
     this.squad = 1;
     this.max = 1;
     this.messages = ['Ooo.', 'oo..', 'o?', ':)', ':o', ':['];
+    this.merging = false;
 };
 
 Octopus.prototype = new Unit();

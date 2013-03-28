@@ -149,6 +149,8 @@ var game = {
 
     nextTurn: function(){
             
+            shop.close({all:true});
+
             var loose = true;
             // change to true!
 
@@ -324,11 +326,7 @@ var game = {
             for (var i = 0; i < world.maps[world.map].entities.length; i++) {
                 world.maps[world.map].entities[i].message = null;
                 if(world.maps[world.map].entities[i].team === game.turn.team && world.maps[world.map].entities[i].reloading < 1){
-                    if(world.maps[world.map].entities[i].transport && world.maps[world.map].entities[i].on_board < 1){
-    
-                    }else{
-                        world.maps[world.map].entities[i].shout();
-                    }
+                    world.maps[world.map].entities[i].shout();
                 }
             }
         }
@@ -339,11 +337,11 @@ var shop = {
     prices: [
         {unit: 'pirate',price: 10},
         {unit: 'range_pirate',price: 15},
-        {unit: 'lumberjack',price: 20},
-        {unit: 'skeleton',price: 10},
-        {unit: 'dust',price: 20},
-        {unit: 'ship',price: 50},
-        {unit: 'cementary',price: 40},
+        {unit: 'lumberjack',price: 10},
+        {unit: 'skeleton',price: 15},
+        {unit: 'dust',price: 80},
+        {unit: 'ship',price: 40},
+        {unit: 'cementary',price: 80},
         {unit: 'octopus',price: 15}],
 
     buy: function(args){
@@ -447,6 +445,8 @@ var shop = {
                 world.maps[world.map].entities.push(new Cementary({x:newX,y:newY,team:team, ai:ai, hasCementary:hasCementary}));
             }
 
+            world.maps[world.map].entities[world.maps[world.map].entities.length-1].shout();
+
             if(game.unit_selected > -1 ){
                 world.maps[world.map].entities[game.unit_selected].moves = 0;
                 world.maps[world.map].entities[game.unit_selected].unselect();
@@ -465,9 +465,9 @@ var shop = {
     },
 
     makeTransaction: function(args){
-        for (var i = 0; i <= this.prices.length; i++) {
+        for (var i = 0; i < this.prices.length; i++) {
             if(this.prices[i].unit == args.unit){
-                if(game.teams[args.team].wallet > this.prices[i].price){
+                if(game.teams[args.team].wallet >= this.prices[i].price){
                     game.teams[args.team].wallet -= this.prices[i].price;
                     game.updateWallet();
                     return true;  
@@ -500,11 +500,14 @@ var shop = {
         }
     },
 
-    close: function(){
-        document.getElementById('player1_shop').removeAttribute('class');
-        document.getElementById('player1_shop').style.display = 'none'; 
+    close: function(args){
+        document.getElementById('player1_shop').removeAttribute('class');        
         document.getElementById('player2_shop').removeAttribute('class');
-        document.getElementById('player2_shop').style.display = 'none'; 
+        
+        if(args.all){
+            document.getElementById('player1_shop').style.display = 'none';         
+            document.getElementById('player2_shop').style.display = 'none'; 
+        }
     },
 
     buyStarter: function(){
