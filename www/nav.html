@@ -21,47 +21,40 @@
                     </ul>                                    
             </ul>                    
         <li id="settings"><a href="javascript:void(0);">SETTINGS</a>
-            <ul>
-                <li><a href="javascript:void(0);">PLAYER1 <span>></span></a>
-                    <ul>
-                        <li onchange="game.updatePlayer({player:0, ai:false});">HUMAN
-                        <li onchange="game.updatePlayer({player:0, ai:true});">AI
-                    </ul>
-                <li><a href="javascript:void(0);">PLAYER2 <span>></span></a>
-                    <ul>
-                        <li onchange="game.updatePlayer({player:1, ai:false});">HUMAN
-                        <li onchange="game.updatePlayer({player:1, ai:true});">AI
-                    </ul>
+            <ul>                
                 <li><a href="javascript:void(0);">WALLET <span>></span></a> 
                     <ul>
-                        <li onchange="game.setWallet(30);">$30
-                        <li onchange="game.setWallet(50);">$50
-                        <li onchange="game.setWallet(100);">$100
-                        <li onchange="game.setWallet(200);">$200
-                        <li onchange="game.setWallet(500);">$500
-                        <li onchange="game.setWallet(1000);">$1000                                            
+                        <li onclick="game.setWallet(50);">$50
+                        <li onclick="game.setWallet(100);">$100
+                        <li onclick="game.setWallet(200);">$200
+                        <li onclick="game.setWallet(500);">$500
+                        <li onclick="game.setWallet(1000);">$1000 
                     </ul>                            
             </ul>                                        
         <li class="right"><button id="play" onclick="editor.playMap()" class="hot">PLAY</button>
     </ul>
 </nav>
 <nav class="bottom" id="bottom">
-    <ul>
-        <li id="stats"><strong class="progress right"><em id="player1_units">0</em></strong> vs <strong class="progress"><em id="player2_units">0</em></strong>
-        <li id="player1_shop"><a href="javascript:void(0);">PIRATES: $<strong id="player1_gold">200</strong> <span>></span></a>
+    <ul class="left">           
+        <li id="player1_shop"><a href="javascript:void(0);">SHOP $<strong id="player1_gold">200</strong></a>
             <ul>
                 <li onclick="shop.buy({unit:'ship'});">SHIP <span>$50</span>
                 <li class="hide" onclick="shop.buy({unit:'lumberjack'});">LUMBERJACK <span>$20</span>
                 <li class="hide" onclick="shop.buy({unit:'range_pirate'});">PIRATE WITH GUN <span>$15</span>                            
                 <li class="hide" onclick="shop.buy({unit:'pirate'});">PIRATE <span>$10</span>
-            </ul>                            
-        <li id="player2_shop"><a href="javascript:void(0);">SKELETONS: $<strong id="player2_gold">200</strong> <span>></span></a>    
+            </ul> 
+    </ul>
+    <ul class="left" >                           
+        <li id="player2_shop"><a href="javascript:void(0);">SHOP $<strong id="player2_gold">200</strong></a>    
             <ul>
                 <li onclick="shop.buy({unit:'cementary'});">CEMENTARY <span>$40</span>
                 <li class="hide" onclick="shop.buy({unit:'octopus'});">OCTOPUS <span>$15</span>
                 <li class="hide" onclick="shop.buy({unit:'dust'});">DUST <span>$20</span>
                 <li class="hide" onclick="shop.buy({unit:'skeleton'});">SKELETON <span>$10</span>
-            </ul>               
+            </ul>                      
+    </ul>
+    <ul>
+        <li id="stats"><strong class="progress right"><em id="player1_units">0</em></strong> vs <strong class="progress"><em id="player2_units">0</em></strong>
     </ul>
     <ul class="right">
         <li><button id="nextTurn" onclick="game.nextTurn()" class="hot">NEXT TURN</button>

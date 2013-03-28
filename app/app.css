@@ -28,7 +28,7 @@ nav ul li:hover ul,
 nav ul li:active ul,
 nav ul li::focus ul {display:block;}
 nav ul li ul {position:absolute; top:32px; left:0; width:256px; display:none; box-shadow:0 4px 8px #000;}
-nav.bottom ul li ul {top:auto; bottom:64px; text-align:left; box-shadow:0 -4px 8px #000;}
+nav.bottom ul li ul {top:auto; bottom:32px; text-align:left; box-shadow:0 -4px 8px #000;}
 nav ul li ul li {width:192px; color:#f8f8f8; margin-top:8px;}
 nav ul li ul li:first-child {margin-top:0;}
 nav ul li ul li:hover {background-color:#f8f8f8; color:#444;}
@@ -37,7 +37,8 @@ nav ul li.right {float:right;}
 nav ul li span {float:right;}
 nav ul li ul li:hover ul {display:block !important;}
 nav ul li ul li ul {display:none !important; left:256px; top:0;}
-nav ul.right {position: fixed;bottom: 0;right: 0;}
+nav ul.right {position: fixed; bottom: 0;right: 0;}
+nav ul.left {position: fixed; bottom: 0;left: 0;}
 
 .progress {display:inline-block; width:80px; background-color:#777; text-align: left;}
 .progress em {display: inline-block; background-color: #e44; padding-left:8px;}

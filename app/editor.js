@@ -54,15 +54,16 @@ var editor = {
         game.turn.start = true;
         game.play = true;
         game.editor = false;
-        game.preview_play = true;
-        
+        //game.preview_play = true;        
         world.loadMap(this.settings); 
+        shop.buyStarter();     
+        game.shoutTeam();   
+        render.render({all:true});
         document.getElementById('settings').style.display = 'none';
         document.getElementById('world').style.display = 'none';
         
         document.getElementById('nextTurn').style.display = 'inline-block';
-        document.getElementById('play').innerHTML = 'QUIT GAME';
-        document.getElementById('play').setAttribute('onclick','editor.exitPlay()');
+        document.getElementById('play').style.display = 'none';
     },
     
     exitPlay: function(){

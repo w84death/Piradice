@@ -19,7 +19,7 @@
 */
 
 var game = {
-    version: 'PUBLIC BETA 23-03-2013',
+    version: 'BETA2.1 28-03-2013',
     teams: [{
         ai: false,
         wallet: 200,
@@ -42,17 +42,20 @@ var game = {
     select_area: [],
 
     init: function(args){                    
+        console.log(this.version, args);
 
         if(!this.play){
             world.init(args);
             render.init();
-            render.gui.canvas.addEventListener('mousedown', game.click, false);
-            this.play = true;                                            
+            render.gui.canvas.addEventListener('mousedown', game.click, false);            
+            game.shoutTeam();
+            this.play = true;            
         }else{
             world.restartMap(args);
             this.turn.start = true;        
             game.shoutTeam();
             shop.open();
+            shop.buyStarter();
             fogOfWar.update();           
             render.render({gui:true, entities:true, map:true,sky:true});            
         }        
@@ -194,6 +197,15 @@ var game = {
                 multi.show();
                 shop.open({team:game.turn.team, more:false});                 
             }
+
+            if(this.turn.id == 1){
+                shop.buyStarter();
+                game.shoutTeam();   
+                render.render({all:true});
+            }
+
+            game.teams[game.turn.team].wallet += 5;
+            game.updateWallet();
     },
 
 
@@ -431,7 +443,7 @@ var shop = {
             }
             
             if(args.unit == 'cementary'){
-                world.clearTerrain(newX, newY);
+                world.clearTerrain({x:newX, y:newY, size:1});
                 world.maps[world.map].entities.push(new Cementary({x:newX,y:newY,team:team, ai:ai, hasCementary:hasCementary}));
             }
 
@@ -493,6 +505,15 @@ var shop = {
         document.getElementById('player1_shop').style.display = 'none'; 
         document.getElementById('player2_shop').removeAttribute('class');
         document.getElementById('player2_shop').style.display = 'none'; 
+    },
+
+    buyStarter: function(){
+        if(game.turn.team === 0){
+            this.buy({unit:'ship'});
+        }else
+        if(game.turn.team == 1){
+            this.buy({unit:'cementary'});
+        }
     },
 };
 
@@ -583,13 +604,20 @@ var world = {
         localStorage.setItem("map", world.map);        
     },      
 
-    clearTerrain: function(x,y){
+    clearTerrain: function(args){
+
         for (var i = 0; i < this.maps[this.map].items.length; i++) {
-            if(this.maps[this.map].items[i].x == x && this.maps[this.map].items[i].y == y){
-                this.maps[this.map].items.slice(i,1); 
-                this.maps[this.map].moves[x+(y*this.maps[this.map].width)] = 1;        
+            if(this.maps[this.map].items[i].forest){
+                for (var x = args.x-args.size; x <= args.x+args.size; x++) {
+                    for (var y = args.y-args.size; y <= args.y+args.size; y++) {                       
+                        if(this.maps[this.map].items[i].x == x && this.maps[this.map].items[i].y == y){                                        
+                            this.maps[this.map].items.splice(i,1);//for_cut.push(i);        
+                        }                        
+                    }
+                }
             }
-        };
+        }
+
         render.render({map:true});
     },  
 };
@@ -640,7 +668,9 @@ var fogOfWar = {
                 var size = world.maps[world.map].entities[i].fow;
                 for (var y = world.maps[world.map].entities[i].y+1 - size; y <= world.maps[world.map].entities[i].y + size; y++) {
                     for (var x = world.maps[world.map].entities[i].x - size; x <= world.maps[world.map].entities[i].x + size; x++) {
-                        this.data[world.maps[world.map].entities[i].team][x + (y*world.maps[world.map].width)] = false;                
+                        if(x>=0 && x<world.maps[world.map].width && y>=0 && y < world.maps[world.map].height){
+                            this.data[world.maps[world.map].entities[i].team][x + (y*world.maps[world.map].width)] = false;                
+                        }
                     }
                 }
                 
@@ -952,6 +982,12 @@ var render = {
 
     render: function(args){
         var i = 0;
+
+        if(args.all){
+            args.map = true;
+            args.gui = true;
+            args.sky = true;
+        }
 
         if(args.map){
             this.map.ctx.clearRect(0, 0, world._W*this.box, world._H*this.box);
