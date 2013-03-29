@@ -19,7 +19,9 @@
 */
 
 var game = {
-    version: 'BETA2.21 29-03-2013',
+    version: 'BETA3 30-03-2013',
+    mobile: false || navigator.userAgent.match(/(iPhone)|(iPod)|(android)|(webOS)/i),
+    tablet: false || navigator.userAgent.match(/(iPad)/i),
     teams: [{
             ai: false,
             wallet: 200,
@@ -37,7 +39,13 @@ var game = {
     unit_selected: -1,
 
     init: function(args){                    
-        console.log(this.version);        
+        console.log(this.version);  
+        
+        if(this.mobile){
+            args.w = 15;
+            args.h = 8;
+        }
+
         world.init({
             width: 24 || args.w,
             height: 14 || args.h
@@ -56,6 +64,18 @@ var game = {
         shop.buyStarter();
         multi.show();
     },    
+
+    restart: function(){
+        game.play = false;
+        document.getElementById('nextTurn').style.display = 'none';
+        document.getElementById('playGame').style.display = 'inline-block';
+        document.getElementById('settings').style.display = 'inline-block';
+        document.getElementById('random').style.display = 'inline-block';
+        shop.close({all:false});
+        this.turn.start = true;
+        this.turn.id = 0;
+        world.restartMap();
+    },
 
     randomMap: function(){
         world.randomMap();
@@ -219,16 +239,18 @@ var game = {
     },
             
     win: function(){
-        window.alert('You win!');           
-        this.turn.start = true;        
-        world.restartMap();
+        window.alert('You win!'); 
+        //this.restart();          
+        window.location.reload();
     },
 
     lose: function(){        
         window.alert('You lose');
-        this.turn.start = true;        
-        world.restartMap();        
-    },        
+        //this.restart();
+        window.location.reload();
+    },
+
+
         
     setWallet: function(gold){
         for (var i = 0; i < game.teams.length; i++) {
@@ -530,7 +552,7 @@ var render = {
         gameDiv.style.height = (world.conf.height*this.box)+'px';
         
         document.getElementById('play').style.width = gameDiv.style.width;
-        
+
         this.map.canvas = document.getElementById('map');
         this.map.canvas.width = world.conf.width*this.box;
         this.map.canvas.height = world.conf.height*this.box;

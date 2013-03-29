@@ -32,8 +32,6 @@ var maps = {
             created: 14-03-2013            
             
         */
-
-        console.log(args);
         
         if(!args.stop_generator){
             args.stop_generator = 100;

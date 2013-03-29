@@ -46,8 +46,8 @@ nav ul.left {position: absolute; bottom: 0;left: 0;}
 .desktop {width:512px; margin:0 auto;}    
 li.hide {display:none;}
 .buy li.hide {display:inline-block;}
-.buy {background-color:#d2fa71; color:#77c216; }
-.buy ul {display:block;}
+.buy,
+.gold {background-color:#d2fa71; color:#77c216; }
 .buy a {color:#77c216;}
 article {margin-top:32px; padding:2em 4em; }
 article h2 {margin-top:2em;}
