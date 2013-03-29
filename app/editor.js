@@ -54,7 +54,7 @@ var editor = {
         game.turn.start = true;
         game.play = true;
         game.editor = false;
-        //game.preview_play = true;        
+        game.preview_play = true;        
         world.loadMap(this.settings); 
         shop.buyStarter();     
         game.shoutTeam();   
@@ -79,6 +79,7 @@ var editor = {
         document.getElementById('world').style.display = 'inline-block';
 
         document.getElementById('nextTurn').style.display = 'none';
+        document.getElementById('play').style.display = 'inline-block';
         document.getElementById('play').innerHTML = 'PLAY';
         document.getElementById('play').setAttribute('onclick','editor.playMap()');
     },
@@ -197,7 +198,6 @@ var editor = {
     
     addToBasket: function(unit){
         editor.basket = unit;   
-        console.log(unit);
     },
     
     buyUnit: function(unit, squad, team){        

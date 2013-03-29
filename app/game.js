@@ -64,11 +64,13 @@ var game = {
     },
 
     click: function(e){
-        var cX = (e.pageX - render.entities.canvas.offsetLeft)/render.box<<0,
-            cY = (e.pageY - render.entities.canvas.offsetTop)/render.box<<0;
+        var gameDiv = document.getElementById('game'),
+            cX = (e.pageX - gameDiv.offsetLeft)/render.box<<0,
+            cY = (e.pageY - gameDiv.offsetTop)/render.box<<0;
                 
-        if(game.play){
-            
+        console.log(cX, cY);
+
+        if(game.play){        
 
             if(game.unit_selected > -1){
                 game.attackOrMove(cX, cY)
@@ -78,10 +80,6 @@ var game = {
                 render.render({gui:true});
             }
 
-        }
-        
-        if(game.editor){
-           editor.putUnit(cX, cY);
         }
     },
 
@@ -228,9 +226,10 @@ var game = {
             
     win: function(){
         if(this.preview_play){
-            window.alert('You win!.\nClick ok to back to editor');
-            world.restartMap();
-            editor.exitPlay();
+            window.alert('You win!');  
+            location.reload();          
+            //world.restartMap();
+            //editor.exitPlay();
         }else{
             world.nextMap();        
             this.turn.start = true;        
@@ -240,11 +239,12 @@ var game = {
 
     lose: function(){        
         if(this.preview_play){
-            window.alert('You lose.\nClick ok to back to editor');
-            world.restartMap();
-            editor.exitPlay();
+            window.alert('You lose');
+            location.reload();
+            //world.restartMap();
+            //editor.exitPlay();
         }else{
-            window.alert('You lose.\nClick ok to restart map');
+            window.alert('You lose.\nClick ok to restart map');            
             this.turn.start = true;
             world.restartMap();
             render.render({gui:true, entities:true, map:true});    
@@ -567,12 +567,12 @@ var world = {
         if(args.editor){
             this.map = 0;
             this._W = ((((window.innerWidth)/(render.box*render.scale)))<<0);
-            this._H = ((((window.innerHeight)/(render.box*render.scale)))<<0)-1; // padding for top & bottom menu 
+            this._H = ((((window.innerHeight)/(render.box*render.scale)))<<0)-2; // padding for top & bottom menu 
             this.maps = load.map(args);
-            this.saved_map = utilities.clone(this.maps);                    
-        }              
-        
-        fogOfWar.init();        
+            this.saved_map = utilities.clone(this.maps);                                
+        }
+
+        fogOfWar.init();         
         game.shoutTeam();
         fogOfWar.update();
         shop.open({team:game.turn.team, more:false});  
@@ -589,7 +589,7 @@ var world = {
     },
     
     restartMap: function(args){
-        if(args.newgame){
+        if(args.newgame == true){
             this.map = 0;
         }
         this.maps[this.map] = utilities.clone(this.saved_map[this.map]);

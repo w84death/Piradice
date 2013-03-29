@@ -20,9 +20,8 @@
 
   <article class="<?php echo pwd(); ?>">       
     <?php article(); ?>
-  </article>
-    
-  <?php element('nav'); ?>
+    <?php element('nav'); ?>
+  </article>      
   <script src="/app/seed.js"></script>
   <script src="/app/entities.js"></script>
   <script src="/app/items.js"></script>
