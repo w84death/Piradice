@@ -25,8 +25,8 @@ Item.prototype = {
             this.close = false; 
                     
             var win = true;
-            for (i = 0; i < world.maps[world.map].items.length; i++) {
-                if(world.maps[world.map].items[i].can_open && world.maps[world.map].items[i].close){
+            for (i = 0; i < world.map.items.length; i++) {
+                if(world.map.items[i].can_open && world.map.items[i].close){
                     win = false;
                 }
             }
@@ -60,7 +60,7 @@ Item.prototype = {
                 this.palms--;
                 this.sprite--;                                      
                 if(this.palms === 0){
-                    world.maps[world.map].moves[(this.x)+((this.y)*world.maps[world.map].width)] = 1;
+                    world.map.moves[(this.x)+((this.y)*world.map.width)] = 1;
                 }
                 return true;
             }

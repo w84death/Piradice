@@ -15,34 +15,10 @@
   <link rel="stylesheet" href="/app/app.css">        
 </head>
 <body>
-      
-  
 
-  <article class="<?php echo pwd(); ?>">       
+  <article class="<?php echo pwd(); ?>" id="play">       
     <?php article(); ?>
-    <?php element('nav'); ?>
-  </article>      
-  <script src="/app/seed.js"></script>
-  <script src="/app/entities.js"></script>
-  <script src="/app/items.js"></script>
-  <script src="/app/maps.js"></script>
-  <script src="/app/ai.js"></script>
-  <script src="/app/game.js"></script>
-  <script src="/app/editor.js"></script>
-  <script src="/app/app.js"></script>
-  <script>    
-    app.init({ads:true});
-  </script>
-
-  <?php if($_GET['sub']=='random'){ ?>        
-  <script>
-      editor.init({random:true});
-  </script>
-  <?php } ?>
-  <?php if($_GET['sub']=='solo'){ ?>        
-      <h2>SOLO PLAY</h2>
-      <strong>not ready..</strong>
-  <?php } ?>
+  </article>        
   
   <script type="text/javascript">
   

@@ -1,6 +1,29 @@
+<?php element('nav'); ?>
 <section id="game"></section>          
 <section id="multi">
     <h2><span id="playerID">PIRATE</span></h2>
     <p>TURN <span id="turn">1</span></p>
     <p><button id="playButton" onclick="multi.play()" class="hot">PLAY</button></p>                
 </section>
+<?php element('navbottom'); ?>
+
+
+<script src="/app/seed.js"></script>
+<script src="/app/entities.js"></script>
+<script src="/app/items.js"></script>
+<script src="/app/maps.js"></script>
+<script src="/app/ai.js"></script>
+<script src="/app/io.js"></script>
+<script src="/app/world.js"></script>
+<script src="/app/shop.js"></script>  
+<script src="/app/game.js"></script>
+
+<?php if(($_GET['sub']=='random')||($_GET['sub']=='multi')){ ?>        
+<script>
+    game.init({multi:true});
+</script>
+<?php } ?>
+<?php if($_GET['sub']=='solo'){ ?>        
+    <h2>SOLO PLAY</h2>
+    <strong>not ready..</strong>
+<?php } ?>

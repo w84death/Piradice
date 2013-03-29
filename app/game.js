@@ -19,82 +19,77 @@
 */
 
 var game = {
-    version: 'BETA2.1 28-03-2013',
+    version: 'BETA2.21 29-03-2013',
     teams: [{
-        ai: false,
-        wallet: 200,
-    },{
-        ai: false,
-        wallet: 200, 
-    }],
-    play: false,
-    editor: false,    
-    preview_play: false,
+            ai: false,
+            wallet: 200,
+        },{
+            ai: false,
+            wallet: 200, 
+        }],
     turn: {
         id: 1,
         start: true,
-        startTime: null,
-        team: 0,
-        endTime: null
+        team: 0
     },
     ai_speed: 100,
+    play: false,
     unit_selected: -1,
-    select_area: [],
 
     init: function(args){                    
-        console.log(this.version, args);
-
-        if(!this.play){
-            world.init(args);
-            render.init();
-            render.gui.canvas.addEventListener('mousedown', game.click, false);            
-            game.shoutTeam();
-            this.play = true;            
-        }else{
-            world.restartMap(args);
-            this.turn.start = true;        
-            game.shoutTeam();
-            shop.open();
-            shop.buyStarter();
-            fogOfWar.update();           
-            render.render({gui:true, entities:true, map:true,sky:true});            
-        }        
-        
-        document.getElementById('bottom').style.display = 'block';
+        console.log(this.version);        
+        world.init({
+            width: 24 || args.w,
+            height: 14 || args.h
+        });        
+        render.init();
+        fogOfWar.init();
+        render.render({all:true});                
     },
 
-    click: function(e){
-        var gameDiv = document.getElementById('game'),
-            cX = (e.pageX - gameDiv.offsetLeft)/render.box<<0,
-            cY = (e.pageY - gameDiv.offsetTop)/render.box<<0;
-                
-        console.log(cX, cY);
+    start: function(){
+        game.play = true;
+        document.getElementById('playGame').style.display = 'none';
+        document.getElementById('settings').style.display = 'none';
+        document.getElementById('random').style.display = 'none';
+        shop.open({team:game.turn.team, more:false});
+        shop.buyStarter();
+        multi.show();
+    },    
 
-        if(game.play){        
+    randomMap: function(){
+        world.randomMap();
+        render.render({all:true});
+    },
 
-            if(game.unit_selected > -1){
-                game.attackOrMove(cX, cY)
-                render.render({entities:true, gui:true});
-            }else{
-                game.select(cX, cY);
-                render.render({gui:true});
-            }
+    saveMap: function(){
+        world.saveMap();
+    },
 
-        }
+    loadMap: function(){
+        world.loadMap();
+        render.render({all:true});
+    },
+
+    mapSize: function(args){
+        world.mapSize(args);
+        render.init();
+        fogOfWar.init();
+        io.init();
+        render.render({all:true}); 
     },
 
     select: function(cX,cY){
-
-
-            for (var i = 0; i < world.maps[world.map].entities.length; i++) {
-                if(world.maps[world.map].entities[i].x == cX && world.maps[world.map].entities[i].y == cY && world.maps[world.map].entities[i].team == this.turn.team && world.maps[world.map].entities[i].moves > 0 && world.maps[world.map].entities[i].reloading < 1) {
-                    world.maps[world.map].entities[i].select();
-                    world.maps[world.map].entities[i].open();
-                    this.unit_selected = i;
-                }
-            }
         
+        // user clicked on canvas
 
+        for (var i = 0; i < world.map.entities.length; i++) {
+            if(world.map.entities[i].x == cX && world.map.entities[i].y == cY && world.map.entities[i].team == this.turn.team && world.map.entities[i].moves > 0 && world.map.entities[i].reloading < 1) {                
+                world.map.entities[i].select();                
+                world.map.entities[i].open();
+                this.unit_selected = i;
+            }
+        }
     },
 
     attackOrMove: function(cX,cY){
@@ -102,31 +97,31 @@ var game = {
         var randomizer = new Date();
         Math.seedrandom(randomizer);
 
-        for (var i = 0; i < world.maps[world.map].entities[game.unit_selected].move_area.length; i++) {
-            if(world.maps[world.map].entities[game.unit_selected].move_area[i].x == cX && world.maps[world.map].entities[game.unit_selected].move_area[i].y == cY){
-                if(world.maps[world.map].entities[game.unit_selected].move_area[i].attack){
-                    if(world.maps[world.map].entities[game.unit_selected].attack(cX, cY)){
-                        if(!world.maps[world.map].entities[game.unit_selected].range){
-                            world.maps[world.map].entities[game.unit_selected].move(cX, cY);
+        for (var i = 0; i < world.map.entities[game.unit_selected].move_area.length; i++) {
+            if(world.map.entities[game.unit_selected].move_area[i].x == cX && world.map.entities[game.unit_selected].move_area[i].y == cY){
+                if(world.map.entities[game.unit_selected].move_area[i].attack){
+                    if(world.map.entities[game.unit_selected].attack(cX, cY)){
+                        if(!world.map.entities[game.unit_selected].range){
+                            world.map.entities[game.unit_selected].move(cX, cY);
                         }
                     };
                 }else
-                if(world.maps[world.map].entities[game.unit_selected].move_area[i].merge){
-                    if(world.maps[world.map].entities[game.unit_selected].merge(cX, cY)){
-                        world.maps[world.map].entities[game.unit_selected].move(cX, cY);
+                if(world.map.entities[game.unit_selected].move_area[i].merge){
+                    if(world.map.entities[game.unit_selected].merge(cX, cY)){
+                        world.map.entities[game.unit_selected].move(cX, cY);
                     }
                 }else
-                if(world.maps[world.map].entities[game.unit_selected].move_area[i].forest){                    
-                    world.maps[world.map].entities[game.unit_selected].cut(cX, cY);
+                if(world.map.entities[game.unit_selected].move_area[i].forest){                    
+                    world.map.entities[game.unit_selected].cut(cX, cY);
                 }else
-                if(world.maps[world.map].entities[game.unit_selected].move_area[i].move){
-                    world.maps[world.map].entities[game.unit_selected].move(cX, cY);
+                if(world.map.entities[game.unit_selected].move_area[i].move){
+                    world.map.entities[game.unit_selected].move(cX, cY);
                 }
                 
             }    
         }
       
-        world.maps[world.map].entities[game.unit_selected].unselect();
+        world.map.entities[game.unit_selected].unselect();
         this.unit_selected = -1;
         
         fogOfWar.update();
@@ -152,17 +147,17 @@ var game = {
             var loose = true;
             // change to true!
 
-            for (i = 0; i < world.maps[world.map].entities.length; i++) {
-                if(world.maps[world.map].entities[i].team === this.turn.team && world.maps[world.map].entities[i].alive){                    
+            for (i = 0; i < world.map.entities.length; i++) {
+                if(world.map.entities[i].team === this.turn.team && world.map.entities[i].alive){                    
                     loose = false;                    
                 }
 
-                if(world.maps[world.map].entities[i].range){
-                    world.maps[world.map].entities[i].reloading--;
+                if(world.map.entities[i].range){
+                    world.map.entities[i].reloading--;
                 }
                 
-                world.maps[world.map].entities[i].moves = 1;                
-                world.maps[world.map].entities[i].selected = false;
+                world.map.entities[i].moves = 1;                
+                world.map.entities[i].selected = false;
             }
 
             game.unit_selected = -1;
@@ -211,63 +206,30 @@ var game = {
 
     killZombies: function(){
     
-        for (var i = 0; i < world.maps[world.map].entities.length; i++) {
-            if(!world.maps[world.map].entities[i].alive){                
-                world.maps[world.map].entities[i].x = 0;
-                world.maps[world.map].entities[i].y = 0;
-                //delete world.maps[world.map].entities[i]
-                world.maps[world.map].entities.slice(i,1);
+        for (var i = 0; i < world.map.entities.length; i++) {
+            if(!world.map.entities[i].alive){                
+                world.map.entities[i].x = 0;
+                world.map.entities[i].y = 0;
+                //delete world.map.entities[i]
+                world.map.entities.slice(i,1);
             }                        
         }
         
-        render.render({entities:true});
-        
+        render.render({entities:true});        
     },
             
     win: function(){
-        if(this.preview_play){
-            window.alert('You win!');  
-            location.reload();          
-            //world.restartMap();
-            //editor.exitPlay();
-        }else{
-            world.nextMap();        
-            this.turn.start = true;        
-            render.render({gui:true, entities:true, map:true});
-        }
+        window.alert('You win!');           
+        this.turn.start = true;        
+        world.restartMap();
     },
 
     lose: function(){        
-        if(this.preview_play){
-            window.alert('You lose');
-            location.reload();
-            //world.restartMap();
-            //editor.exitPlay();
-        }else{
-            window.alert('You lose.\nClick ok to restart map');            
-            this.turn.start = true;
-            world.restartMap();
-            render.render({gui:true, entities:true, map:true});    
-        }
+        window.alert('You lose');
+        this.turn.start = true;        
+        world.restartMap();        
+    },        
         
-    },
-        
-    updatePlayer: function(args){        
-        game.teams[args.player].ai = args.ai;            
-    },
-    
-    switchPlayer:function(){
-        var ai = document.getElementById('ai'),
-            team = parseInt(document.getElementById('team').value),
-            val = game.teams[team].ai ? 1 : 0;    
-    
-        for (var i = 0; i < ai.options.length; i++) {
-            if(parseInt(ai.options[i].value) == val){
-                ai.options.selectedIndex = i;
-            }
-        }    
-    },
-    
     setWallet: function(gold){
         for (var i = 0; i < game.teams.length; i++) {
             game.teams[i].wallet = gold;    
@@ -282,28 +244,17 @@ var game = {
         player1_gold.innerHTML = game.teams[0].wallet;
         player2_gold.innerHTML = game.teams[1].wallet;            
     },
-
-    updateGold: function(args){    
-        if(args.player1){
-            game.teams[0].wallet = args.player1;
-        }
-        if(args.player2){
-            game.teams[1].wallet = args.player2;
-        }
-        document.getElementById('player1_gold').innerHTML = game.teams[0].wallet;
-        document.getElementById('player2_gold').innerHTML = game.teams[1].wallet;        
-    },
     
     updateUnits: function(){
         var player1_units = 0,
             player2_units = 0;
         
-        for (var i = 0; i < world.maps[world.map].entities.length; i++) {
-            if(world.maps[world.map].entities[i].alive){
-                if(world.maps[world.map].entities[i].team === 0){
-                    player1_units += world.maps[world.map].entities[i].squad;
+        for (var i = 0; i < world.map.entities.length; i++) {
+            if(world.map.entities[i].alive){
+                if(world.map.entities[i].team === 0){
+                    player1_units += world.map.entities[i].squad;
                 }else{
-                    player2_units += world.maps[world.map].entities[i].squad; 
+                    player2_units += world.map.entities[i].squad; 
                 }
             }
         }
@@ -319,203 +270,13 @@ var game = {
         document.getElementById('player2_units').setAttribute('style','width: ' + percent(player2_units, player1_units+player2_units) + '%');
     },
 
-
     
     shoutTeam: function(){
-        if(!this.editor){
-            for (var i = 0; i < world.maps[world.map].entities.length; i++) {
-                world.maps[world.map].entities[i].message = null;
-                if(world.maps[world.map].entities[i].team === game.turn.team && world.maps[world.map].entities[i].reloading < 1){
-                    world.maps[world.map].entities[i].shout();
-                }
+        for (var i = 0; i < world.map.entities.length; i++) {
+            world.map.entities[i].message = null;
+            if(world.map.entities[i].team === game.turn.team && world.map.entities[i].reloading < 1){
+                world.map.entities[i].shout();
             }
-        }
-    },
-};
-
-var shop = {
-    prices: [
-        {unit: 'pirate',price: 10},
-        {unit: 'range_pirate',price: 15},
-        {unit: 'lumberjack',price: 10},
-        {unit: 'skeleton',price: 15},
-        {unit: 'dust',price: 80},
-        {unit: 'ship',price: 40},
-        {unit: 'cementary',price: 80},
-        {unit: 'octopus',price: 15}],
-
-    buy: function(args){
-        var newX = 0,
-            newY = 0;
-            ai = game.teams[game.turn.team].ai,
-            team = game.turn.team,
-            hasCementary = 0;            
-        
-        if(args.unit == 'cementary'){
-            var chests = [],
-                cementars = 0;
-
-            for (var i = 0; i < world.maps[world.map].items.length; i++) {
-                if(world.maps[world.map].items[i].chest && !world.maps[world.map].items[i].hasCementary){
-                    chests.push(i);
-                }
-            };
-
-            for (var i = 0; i < world.maps[world.map].entities.length; i++) {
-                if(world.maps[world.map].entities[i].cementary){
-                    cementars++;
-                }
-            };
-
-            if(chests.length > 0){
-                var r = (Math.random()*chests.length)<<0;
-                world.maps[world.map].items[chests[r]].hasCementary = true;
-                newX = world.maps[world.map].items[chests[r]].x + 1;
-                newY = world.maps[world.map].items[chests[r]].y + 1; 
-                hasCementary = chests[r];
-            }else{
-                return false;
-            }
-            
-        }else
-        if(args.unit == 'ship' || args.unit == 'octopus'){
-            var side = (Math.random()*4)<<00;            
-
-            if(side == 1){
-                newX = 1;
-                newY = 1 + (Math.random()*(world.maps[world.map].height-1))<<0;
-            }else
-            if(side == 2){
-                newX = world._W-1;
-                newY = 1 + (Math.random()*(world.maps[world.map].height-1))<<0;
-            }else
-            if(side == 3){
-                newX = 1 + (Math.random()*(world.maps[world.map].width-1))<<0;
-                newY = 1;                
-            }else{
-                newX = 1 + (Math.random()*(world.maps[world.map].width-1))<<0;
-                newY = world._H-1;
-            }
-
-        }else{       
-            var buy_spot = [];
-
-            for (var i = 0; i < world.maps[world.map].entities[game.unit_selected].move_area.length; i++) {
-                if(world.maps[world.map].entities[game.unit_selected].move_area[i].buy){
-                    buy_spot.push(i);
-                }
-            };
-            var r = (Math.random()*buy_spot.length)<<0;
-            newX = world.maps[world.map].entities[game.unit_selected].move_area[buy_spot[r]].x
-            newY = world.maps[world.map].entities[game.unit_selected].move_area[buy_spot[r]].y;
-        }
-
-
-        if(this.makeTransaction({team:team, unit:args.unit})){
-            if(args.unit == 'pirate'){            
-                world.maps[world.map].entities.push(new Pirate({x:newX,y:newY,team:team, ai:ai}));              
-            }
-            
-            if(args.unit == 'range_pirate'){            
-                world.maps[world.map].entities.push(new RangePirate({x:newX,y:newY,team:team, ai:ai}));
-            }
-            
-            if(args.unit == 'lumberjack'){
-                world.maps[world.map].entities.push(new Lumberjack({x:newX,y:newY,team:team, ai:ai}));
-            }
-            
-            if(args.unit == 'ship'){
-                world.maps[world.map].entities.push(new Ship({x:newX,y:newY,team:team, ai:ai}));
-            }
-
-            if(args.unit == 'skeleton'){
-                world.maps[world.map].entities.push(new Skeleton({x:newX,y:newY,team:team, ai:ai}));
-            }
-            
-            if(args.unit == 'dust'){
-                world.maps[world.map].entities.push(new Dust({x:newX,y:newY,team:team, ai:ai}));
-            }
-            
-            if(args.unit == 'octopus'){
-                world.maps[world.map].entities.push(new Octopus({x:newX,y:newY,team:team, ai:ai}));
-            }
-            
-            if(args.unit == 'cementary'){
-                world.clearTerrain({x:newX, y:newY, size:1});
-                world.maps[world.map].entities.push(new Cementary({x:newX,y:newY,team:team, ai:ai, hasCementary:hasCementary}));
-            }
-
-            world.maps[world.map].entities[world.maps[world.map].entities.length-1].shout();
-
-            if(game.unit_selected > -1 ){
-                world.maps[world.map].entities[game.unit_selected].moves = 0;
-                world.maps[world.map].entities[game.unit_selected].unselect();
-                world.maps[world.map].entities[game.unit_selected].important = false;
-                world.maps[world.map].entities[game.unit_selected].message = '+1';
-                game.unit_selected = -1;  
-
-            }
-            game.updateUnits();
-            fogOfWar.update();
-            render.render({entities:true, gui:true});
-        }else{
-            console.log('need more gold!');
-        }
-        
-    },
-
-    makeTransaction: function(args){
-        for (var i = 0; i < this.prices.length; i++) {
-            if(this.prices[i].unit == args.unit){
-                if(game.teams[args.team].wallet >= this.prices[i].price){
-                    game.teams[args.team].wallet -= this.prices[i].price;
-                    game.updateWallet();
-                    return true;  
-                }
-            }
-        };
-        
-        return false;
-    },
-
-    open: function(args){        
-        if(args.team === 0){
-
-            document.getElementById('player1_shop').style.display = 'inline-block';            
-            document.getElementById('player2_shop').style.display = 'none';            
-            document.getElementById('player2_shop').removeAttribute('class');
-
-            if(args.more){
-                document.getElementById('player1_shop').setAttribute('class','buy');            
-            }
-              
-        }else{
-            document.getElementById('player2_shop').style.display = 'inline-block';            
-            document.getElementById('player1_shop').style.display = 'none';            
-            document.getElementById('player1_shop').removeAttribute('class');
-            if(args.more){
-                document.getElementById('player2_shop').setAttribute('class','buy');
-            }            
-            
-        }
-    },
-
-    close: function(args){
-        document.getElementById('player1_shop').removeAttribute('class');        
-        document.getElementById('player2_shop').removeAttribute('class');
-        
-        if(args.all){
-            document.getElementById('player1_shop').style.display = 'none';         
-            document.getElementById('player2_shop').style.display = 'none'; 
-        }
-    },
-
-    buyStarter: function(){
-        if(game.turn.team === 0){
-            this.buy({unit:'ship'});
-        }else
-        if(game.turn.team == 1){
-            this.buy({unit:'cementary'});
         }
     },
 };
@@ -544,86 +305,7 @@ var multi = {
     },
 };
 
-var world = {
-    _W: 0,
-    _H: 0,
-    map: localStorage.getItem("map") || 0,
-    saved_map: [],
-    maps: [],
-    entities: [],
 
-    init: function(args){        
-        if(args.campain){
-            if(args.newgame){
-                this.map = 0;
-            }
-            this.maps = load.map({campain: true});
-            this.saved_map = utilities.clone(this.maps);
-            this._W = this.maps[this.map].width;
-            this._H = this.maps[this.map].height;
-        
-        }
-        
-        if(args.editor){
-            this.map = 0;
-            this._W = ((((window.innerWidth)/(render.box*render.scale)))<<0);
-            this._H = ((((window.innerHeight)/(render.box*render.scale)))<<0)-2; // padding for top & bottom menu 
-            this.maps = load.map(args);
-            this.saved_map = utilities.clone(this.maps);                                
-        }
-
-        fogOfWar.init();         
-        game.shoutTeam();
-        fogOfWar.update();
-        shop.open({team:game.turn.team, more:false});  
-    },
-    
-    loadMap: function(args){
-        this.map = args.id;        
-        this.maps = load.map(args);
-        this.saved_map = utilities.clone(this.maps);
-        game.updateUnits();
-        game.shoutTeam();
-        fogOfWar.update();
-        multi.show();        
-    },
-    
-    restartMap: function(args){
-        if(args.newgame == true){
-            this.map = 0;
-        }
-        this.maps[this.map] = utilities.clone(this.saved_map[this.map]);
-    },
-    
-    nextMap: function(){
-        if(this.map < this.maps.length-1){
-            this.map++;   
-        }else{
-            window.alert('\n\nCongratulations.\nYou win!\n\n\nIf You like this game share it!\n\n#piradice');
-            this.map = 0;
-            this.restartMap();
-        }
-        
-        localStorage.setItem("map", world.map);        
-    },      
-
-    clearTerrain: function(args){
-
-        for (var i = 0; i < this.maps[this.map].items.length; i++) {
-            if(this.maps[this.map].items[i].forest){
-                for (var x = args.x-args.size; x <= args.x+args.size; x++) {
-                    for (var y = args.y-args.size; y <= args.y+args.size; y++) {                       
-                        if(this.maps[this.map].items[i].x == x && this.maps[this.map].items[i].y == y){                                        
-                            this.maps[this.map].items.splice(i,1);//for_cut.push(i);        
-                        }                        
-                    }
-                }
-            }
-        }
-
-        render.render({map:true});
-    },  
-};
 
 var utilities = {
     clone: function(from, to){
@@ -651,7 +333,7 @@ var fogOfWar = {
     init: function(){
         for (var t = 0; t < game.teams.length; t++) {
             this.data[t] = [];
-            for (var i = 0; i < world.maps[world.map].data.length; i++) {
+            for (var i = 0; i < world.map.data.length; i++) {
                 this.data[t].push(50);
             }        
         }
@@ -659,20 +341,20 @@ var fogOfWar = {
     
     update: function(){
         
-        for (var i = 0; i < world.maps[world.map].data.length; i++) {
+        for (var i = 0; i < world.map.data.length; i++) {
             for (var t = 0; t < game.teams.length; t++) {
                 this.data[t][i] = 50;
             }
         }                
         
-        for (var i = 0; i < world.maps[world.map].entities.length; i++) {                                
+        for (var i = 0; i < world.map.entities.length; i++) {                                
             
-            if(world.maps[world.map].entities[i].alive){
-                var size = world.maps[world.map].entities[i].fow;
-                for (var y = world.maps[world.map].entities[i].y+1 - size; y <= world.maps[world.map].entities[i].y + size; y++) {
-                    for (var x = world.maps[world.map].entities[i].x - size; x <= world.maps[world.map].entities[i].x + size; x++) {
-                        if(x>=0 && x<world.maps[world.map].width && y>=0 && y < world.maps[world.map].height){
-                            this.data[world.maps[world.map].entities[i].team][x + (y*world.maps[world.map].width)] = false;                
+            if(world.map.entities[i].alive){
+                var size = world.map.entities[i].fow;
+                for (var y = world.map.entities[i].y+1 - size; y <= world.map.entities[i].y + size; y++) {
+                    for (var x = world.map.entities[i].x - size; x <= world.map.entities[i].x + size; x++) {
+                        if(x>=0 && x<world.map.width && y>=0 && y < world.map.height){
+                            this.data[world.map.entities[i].team][x + (y*world.map.width)] = false;                
                         }
                     }
                 }
@@ -682,14 +364,14 @@ var fogOfWar = {
         
         
     
-        for (var y = 0; y < world.maps[world.map].height; y++) {
-            for (var x = 0; x < world.maps[world.map].width; x++) {
+        for (var y = 0; y < world.map.height; y++) {
+            for (var x = 0; x < world.map.width; x++) {
                 for (var t = 0; t < game.teams.length; t++) {
-                    if(this.data[t][x + (y*world.maps[world.map].width)] == 50 && this.data[t][x + ((y+1)*world.maps[world.map].width)] == false && this.data[t][x + ((y-1)*world.maps[world.map].width)] == false ){
-                        this.data[t][x + (y*world.maps[world.map].width)] = false; // clear artefacts
+                    if(this.data[t][x + (y*world.map.width)] == 50 && this.data[t][x + ((y+1)*world.map.width)] == false && this.data[t][x + ((y-1)*world.map.width)] == false ){
+                        this.data[t][x + (y*world.map.width)] = false; // clear artefacts
                     }else
-                    if(this.data[t][x + (y*world.maps[world.map].width)] == 50 && this.data[t][x + ((y+1)*world.maps[world.map].width)] == false ){
-                        this.data[t][x + (y*world.maps[world.map].width)] = 51; // bottom shadow
+                    if(this.data[t][x + (y*world.map.width)] == 50 && this.data[t][x + ((y+1)*world.map.width)] == false ){
+                        this.data[t][x + (y*world.map.width)] = 51; // bottom shadow
                     }    
                 }
             }
@@ -729,13 +411,13 @@ var render = {
     init: function(){
         if(!this.render_initialized){
             this.box = this.box * this.scale;
-            document.getElementById('game').innerHTML = '<p id="loading"><strong>LOADING..</strong></p>';        
             this.createDOM();
-    
-            this.noise_img = this.fastNoise(world._W*this.box, world._H*this.box, 8 ),
-    
+
+            this.noise_img = this.fastNoise(world.conf.width*this.box, world.conf.height*this.box, 8 );
+
             this.sprites_img.src = "/media/sprites.png";
-            this.sprites_img.onload = function(){
+            this.sprites_img.onload = function(){                
+
                 render.sprites_img = render.resize(render.sprites_img, render.scale);
     
                 // map & items & GUI
@@ -756,7 +438,7 @@ var render = {
                 render.sprites[14] = render.makeSprite(1,2, false); // treasure open
                 render.sprites[15] = render.makeSprite(5,2, false); // reloading
                 render.sprites[16] = render.makeSprite(2,1, false); // pirate flag
-                render.sprites[37] = render.makeSprite(3,2, false); // big skeleton head
+                render.sprites[37] = render.makeSprite(7,3, false); // buy area
                 render.sprites[38] = render.makeSprite(6,3, false); // cut forest
     
                 // entities
@@ -812,59 +494,70 @@ var render = {
             };
     
             this.next_turn.src = "/media/next_turn.png";
-            this.next_turn.onload = function(){
-                var el = document.getElementById('loading');
-                el.parentNode.removeChild( el );
+            this.next_turn.onload = function(){                
                 render.render({gui:true});
             };
             
             this.render_initialized = true;
+        }else{
+            this.destroyDOM();
+            this.createDOM();            
+            this.noise_img = this.fastNoise(world.conf.width*this.box, world.conf.height*this.box, 8 );
         }
 
     },    
     
+
     createDOM: function(){
+    
+        var gameDiv = document.getElementById('game'),
+            mapDiv = document.createElement('canvas'),
+            entitiesDiv = document.createElement('canvas'),
+            skyDiv = document.createElement('canvas'),
+            guiDiv = document.createElement('canvas');
         
-            var gameDiv = document.getElementById('game'),
-                mapDiv = document.createElement('canvas'),
-                entitiesDiv = document.createElement('canvas'),
-                skyDiv = document.createElement('canvas'),
-                guiDiv = document.createElement('canvas');
-            
-            mapDiv.setAttribute('id','map');
-            entitiesDiv.setAttribute('id','entities');
-            skyDiv.setAttribute('id','sky');
-            guiDiv.setAttribute('id','gui');
-                        
-            gameDiv.appendChild(mapDiv);
-            gameDiv.appendChild(entitiesDiv);
-            gameDiv.appendChild(skyDiv);
-            gameDiv.appendChild(guiDiv);            
+        mapDiv.setAttribute('id','map');
+        entitiesDiv.setAttribute('id','entities');
+        skyDiv.setAttribute('id','sky');
+        guiDiv.setAttribute('id','gui');
                     
-            gameDiv.style.width = (world._W*this.box)+'px';
-            gameDiv.style.height = (world._H*this.box)+'px';
-    
-            this.map.canvas = document.getElementById('map');
-            this.map.canvas.width = world._W*this.box;
-            this.map.canvas.height = world._H*this.box;
-            this.map.ctx = this.map.canvas.getContext('2d');
-    
-            this.entities.canvas = document.getElementById('entities');
-            this.entities.canvas.width = world._W*this.box;
-            this.entities.canvas.height = world._H*this.box;
-            this.entities.ctx = this.entities.canvas.getContext('2d');
-    
-            this.gui.canvas = document.getElementById('gui');
-            this.gui.canvas.width = world._W*this.box;
-            this.gui.canvas.height = world._H*this.box;
-            this.gui.ctx = this.gui.canvas.getContext('2d');
-            
-            this.sky.canvas = document.getElementById('sky');
-            this.sky.canvas.width = world._W*this.box;
-            this.sky.canvas.height = world._H*this.box;
-            this.sky.ctx = this.sky.canvas.getContext('2d');
-        },
+        gameDiv.appendChild(mapDiv);
+        gameDiv.appendChild(entitiesDiv);
+        gameDiv.appendChild(skyDiv);
+        gameDiv.appendChild(guiDiv);            
+                
+        gameDiv.style.width = (world.conf.width*this.box)+'px';
+        gameDiv.style.height = (world.conf.height*this.box)+'px';
         
+        document.getElementById('play').style.width = gameDiv.style.width;
+        
+        this.map.canvas = document.getElementById('map');
+        this.map.canvas.width = world.conf.width*this.box;
+        this.map.canvas.height = world.conf.height*this.box;
+        this.map.ctx = this.map.canvas.getContext('2d');
+
+        this.entities.canvas = document.getElementById('entities');
+        this.entities.canvas.width = world.conf.width*this.box;
+        this.entities.canvas.height = world.conf.height*this.box;
+        this.entities.ctx = this.entities.canvas.getContext('2d');
+
+        this.gui.canvas = document.getElementById('gui');
+        this.gui.canvas.width = world.conf.width*this.box;
+        this.gui.canvas.height = world.conf.height*this.box;
+        this.gui.ctx = this.gui.canvas.getContext('2d');
+        
+        this.sky.canvas = document.getElementById('sky');
+        this.sky.canvas.width = world.conf.width*this.box;
+        this.sky.canvas.height = world.conf.height*this.box;
+        this.sky.ctx = this.sky.canvas.getContext('2d');
+        io.init();
+    },
+        
+    destroyDOM: function(){
+        io.clear();
+        document.getElementById('game').innerHTML = '';       
+    },
+
     makeSprite: function(x,y, flip){
         var m_canvas = document.createElement('canvas');
             m_canvas.width = this.box;
@@ -972,8 +665,8 @@ var render = {
                 this.gui.ctx.textBaseline = 'middle';
                 this.gui.ctx.textAlign = 'center';
                 
-                this.gui.ctx.drawImage(this.next_turn, ((world.maps[world.map].width*0.5)<<0)*this.box - ((this.next_turn.width*0.5)<<0), ((world.maps[world.map].height*pos)<<0)*this.box - ((this.next_turn.height*0.5)<<0));
-                this.gui.ctx.fillText('Skeleton Army..', ((world.maps[world.map].width*0.5)<<0)*this.box, ((world.maps[world.map].height*pos)<<0)*this.box );
+                this.gui.ctx.drawImage(this.next_turn, ((world.map.width*0.5)<<0)*this.box - ((this.next_turn.width*0.5)<<0), ((world.map.height*pos)<<0)*this.box - ((this.next_turn.height*0.5)<<0));
+                this.gui.ctx.fillText('Skeleton Army..', ((world.map.width*0.5)<<0)*this.box, ((world.map.height*pos)<<0)*this.box );
                 
                 nextTurn.style.display = 'none';
             }else{
@@ -993,10 +686,10 @@ var render = {
         }
 
         if(args.map){
-            this.map.ctx.clearRect(0, 0, world._W*this.box, world._H*this.box);
-            for(var y=0; y<world._H; y++){
-                for(var x=0; x<world._W; x++){
-                    this.map.ctx.drawImage(this.sprites[world.maps[world.map].data[i++]], x*this.box, y*this.box);
+            this.map.ctx.clearRect(0, 0, world.conf.width*this.box, world.conf.height*this.box);
+            for(var y=0; y<world.conf.height; y++){
+                for(var x=0; x<world.conf.width; x++){  
+                    this.map.ctx.drawImage(this.sprites[world.map.data[i++]], x*this.box, y*this.box);
                 }
             }
             args.items = true;
@@ -1004,54 +697,57 @@ var render = {
         }
 
         if(args.items){
-            for(i=0; i<world.maps[world.map].items.length; i++){
-                this.map.ctx.drawImage(this.sprites[ world.maps[world.map].items[i].sprite ], world.maps[world.map].items[i].x*this.box, world.maps[world.map].items[i].y*this.box);
+            for(i=0; i<world.map.items.length; i++){
+                this.map.ctx.drawImage(this.sprites[ world.map.items[i].sprite ], world.map.items[i].x*this.box, world.map.items[i].y*this.box);
             }
         }
 
         if(args.entities){            
-            this.entities.ctx.clearRect(0, 0, world._W*this.box, world._H*this.box);
-            for(i=0; i<world.maps[world.map].entities.length; i++){
-                if(world.maps[world.map].entities[i].alive){                    
-                    this.entities.ctx.drawImage(this.sprites[ world.maps[world.map].entities[i].sprite ][ world.maps[world.map].entities[i].flip ], world.maps[world.map].entities[i].x*this.box, world.maps[world.map].entities[i].y*this.box);
+            this.entities.ctx.clearRect(0, 0, world.conf.width*this.box, world.conf.height*this.box);
+            for(i=0; i<world.map.entities.length; i++){
+                if(world.map.entities[i].alive){                    
+                    this.entities.ctx.drawImage(this.sprites[ world.map.entities[i].sprite ][ world.map.entities[i].flip ], world.map.entities[i].x*this.box, world.map.entities[i].y*this.box);
                 }
             }
         }
 
         if(args.gui){
-            this.gui.ctx.clearRect(0, 0, world._W*this.box, world._H*this.box);
+            this.gui.ctx.clearRect(0, 0, world.conf.width*this.box, world.conf.height*this.box);
             if(!game.teams[game.turn.team].ai){
-                for(i=0; i<world.maps[world.map].entities.length; i++){
-                    if(world.maps[world.map].entities[i].selected){
-                        this.gui.ctx.drawImage(this.sprites[10], world.maps[world.map].entities[i].x*this.box, world.maps[world.map].entities[i].y*this.box);
-                        for (var j = 0; j < world.maps[world.map].entities[i].move_area.length; j++) {
+                for(i=0; i<world.map.entities.length; i++){
+                    if(world.map.entities[i].selected){
+                        this.gui.ctx.drawImage(this.sprites[10], world.map.entities[i].x*this.box, world.map.entities[i].y*this.box);
+                        for (var j = 0; j < world.map.entities[i].move_area.length; j++) {
                             var block = null;
-                            if(world.maps[world.map].entities[i].move_area[j].move){
+                            if(world.map.entities[i].move_area[j].move){
                                 block = 9;
                             }
-                            if(world.maps[world.map].entities[i].move_area[j].attack){
+                            if(world.map.entities[i].move_area[j].attack){
                                 block = 12;
                             }
-                            if(world.maps[world.map].entities[i].move_area[j].merge){
+                            if(world.map.entities[i].move_area[j].merge){
                                 block = 8;
                             }
-                            if(world.maps[world.map].entities[i].move_area[j].forest){
+                            if(world.map.entities[i].move_area[j].buy){
+                                block = 37;
+                            }
+                            if(world.map.entities[i].move_area[j].forest){
                                 block = 38;
                             }
                             if(block){
-                                render.gui.ctx.drawImage(render.sprites[block], world.maps[world.map].entities[i].move_area[j].x*render.box, world.maps[world.map].entities[i].move_area[j].y*render.box);
+                                render.gui.ctx.drawImage(render.sprites[block], world.map.entities[i].move_area[j].x*render.box, world.map.entities[i].move_area[j].y*render.box);
                             }
                         }
                     }else{
-                        if(world.maps[world.map].entities[i].message && world.maps[world.map].entities[i].alive){
-                            this.drawMessage(world.maps[world.map].entities[i].message,world.maps[world.map].entities[i].x, world.maps[world.map].entities[i].y, world.maps[world.map].entities[i].important)
+                        if(world.map.entities[i].message && world.map.entities[i].alive){
+                            this.drawMessage(world.map.entities[i].message,world.map.entities[i].x, world.map.entities[i].y, world.map.entities[i].important)
                         }
                     }
-                    if(world.maps[world.map].entities[i].reloading > 0 && world.maps[world.map].entities[i].alive ){
-                        render.gui.ctx.drawImage(render.sprites[15], world.maps[world.map].entities[i].x*render.box, world.maps[world.map].entities[i].y*render.box);
+                    if(world.map.entities[i].reloading > 0 && world.map.entities[i].alive ){
+                        render.gui.ctx.drawImage(render.sprites[15], world.map.entities[i].x*render.box, world.map.entities[i].y*render.box);
                     }
-                    if(world.maps[world.map].entities[i].moves < 1 && world.maps[world.map].entities[i].alive){
-                        render.gui.ctx.drawImage(render.sprites[11], world.maps[world.map].entities[i].x*render.box, world.maps[world.map].entities[i].y*render.box);
+                    if(world.map.entities[i].moves < 1 && world.map.entities[i].alive){
+                        render.gui.ctx.drawImage(render.sprites[11], world.map.entities[i].x*render.box, world.map.entities[i].y*render.box);
                     }
                 }
             }
@@ -1060,10 +756,10 @@ var render = {
         }
         
         if(args.sky && game.play && !game.teams[game.turn.team].ai){
-            this.sky.ctx.clearRect(0, 0, world._W*this.box, world._H*this.box);
+            this.sky.ctx.clearRect(0, 0, world.conf.width*this.box, world.conf.height*this.box);
             var f = 0;
-            for(var y=0; y<world._H; y++){
-                for(var x=0; x<world._W; x++){
+            for(var y=0; y<world.conf.height; y++){
+                for(var x=0; x<world.conf.width; x++){
                     if(fogOfWar.data[game.turn.team][f]){
                         this.sky.ctx.drawImage(this.sprites[fogOfWar.data[game.turn.team][f]], x*this.box, y*this.box);
                     }
@@ -1073,7 +769,7 @@ var render = {
         }
         
         if(args.clearSky){
-            this.sky.ctx.clearRect(0, 0, world._W*this.box, world._H*this.box);
+            this.sky.ctx.clearRect(0, 0, world.conf.width*this.box, world.conf.height*this.box);
         }    
                 
     },

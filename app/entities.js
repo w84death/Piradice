@@ -49,16 +49,31 @@ Unit.prototype = {
             this.move_area = [];
 
             if(this.create_unit){
-                var open = false;
+
                 for (var x = this.x - 1; x <= this.x + 1; x++) {
                     for (var y = this.y - 1; y <= this.y + 1; y++) {
-                        if(world.maps[world.map].moves[(x)+((y)*world.maps[world.map].width)] == map_type){           
-                            this.move_area.push({x:x,y:y, buy:true});
-                            open = true;
+                        if(world.map.moves[(x)+((y)*world.map.width)] == map_type){           
+                            var empty = true;
+                            for (var j = 0; j < world.map.entities.length; j++) {
+                                if(world.map.entities[j].x == x && world.map.entities[j].y == y ){
+                                    empty = false;
+                                    j = world.map.entities.length;
+                                    // isthereabettersolution?
+                                }
+                            };
+                            if(empty){
+                                this.move_area.push({x:x,y:y, buy:true});        
+                            }
                         }
                     }
-                };
-                if(open){ shop.open({team:this.team, more:true}); }
+                }
+
+                
+
+                if(this.move_area.length > 0){
+                    shop.open({team:this.team, more:true});
+                }
+                
             }
 
             if(this.water){
@@ -69,83 +84,83 @@ Unit.prototype = {
                 map_type = -1;
             }
             
-            if(world.maps[world.map].moves[(this.x-1)+((this.y)*world.maps[world.map].width)] == map_type){           
+            if(world.map.moves[(this.x-1)+((this.y)*world.map.width)] == map_type){           
                 this.move_area.push({x:this.x-1,y:this.y, move:true});
             }
             
-            if(world.maps[world.map].moves[(this.x)+((this.y-1)*world.maps[world.map].width)] == map_type){
+            if(world.map.moves[(this.x)+((this.y-1)*world.map.width)] == map_type){
                 this.move_area.push({x:this.x,  y:this.y-1, move:true});
             }
             
-            if(world.maps[world.map].moves[(this.x)+((this.y+1)*world.maps[world.map].width)] == map_type){
+            if(world.map.moves[(this.x)+((this.y+1)*world.map.width)] == map_type){
                 this.move_area.push({x:this.x,  y:this.y+1, move:true});
             }
                         
-            if(world.maps[world.map].moves[(this.x+1)+((this.y)*world.maps[world.map].width)] == map_type){
+            if(world.map.moves[(this.x+1)+((this.y)*world.map.width)] == map_type){
                 this.move_area.push({x:this.x+1,  y:this.y, move:true});
             }
             
             
-            if(world.maps[world.map].moves[(this.x-1)+((this.y-1)*world.maps[world.map].width)] == map_type){
-                if(world.maps[world.map].moves[(this.x-1)+((this.y)*world.maps[world.map].width)] == map_type || world.maps[world.map].moves[(this.x)+((this.y-1)*world.maps[world.map].width)] == map_type){
+            if(world.map.moves[(this.x-1)+((this.y-1)*world.map.width)] == map_type){
+                if(world.map.moves[(this.x-1)+((this.y)*world.map.width)] == map_type || world.map.moves[(this.x)+((this.y-1)*world.map.width)] == map_type){
                     this.move_area.push({x:this.x-1,y:this.y-1, move:true});
                 }
                 
             }
-            if(world.maps[world.map].moves[(this.x-1)+((this.y+1)*world.maps[world.map].width)] == map_type){
-                if(world.maps[world.map].moves[(this.x-1)+((this.y)*world.maps[world.map].width)] == map_type || world.maps[world.map].moves[(this.x)+((this.y+1)*world.maps[world.map].width)] == map_type){
+            if(world.map.moves[(this.x-1)+((this.y+1)*world.map.width)] == map_type){
+                if(world.map.moves[(this.x-1)+((this.y)*world.map.width)] == map_type || world.map.moves[(this.x)+((this.y+1)*world.map.width)] == map_type){
                     this.move_area.push({x:this.x-1,y:this.y+1, move:true});
                 }
             }
-            if(world.maps[world.map].moves[(this.x+1)+((this.y-1)*world.maps[world.map].width)] == map_type){
-                if(world.maps[world.map].moves[(this.x+1)+((this.y)*world.maps[world.map].width)] == map_type || world.maps[world.map].moves[(this.x)+((this.y-1)*world.maps[world.map].width)] == map_type){
+            if(world.map.moves[(this.x+1)+((this.y-1)*world.map.width)] == map_type){
+                if(world.map.moves[(this.x+1)+((this.y)*world.map.width)] == map_type || world.map.moves[(this.x)+((this.y-1)*world.map.width)] == map_type){
                     this.move_area.push({x:this.x+1,y:this.y-1, move:true});
                 }
             }
-            if(world.maps[world.map].moves[(this.x+1)+((this.y+1)*world.maps[world.map].width)] == map_type){
-                if(world.maps[world.map].moves[(this.x+1)+((this.y)*world.maps[world.map].width)] == map_type || world.maps[world.map].moves[(this.x)+((this.y+1)*world.maps[world.map].width)] == map_type){
+            if(world.map.moves[(this.x+1)+((this.y+1)*world.map.width)] == map_type){
+                if(world.map.moves[(this.x+1)+((this.y)*world.map.width)] == map_type || world.map.moves[(this.x)+((this.y+1)*world.map.width)] == map_type){
                     this.move_area.push({x:this.x+1,y:this.y+1, move:true});
                 }
             }
             
             if(!this.lumberjack){
-                if(world.maps[world.map].moves[(this.x-2)+((this.y)*world.maps[world.map].width)] == map_type && world.maps[world.map].moves[(this.x-1)+((this.y)*world.maps[world.map].width)] == map_type){
+                if(world.map.moves[(this.x-2)+((this.y)*world.map.width)] == map_type && world.map.moves[(this.x-1)+((this.y)*world.map.width)] == map_type){
                     this.move_area.push({x:this.x-2,y:this.y, move:true});            
                 }
-                if(world.maps[world.map].moves[(this.x)+((this.y-2)*world.maps[world.map].width)] == map_type && world.maps[world.map].moves[(this.x)+((this.y-1)*world.maps[world.map].width)] == map_type){
+                if(world.map.moves[(this.x)+((this.y-2)*world.map.width)] == map_type && world.map.moves[(this.x)+((this.y-1)*world.map.width)] == map_type){
                     this.move_area.push({x:this.x,  y:this.y-2, move:true});
                 }            
-                if(world.maps[world.map].moves[(this.x+2)+((this.y)*world.maps[world.map].width)] == map_type && world.maps[world.map].moves[(this.x+1)+((this.y)*world.maps[world.map].width)] == map_type){
+                if(world.map.moves[(this.x+2)+((this.y)*world.map.width)] == map_type && world.map.moves[(this.x+1)+((this.y)*world.map.width)] == map_type){
                     this.move_area.push({x:this.x+2,  y:this.y, move:true});
                 }
-                if(world.maps[world.map].moves[(this.x)+((this.y+2)*world.maps[world.map].width)] == map_type && world.maps[world.map].moves[(this.x)+((this.y+1)*world.maps[world.map].width)] == map_type){
+                if(world.map.moves[(this.x)+((this.y+2)*world.map.width)] == map_type && world.map.moves[(this.x)+((this.y+1)*world.map.width)] == map_type){
                     this.move_area.push({x:this.x,  y:this.y+2, move:true});
                 }            
             }
             
             if(this.range || this.ship){
-                if(world.maps[world.map].moves[(this.x-3)+((this.y)*world.maps[world.map].width)] == map_type){
+                if(world.map.moves[(this.x-3)+((this.y)*world.map.width)] == map_type){
                     if(this.water){
                         this.move_area.push({x:this.x-3,y:this.y, move:true});            
                     }else{
                         this.move_area.push({x:this.x-3,y:this.y, shoot:true});            
                     }                    
                 }
-                if(world.maps[world.map].moves[(this.x)+((this.y-3)*world.maps[world.map].width)] == map_type){
+                if(world.map.moves[(this.x)+((this.y-3)*world.map.width)] == map_type){
                     if(this.water){
                         this.move_area.push({x:this.x,  y:this.y-3, move:true});
                     }else{
                         this.move_area.push({x:this.x,  y:this.y-3, shoot:true});
                     }
                 }            
-                if(world.maps[world.map].moves[(this.x+3)+((this.y)*world.maps[world.map].width)] == map_type){
+                if(world.map.moves[(this.x+3)+((this.y)*world.map.width)] == map_type){
                     if(this.water){
                         this.move_area.push({x:this.x+3,  y:this.y, move:true});
                     }else{
                         this.move_area.push({x:this.x+3,  y:this.y, shoot:true});
                     }
                 }
-                if(world.maps[world.map].moves[(this.x)+((this.y+3)*world.maps[world.map].width)] == map_type){
+                if(world.map.moves[(this.x)+((this.y+3)*world.map.width)] == map_type){
                     if(this.water){
                         this.move_area.push({x:this.x,  y:this.y+3, move:true});
                     }else{
@@ -156,19 +171,19 @@ Unit.prototype = {
             }
               
             if(this.lumberjack){
-                if(world.maps[world.map].moves[(this.x-1)+((this.y)*world.maps[world.map].width)] == 2){           
+                if(world.map.moves[(this.x-1)+((this.y)*world.map.width)] == 2){           
                     this.move_area.push({x:this.x-1,y:this.y, forest:true});
                 }
                 
-                if(world.maps[world.map].moves[(this.x)+((this.y-1)*world.maps[world.map].width)] == 2){
+                if(world.map.moves[(this.x)+((this.y-1)*world.map.width)] == 2){
                     this.move_area.push({x:this.x,  y:this.y-1, forest:true});
                 }
                 
-                if(world.maps[world.map].moves[(this.x)+((this.y+1)*world.maps[world.map].width)] == 2){
+                if(world.map.moves[(this.x)+((this.y+1)*world.map.width)] == 2){
                     this.move_area.push({x:this.x,  y:this.y+1, forest:true});
                 }
                             
-                if(world.maps[world.map].moves[(this.x+1)+((this.y)*world.maps[world.map].width)] == 2){
+                if(world.map.moves[(this.x+1)+((this.y)*world.map.width)] == 2){
                     this.move_area.push({x:this.x+1,  y:this.y, forest:true});
                 }
             }  
@@ -177,7 +192,7 @@ Unit.prototype = {
                 this.move_area = [];
                 for (var x = this.x - 2; x <= this.x + 2; x++) {
                     for (var y = this.y - 2; y <= this.y + 2; y++) {
-                         if(world.maps[world.map].moves[(x)+((y)*world.maps[world.map].width)] == map_type){           
+                         if(world.map.moves[(x)+((y)*world.map.width)] == map_type){           
                             if(x == this.x && y == this.y ){
                                
                             }else{
@@ -190,13 +205,13 @@ Unit.prototype = {
 
             if(!this.disable_moves){
                 for (var i = 0; i < this.move_area.length; i++) {
-                    for (var j = 0; j < world.maps[world.map].entities.length; j++) { 
-                        if( world.maps[world.map].entities[j].x == this.move_area[i].x && world.maps[world.map].entities[j].y == this.move_area[i].y && world.maps[world.map].entities[j].team != this.team ){ 
+                    for (var j = 0; j < world.map.entities.length; j++) { 
+                        if( world.map.entities[j].x == this.move_area[i].x && world.map.entities[j].y == this.move_area[i].y && world.map.entities[j].team != this.team ){ 
                             this.move_area[i].attack = true;    
                         }
                         
-                        if( world.maps[world.map].entities[j].x == this.move_area[i].x && world.maps[world.map].entities[j].y == this.move_area[i].y && world.maps[world.map].entities[j].team == this.team ){ 
-                            if(this.name == world.maps[world.map].entities[j].name && this.merging){
+                        if( world.map.entities[j].x == this.move_area[i].x && world.map.entities[j].y == this.move_area[i].y && world.map.entities[j].team == this.team ){ 
+                            if(this.name == world.map.entities[j].name && this.merging){
                                 this.move_area[i].merge = true;
                             }else{
                                 this.move_area[i].move = false;
@@ -234,9 +249,9 @@ Unit.prototype = {
         var other = null;
         
             
-        for (var i = 0; i < world.maps[world.map].entities.length; i++) {
-            if(world.maps[world.map].entities[i].x == x && world.maps[world.map].entities[i].y == y && world.maps[world.map].entities[i].alive){
-                other = world.maps[world.map].entities[i];    
+        for (var i = 0; i < world.map.entities.length; i++) {
+            if(world.map.entities[i].x == x && world.map.entities[i].y == y && world.map.entities[i].alive){
+                other = world.map.entities[i];    
             }
         }
         
@@ -264,9 +279,9 @@ Unit.prototype = {
     
     open: function(){
         if(this.moves > 0){
-            for (var j = 0; j < world.maps[world.map].items.length; j++) {                    
-                if(world.maps[world.map].items[j].x == this.x && world.maps[world.map].items[j].y == this.y){                        
-                    if(world.maps[world.map].items[j].open(this.pirate)){ 
+            for (var j = 0; j < world.map.items.length; j++) {                    
+                if(world.map.items[j].x == this.x && world.map.items[j].y == this.y){                        
+                    if(world.map.items[j].open(this.pirate)){ 
                         this.message = 'Gold';
                         this.important = false;
                         render.render({map:true, gui:true});
@@ -276,7 +291,7 @@ Unit.prototype = {
                         }else{
                             game.teams[game.turn.team].wallet += 50;
                         }
-                        game.updateGold();
+                        game.updateWallet();
                         this.unselect();
                     }
                 }                    
@@ -288,9 +303,9 @@ Unit.prototype = {
         var other = null;
             
             
-        for (var i = 0; i < world.maps[world.map].entities.length; i++) {
-            if(world.maps[world.map].entities[i].x == x && world.maps[world.map].entities[i].y == y && world.maps[world.map].entities[i].alive){
-                other = world.maps[world.map].entities[i];                   
+        for (var i = 0; i < world.map.entities.length; i++) {
+            if(world.map.entities[i].x == x && world.map.entities[i].y == y && world.map.entities[i].alive){
+                other = world.map.entities[i];                   
             }
         }
                 
@@ -395,7 +410,7 @@ Unit.prototype = {
         game.killZombies();
         game.updateUnits();
         if(this.cementary){
-            world.maps[world.map].items[hasCementary].hasCementary = false;
+            world.map.items[hasCementary].hasCementary = false;
         }
     },
     
@@ -406,9 +421,9 @@ Unit.prototype = {
     },
     
     cut: function(x,y){
-        for (var j = 0; j < world.maps[world.map].items.length; j++) {                    
-            if(world.maps[world.map].items[j].x == x && world.maps[world.map].items[j].y == y){  
-               if(world.maps[world.map].items[j].cut()){
+        for (var j = 0; j < world.map.items.length; j++) {                    
+            if(world.map.items[j].x == x && world.map.items[j].y == y){  
+               if(world.map.items[j].cut()){
                    this.moves = 0;
                }
             }

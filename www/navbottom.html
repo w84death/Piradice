@@ -1,0 +1,28 @@
+<nav class="bottom" id="bottom">	
+    <ul class="left">           
+    	<li id="random"><button onclick="game.randomMap()">RANDOMIZE MAP</button>
+        <li id="player1_shop"><a href="javascript:void(0);"><strong>+</strong> BUY</a>
+            <ul>
+                <li class="gold">YOU HAVE: $<strong id="player1_gold">200</strong>
+                <li onclick="shop.buy({unit:'ship'});">SHIP <span>$40</span>
+                <li class="hide" onclick="shop.buy({unit:'lumberjack'});">LUMBERJACK <span>$10</span>
+                <li class="hide" onclick="shop.buy({unit:'range_pirate'});">PIRATE WITH GUN <span>$15</span>                            
+                <li class="hide" onclick="shop.buy({unit:'pirate'});">PIRATE <span>$10</span>
+            </ul> 
+        <li id="player2_shop"><a href="javascript:void(0);"><strong>+</strong> BUY</a>    
+            <ul>
+                <li class="gold">YOU HAVE: $<strong id="player2_gold">200</strong>
+                <li onclick="shop.buy({unit:'cementary'});">CEMENTARY <span>$80</span>
+                <li class="hide" onclick="shop.buy({unit:'octopus'});">OCTOPUS <span>$15</span>
+                <li class="hide" onclick="shop.buy({unit:'dust'});">DUST <span>$80</span>
+                <li class="hide" onclick="shop.buy({unit:'skeleton'});">SKELETON <span>$15</span>
+            </ul>                      
+    </ul>
+    <ul>
+        <li id="stats"><strong class="progress right"><em id="player1_units">0</em></strong> vs <strong class="progress"><em id="player2_units">0</em></strong>
+    </ul>
+    <ul class="right">
+    	<li id="playGame"><button onclick="game.start()" class="hot">PLAY</button>
+        <li id="nextTurn"><button onclick="game.nextTurn()" class="hot">NEXT TURN</button>
+    </ul>
+</nav>
