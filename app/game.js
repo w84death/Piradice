@@ -23,9 +23,11 @@ var game = {
     mobile: false || navigator.userAgent.match(/(iPhone)|(iPod)|(android)|(webOS)/i),
     tablet: false || navigator.userAgent.match(/(iPad)/i),
     teams: [{
+            pirates: true;
             ai: false,
             wallet: 200,
         },{
+            skeletons: true;
             ai: false,
             wallet: 200, 
         }],
@@ -219,7 +221,22 @@ var game = {
                 render.render({all:true});
             }
 
-            game.teams[game.turn.team].wallet += 5;
+            var salary = 5;
+            if(game.teams[game.turn.team].skeletons){
+                for (var i = 0; i < world.map.entities.length; i++) {
+                    if(world.map.entities[i].cementary){
+                        salary += 10;
+                    }
+                };
+            }
+            if(game.teams[game.turn.team].pirates){
+                for (var i = 0; i < world.map.entities.length; i++) {
+                    if(world.map.entities[i].ship){
+                        salary += 10;
+                    }
+                };
+            }
+            game.teams[game.turn.team].wallet += salary;
             game.updateWallet();
     },
 
@@ -311,10 +328,10 @@ var multi = {
             fogOfWar.update();            
             document.getElementById('multi').style.display = 'block';  
             document.getElementById('turn').innerHTML = game.turn.id;
-            if(game.turn.team === 0){
+            if(game.teams[game.turn.team].pirates){
                 document.getElementById('playerID').innerHTML = 'PIRATES';
             }else
-            if(game.turn.team == 1){
+            if(game.teams[game.turn.team].skeletons){
                 document.getElementById('playerID').innerHTML = 'SKELETONS';
             }
             document.getElementById('playButton').innerHTML = msg || 'PLAY';                                 

@@ -140,28 +140,28 @@ Unit.prototype = {
             
             if(this.range || this.ship){
                 if(world.map.moves[(this.x-3)+((this.y)*world.map.width)] == map_type){
-                    if(this.water && world.map.moves[(this.x-2)+((this.y)*world.map.width)] == map_type){
+                    if(this.water && world.map.moves[(this.x-2)+((this.y)*world.map.width)] == map_type && this.water && world.map.moves[(this.x-1)+((this.y)*world.map.width)] == map_type){
                         this.move_area.push({x:this.x-3,y:this.y, move:true});            
                     }else{
                         this.move_area.push({x:this.x-3,y:this.y, shoot:true});            
                     }                    
                 }
                 if(world.map.moves[(this.x)+((this.y-3)*world.map.width)] == map_type){
-                    if(this.water && world.map.moves[(this.x)+((this.y-2)*world.map.width)] == map_type){
+                    if(this.water && world.map.moves[(this.x)+((this.y-2)*world.map.width)] == map_type && this.water && world.map.moves[(this.x)+((this.y-1)*world.map.width)] == map_type){
                         this.move_area.push({x:this.x,  y:this.y-3, move:true});
                     }else{
                         this.move_area.push({x:this.x,  y:this.y-3, shoot:true});
                     }
                 }            
                 if(world.map.moves[(this.x+3)+((this.y)*world.map.width)] == map_type){
-                    if(this.water && world.map.moves[(this.x+2)+((this.y)*world.map.width)] == map_type){
+                    if(this.water && world.map.moves[(this.x+2)+((this.y)*world.map.width)] == map_type && this.water && world.map.moves[(this.x+1)+((this.y)*world.map.width)] == map_type){
                         this.move_area.push({x:this.x+3,  y:this.y, move:true});
                     }else{
                         this.move_area.push({x:this.x+3,  y:this.y, shoot:true});
                     }
                 }
                 if(world.map.moves[(this.x)+((this.y+3)*world.map.width)] == map_type){
-                    if(this.water && world.map.moves[(this.x)+((this.y+2)*world.map.width)] == map_type){
+                    if(this.water && world.map.moves[(this.x)+((this.y+2)*world.map.width)] == map_type && world.map.moves[(this.x)+((this.y+1)*world.map.width)] == map_type){
                         this.move_area.push({x:this.x,  y:this.y+3, move:true});
                     }else{
                         this.move_area.push({x:this.x,  y:this.y+3, shoot:true});
@@ -282,15 +282,18 @@ Unit.prototype = {
             for (var j = 0; j < world.map.items.length; j++) {                    
                 if(world.map.items[j].x == this.x && world.map.items[j].y == this.y){                        
                     if(world.map.items[j].open(this.pirate)){ 
-                        this.message = 'Gold';
+                        if(this.pirate){
+                            game.teams[game.turn.team].wallet += 20;
+                            this.message = '+20';
+                        }else{
+                            game.teams[game.turn.team].wallet += 50;
+                            this.message = '+50';
+                        }
+
                         this.important = false;
                         render.render({map:true, gui:true});
                         this.moves--;                            
-                        if(this.pirate){
-                            game.teams[game.turn.team].wallet += 20;
-                        }else{
-                            game.teams[game.turn.team].wallet += 50;
-                        }
+                        
                         game.updateWallet();
                         this.unselect();
                     }
@@ -429,10 +432,11 @@ Unit.prototype = {
             if(world.map.items[j].x == x && world.map.items[j].y == y){  
                if(world.map.items[j].cut()){
                    this.moves = 0;
+                   this.message = null;
                }
             }
         }
-        render.render({map:true});
+        render.render({map:true, gui:true});
     },
     
     levelUp: function(){
