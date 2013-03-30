@@ -24,7 +24,7 @@ Item.prototype = {
             this.sprite = this.sprite_open;
             this.close = false; 
                     
-            var win = true;
+            /*var win = true;
             for (i = 0; i < world.map.items.length; i++) {
                 if(world.map.items[i].can_open && world.map.items[i].close){
                     win = false;
@@ -33,11 +33,11 @@ Item.prototype = {
 
             if(win){
                 game.win();            
-            }
+            }*/
             
             return true;
         }else
-        if(this.skeleton && this.can_open && !this.close){
+        if(!pirate && this.can_open && !this.close){
             this.sprite = this.sprite_open-1;
             this.close = true;
             return true;

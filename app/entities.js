@@ -140,28 +140,28 @@ Unit.prototype = {
             
             if(this.range || this.ship){
                 if(world.map.moves[(this.x-3)+((this.y)*world.map.width)] == map_type){
-                    if(this.water){
+                    if(this.water && world.map.moves[(this.x-2)+((this.y)*world.map.width)] == map_type){
                         this.move_area.push({x:this.x-3,y:this.y, move:true});            
                     }else{
                         this.move_area.push({x:this.x-3,y:this.y, shoot:true});            
                     }                    
                 }
                 if(world.map.moves[(this.x)+((this.y-3)*world.map.width)] == map_type){
-                    if(this.water){
+                    if(this.water && world.map.moves[(this.x)+((this.y-2)*world.map.width)] == map_type){
                         this.move_area.push({x:this.x,  y:this.y-3, move:true});
                     }else{
                         this.move_area.push({x:this.x,  y:this.y-3, shoot:true});
                     }
                 }            
                 if(world.map.moves[(this.x+3)+((this.y)*world.map.width)] == map_type){
-                    if(this.water){
+                    if(this.water && world.map.moves[(this.x+2)+((this.y)*world.map.width)] == map_type){
                         this.move_area.push({x:this.x+3,  y:this.y, move:true});
                     }else{
                         this.move_area.push({x:this.x+3,  y:this.y, shoot:true});
                     }
                 }
                 if(world.map.moves[(this.x)+((this.y+3)*world.map.width)] == map_type){
-                    if(this.water){
+                    if(this.water && world.map.moves[(this.x)+((this.y+2)*world.map.width)] == map_type){
                         this.move_area.push({x:this.x,  y:this.y+3, move:true});
                     }else{
                         this.move_area.push({x:this.x,  y:this.y+3, shoot:true});
@@ -404,7 +404,11 @@ Unit.prototype = {
         this.sprite--;
     },
     
-    die: function(){       
+    die: function(){  
+        if(this.pirate){
+            game.teams[1].wallet += 30;
+            game.updateWallet();
+        }     
         this.alive = false;
         this.moves = 0;
         game.killZombies();

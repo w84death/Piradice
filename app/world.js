@@ -80,7 +80,8 @@ var world = {
             if(this.map.items[i].forest){
                 for (var x = args.x-args.size; x <= args.x+args.size; x++) {
                     for (var y = args.y-args.size; y <= args.y+args.size; y++) {                       
-                        if(this.map.items[i].x == x && this.map.items[i].y == y){                                        
+                        if(this.map.items[i].x == x && this.map.items[i].y == y){
+                            this.map.moves[this.map.items[i].x+(this.map.items[i].y*this.map.width)] = 1;                                        
                             this.map.items.splice(i,1);//for_cut.push(i);        
                         }                        
                     }

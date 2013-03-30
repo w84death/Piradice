@@ -309,7 +309,7 @@ var render = {
                 }
             }
             args.items = true;
-            this.map.ctx.drawImage(this.noise_img, 0, 0);
+            this.map.ctx.drawImage(this.noise_img, 0, 0);            
         }
 
         if(args.items){
@@ -387,7 +387,16 @@ var render = {
         if(args.clearSky){
             this.sky.ctx.clearRect(0, 0, world.conf.width*this.box, world.conf.height*this.box);
         }    
-                
+          
+        /* * 
+        map_data_i = 0;
+        for(var y=0; y<world.conf.height; y++){
+            for(var x=0; x<world.conf.width; x++){  
+                this.sky.ctx.drawImage(this.sprites[world.map.moves[map_data_i++]], x*this.box, y*this.box);
+            }
+        }
+        */
+
     },
 
 };

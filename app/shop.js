@@ -17,6 +17,8 @@ var shop = {
             hasCementary = 0;            
         
         if(args.unit == 'cementary'){
+
+
             var chests = [],
                 cementars = 0;
 
@@ -35,12 +37,32 @@ var shop = {
             if(chests.length > 0){
                 var r = (Math.random()*chests.length)<<0;
                 world.map.items[chests[r]].hasCementary = true;
-                newX = world.map.items[chests[r]].x + 1;
-                newY = world.map.items[chests[r]].y + 1; 
+                var dx = 0,
+                    dy = 0;
+                if( Math.random()*2 > 1){
+                    dx = -1;
+                    if( Math.random()*2 > 1){
+                        dy = -1;
+                    }else{
+                        dy = 1;
+                    }
+                }else{
+                    dx = 1;
+                    if( Math.random()*2 > 1){
+                        dy = -1;
+                    }else{
+                        dy = 1;
+                    }
+                }
+
+                newX = world.map.items[chests[r]].x + dx;
+                newY = world.map.items[chests[r]].y + dy; 
+
                 hasCementary = chests[r];
             }else{
                 return false;
             }
+            
             
         }else
         if(args.unit == 'ship' || args.unit == 'octopus'){
