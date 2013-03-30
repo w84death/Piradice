@@ -5,11 +5,11 @@ var world = {
         width: 0,
         height: 0,
         seed: (Math.random()*1024)<<0,
-        islands: 1 + (Math.random()*12)<<0,
+        islands: 2 + (Math.random()*12)<<0,
         islands_size: 10 + (Math.random()*70)<<0,      
         grass: 0 + (Math.random()*80)<<0,
-        palms: 10 + (Math.random()*80)<<0,
-        chests: 1 + (Math.random()*4)<<0,
+        palms: 10+ (Math.random()*80)<<0,
+        chests: 2 + (Math.random()*4)<<0,
         wallet: 200
     },
 

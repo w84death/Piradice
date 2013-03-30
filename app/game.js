@@ -19,15 +19,15 @@
 */
 
 var game = {
-    version: 'BETA3 30-03-2013',
+    version: 'BETA3.1 30-03-2013',
     mobile: false || navigator.userAgent.match(/(iPhone)|(iPod)|(android)|(webOS)/i),
     tablet: false || navigator.userAgent.match(/(iPad)/i),
     teams: [{
-            pirates: true;
+            pirates: true,
             ai: false,
             wallet: 200,
         },{
-            skeletons: true;
+            skeletons: true,
             ai: false,
             wallet: 200, 
         }],
@@ -189,29 +189,23 @@ var game = {
             }else{
 
                 if(game.turn.team == 1){
-                    // AI TURN
                     game.turn.team = 0;
                     game.turn.id++;
-
                 }else{
-                    // PLAYER turn
                     game.turn.team = 1;
                 }
                 
-                this.killZombies();
-        
-                this.shoutTeam();                        
-
-                
+                this.killZombies();        
+                this.shoutTeam();                                        
 
                 if(this.teams[this.turn.team].ai){
                      ai.loop();
                 }        
-
             
                 fogOfWar.update();
                 render.render({gui:true, entities:true, sky:true});
                 multi.show();
+                this.payDay();
                 shop.open({team:game.turn.team, more:false});                 
             }
 
@@ -220,26 +214,29 @@ var game = {
                 game.shoutTeam();   
                 render.render({all:true});
             }
-
-            var salary = 5;
-            if(game.teams[game.turn.team].skeletons){
-                for (var i = 0; i < world.map.entities.length; i++) {
-                    if(world.map.entities[i].cementary){
-                        salary += 10;
-                    }
-                };
-            }
-            if(game.teams[game.turn.team].pirates){
-                for (var i = 0; i < world.map.entities.length; i++) {
-                    if(world.map.entities[i].ship){
-                        salary += 10;
-                    }
-                };
-            }
-            game.teams[game.turn.team].wallet += salary;
-            game.updateWallet();
+            
     },
 
+    payDay: function(){
+        var salary = 5;
+            
+        if(game.teams[game.turn.team].skeletons){
+            for (var i = 0; i < world.map.entities.length; i++) {
+                if(world.map.entities[i].cementary){
+                    salary += 10;
+                }
+            };
+        }
+        if(game.teams[game.turn.team].pirates){
+            for (var i = 0; i < world.map.entities.length; i++) {
+                if(world.map.entities[i].ship){
+                    salary += 10;
+                }
+            };
+        }
+        game.teams[game.turn.team].wallet += salary;
+        game.updateWallet();        
+    },
 
     killZombies: function(){
     

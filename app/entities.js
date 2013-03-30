@@ -526,6 +526,7 @@ Dust.prototype = new Unit();
 var Ship = function Ship(args){
     this.name = 'ship';
     this.pirate = true;
+    this.ship = true;
     this.team = 0;
     this.x = args.x;    
     this.y = args.y;

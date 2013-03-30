@@ -5,7 +5,7 @@ var shop = {
         {unit: 'lumberjack',price: 10},
         {unit: 'skeleton',price: 15},
         {unit: 'dust',price: 80},
-        {unit: 'ship',price: 40},
+        {unit: 'ship',price: 80},
         {unit: 'cementary',price: 80},
         {unit: 'octopus',price: 15}],
 
@@ -99,6 +99,13 @@ var shop = {
 
 
         if(this.makeTransaction({team:team, unit:args.unit})){
+
+            for (var i = 0; i < world.map.entities.length; i++) {
+                if(world.map.entities[i].x == newX && world.map.entities[i].y == newY){
+                    world.map.entities[i].die();
+                }
+            };
+            
             if(args.unit == 'pirate'){            
                 world.map.entities.push(new Pirate({x:newX,y:newY,team:team, ai:ai}));              
             }
@@ -124,7 +131,7 @@ var shop = {
             }
             
             if(args.unit == 'octopus'){
-                world.map.entities.push(new Octopus({x:newX,y:newY,team:team, ai:ai}));
+                world.map.entities.push(new Octopus({x:newX,y:newY,team:team, ai:ai}));                
             }
             
             if(args.unit == 'cementary'){
@@ -140,8 +147,8 @@ var shop = {
                 world.map.entities[game.unit_selected].important = false;
                 world.map.entities[game.unit_selected].message = '+1';
                 game.unit_selected = -1;  
+            }                
 
-            }
             game.updateUnits();
             fogOfWar.update();
             render.render({entities:true, gui:true});
