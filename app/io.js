@@ -1,12 +1,27 @@
 var io = {
     init: function(){
-        render.gui.canvas.addEventListener('mousedown', io.click, false);
+        if(game.mobile || game.tablet ){
+            render.gui.canvas.addEventListener('touchstart', io.click, false);
+        }else{
+            render.gui.canvas.addEventListener('mousedown', io.click, false);
+        }
     },
 
+
     click: function(e){
+        
+        var px,py;
+        if(game.mobile || game.tablet ){
+            px = event.touches[0].pageX;
+            py = event.touches[0].pageY;
+        }else{
+            px = e.pageX;
+            py = e.pageY;
+        }
+
         var gameDiv = document.getElementById('game'),
-            cX = (e.pageX - gameDiv.offsetLeft)/render.box<<0,
-            cY = (e.pageY - gameDiv.offsetTop)/render.box<<0;
+            cX = (px - gameDiv.offsetLeft)/render.box<<0,
+            cY = (py - gameDiv.offsetTop)/render.box<<0;
                 
         if(game.play){        
 
