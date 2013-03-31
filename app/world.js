@@ -5,29 +5,38 @@ var world = {
         width: 0,
         height: 0,
         seed: (Math.random()*1024)<<0,
-        islands: 2 + (Math.random()*12)<<0,
-        islands_size: 10 + (Math.random()*70)<<0,      
+        islands: 2 + (Math.random()*6)<<0,
+        islands_size: 5 + (Math.random()*70)<<0,      
         grass: 0 + (Math.random()*80)<<0,
-        palms: 10+ (Math.random()*80)<<0,
-        chests: 2 + (Math.random()*4)<<0,
+        palms: 0 + (Math.random()*80)<<0,
+        chests: 6,
         wallet: 200
     },
 
     init: function(args){                
 
-        this.conf.width = args.width || ((((window.innerWidth)/(render.box*render.scale)))<<0);
-        this.conf.height = args.height || ((((window.innerHeight)/(render.box*render.scale)))<<0)-2; // padding for top & bottom menu 
+        this.conf.width = args.width;
+        this.conf.height = args.height;
         
         this.randomMap();                             
     },
     
     randomMap: function(){        
-        this.conf.seed = (Math.random()*1024)<<0;
-        this.conf.islands = 1 + (Math.random()*12)<<0;
-        this.conf.islands_size = 10 + (Math.random()*70)<<0;
+
+        this.conf.seed = (Math.random()*1024)<<0;        
         this.conf.grass = 0 + (Math.random()*80)<<0;
-        this.conf.palms = 10 + (Math.random()*80)<<0;
-        this.conf.chests = 1 + (Math.random()*4)<<0;   
+        this.conf.palms = 0 + (Math.random()*80)<<0;
+
+        this.conf.islands = 2 + (Math.random()*6)<<0;
+        this.conf.islands_size = 10 + (Math.random()*70)<<0;
+        this.conf.chests = 6;   
+
+        if(this.conf.width < 19){
+            this.conf.islands = 1 + (Math.random()*3)<<0;
+            this.conf.islands_size = 10 + (Math.random()*30)<<0;
+            this.conf.chests = 1;   
+        }
+        
         this.generate();             
     },
 

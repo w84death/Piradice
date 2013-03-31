@@ -71,7 +71,7 @@ Unit.prototype = {
                 
 
                 if(this.move_area.length > 0){
-                    shop.open({team:this.team, more:true});
+                    shop.show({more:true});
                 }
                 
             }
@@ -226,7 +226,7 @@ Unit.prototype = {
     
     unselect: function(){
         this.selected = false;
-        shop.close({all:false});
+        shop.close();
     },
     
     move: function(x,y){
@@ -408,10 +408,11 @@ Unit.prototype = {
     },
     
     die: function(){  
+        /*
         if(this.pirate){
-            game.teams[1].wallet += 30;
+            game.teams[1].wallet += 5;
             game.updateWallet();
-        }     
+        } */    
         this.alive = false;
         this.moves = 0;
         game.killZombies();
