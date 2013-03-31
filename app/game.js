@@ -40,6 +40,7 @@ var game = {
     },
     ai_speed: 100,
     play: false,
+    ready: false,
     unit_selected: -1,
 
     init: function(args){                    
@@ -53,8 +54,7 @@ var game = {
         render.init();
     },
 
-    start: function(){
-        game.play = true;      
+    start: function(){              
         GUI.show = [];
         shop.show();
         shop.buyStarter();
@@ -160,7 +160,8 @@ var game = {
     },
 
     nextTurn: function(){
-                        
+            game.play = false;
+
             var loose = true;
             // change to true!
 
@@ -181,37 +182,39 @@ var game = {
 
             if(loose){
                 game.lose();
-            }else{
+            }else{                
+                    if(game.turn.team == 1){
+                        game.turn.team = 0;
+                        game.turn.id++;
+                    }else{
+                        game.turn.team = 1;
+                    }
+                    
+                    this.killZombies();        
+                    this.shoutTeam();                                        
 
-                if(game.turn.team == 1){
-                    game.turn.team = 0;
-                    game.turn.id++;
-                }else{
-                    game.turn.team = 1;
-                }
+                    if(this.teams[this.turn.team].ai){
+                         ai.loop();
+                    }        
                 
-                this.killZombies();        
-                this.shoutTeam();                                        
-
-                if(this.teams[this.turn.team].ai){
-                     ai.loop();
-                }        
-            
-                this.teams[this.turn.team].bought = false;
-                fogOfWar.update();                
-                multi.show();
-                this.payDay();
-                shop.show();   
-                GUI.show.push('end');   
-                render.render({gui:true, menu:true, entities:true, sky:true});           
+                    this.teams[this.turn.team].bought = false;
+                    fogOfWar.update();                                
+                    this.payDay();
+                    shop.show();   
+                    GUI.show.push('end');
+                    render.render({gui:true, menu:true, entities:true, sky:true});                                   
             }
+
 
             if(this.turn.id == 1){
                 shop.buyStarter();
                 game.shoutTeam();   
                 render.render({all:true});
             }
-            
+
+            if(!game.ready){
+                multi.show();
+            }
     },
 
     payDay: function(){
@@ -312,23 +315,9 @@ var game = {
 
 var multi = {
     
-    show: function(msg){         
-        if(!game.teams[0].ai && !game.teams[1].ai && !game.editor){
-            fogOfWar.update();            
-            document.getElementById('multi').style.display = 'block';  
-            document.getElementById('turn').innerHTML = game.turn.id;
-            if(game.teams[game.turn.team].pirates){
-                document.getElementById('playerID').innerHTML = 'PIRATES';
-            }else
-            if(game.teams[game.turn.team].skeletons){
-                document.getElementById('playerID').innerHTML = 'SKELETONS';
-            }
-            document.getElementById('playButton').innerHTML = msg || 'PLAY';                                 
-        }
-    },
-    
-    play: function(){
-        document.getElementById('multi').style.display = 'none';      
+    show: function(msg){
+        GUI.drawReady();
+        console.log('draw');
     },
 };
 

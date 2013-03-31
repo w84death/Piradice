@@ -28,7 +28,7 @@ var GUI = {
 				sprite: this.makeButton({x:4, y:8, width:2, text:'READY'}),
 				width:2,
 				position: world.conf.width-4,
-				action: 'gui',
+				action: 'game',
 				value: 'ready',
 			};
 
@@ -161,8 +161,17 @@ var GUI = {
 				game.randomMap();
 			}
 			if(this.buttons[key].value == 'nextTurn'){
-				game.nextTurn();
+				game.ready = false;
+				game.nextTurn();				
 			}			
+			if(this.buttons[key].value == 'ready'){	
+				game.play = true;
+				game.ready = true;
+				this.show = [];
+				shop.show();
+				GUI.show.push('end');
+				render.render({all:true});
+			}
 		}
 		if(this.buttons[key].action == 'mapSize'){
 			if(this.buttons[key].value == 'small'){
@@ -185,6 +194,7 @@ var GUI = {
 		if(this.buttons[key].action == 'buy'){
 			shop.buy({unit:this.buttons[key].value});
 		}
+		
 	},
 
 	resize: function(){
@@ -195,6 +205,37 @@ var GUI = {
 	drawFooter: function(){
 		this.ctx.fillStyle = this.conf.background;
         this.ctx.fillRect(0, this.conf.bottom*render.box, this.conf.width*render.box, 2*render.box);
+	},
+
+	drawReady: function(args){
+		var text = [];
+
+		if(game.teams[game.turn.team].pirates){
+			text.push('PIRATES');
+		}
+		if(game.teams[game.turn.team].skeletons){
+			text.push('SKELETONS');
+		}
+
+		text.push('GET READY');
+		text.push('TURN '+game.turn.id);		
+
+		this.ctx.fillStyle = this.conf.background;
+        this.ctx.fillRect(0, 0, this.conf.width*render.box, world.conf.height*render.box);
+
+		this.ctx.fillStyle = this.conf.color;
+		this.ctx.font = '32px VT323, cursive';
+		this.ctx.textBaseline = 'middle';
+		this.ctx.textAlign = 'center';
+
+		this.ctx.fillText(text[0], (this.conf.width*render.box)*0.5<<0, (world.conf.height*render.box)*0.5<<0);
+		this.ctx.font = '24px VT323, cursive';
+		this.ctx.fillText(text[1], (this.conf.width*render.box)*0.5<<0, (world.conf.height*render.box)*0.6<<0);
+		this.ctx.fillStyle = this.conf.color2;
+		this.ctx.fillText(text[2], (this.conf.width*render.box)*0.5<<0, (world.conf.height*render.box)*0.8<<0);
+		this.show = [];
+		this.show.push('ready');
+		this.render({menu:true});
 	},
 	
 	makeButton: function(args){
