@@ -312,7 +312,7 @@ Unit.prototype = {
             }
         }
                 
-        if(other && !this.dust && !other.cementary){            
+        if(other && !this.dust && !other.cementary && !this.octopus){            
             var dice = null,
                 dice2 = null,
                 total = 0,
@@ -363,6 +363,11 @@ Unit.prototype = {
             other.die();
             this.die();
             return false;
+        }else
+        if(this.octopus){
+            this.message = 'omnom';
+            this.important = false;
+            other.die();
         }else
         if(other.cementary){
             if(this.lumberjack){

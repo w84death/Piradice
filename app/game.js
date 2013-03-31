@@ -312,7 +312,7 @@ var game = {
 
 var multi = {
     
-    show: function(msg){ 
+    show: function(msg){         
         if(!game.teams[0].ai && !game.teams[1].ai && !game.editor){
             fogOfWar.update();            
             document.getElementById('multi').style.display = 'block';  

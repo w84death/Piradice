@@ -10,7 +10,6 @@ var GUI = {
 	buttons: [],
 	labels: [],
 	show: ['play','random', 'map_size1', 'map_size2', 'map_size3', 'map_size4'],
-	//show: ['play','random'],
 
 	init: function(){
 		this.ctx = render.gui.ctx;
@@ -23,6 +22,14 @@ var GUI = {
 				position: world.conf.width-4,
 				action: 'game',
 				value: 'start',
+			};
+
+		this.buttons['ready'] = {				
+				sprite: this.makeButton({x:4, y:8, width:2, text:'READY'}),
+				width:2,
+				position: world.conf.width-4,
+				action: 'gui',
+				value: 'ready',
 			};
 
 		this.buttons['random'] = {				
@@ -165,7 +172,7 @@ var GUI = {
 				game.mapSize({w:24,h:18});
 			}
 			if(this.buttons[key].value == 'ipad'){
-				game.mapSize({w:32,h:23});
+				game.mapSize({w:32,h:22});
 			}
 			if(this.buttons[key].value == 'max'){
 				game.mapSize({
