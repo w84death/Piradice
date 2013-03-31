@@ -1,12 +1,9 @@
-<?php element('nav'); ?>
 <section id="game"></section>          
 <section id="multi">
     <h2><span id="playerID">PIRATE</span></h2>
     <p>TURN <span id="turn">1</span></p>
-    <p><button id="playButton" onclick="multi.play()" class="hot">PLAY</button></p>                
+    <p><button id="playButton" onclick="multi.play()" class="hot">PLAY</button></p>
 </section>
-<?php element('navbottom'); ?>
-
 
 <script src="/app/seed.js"></script>
 <script src="/app/entities.js"></script>
@@ -17,6 +14,7 @@
 <script src="/app/world.js"></script>
 <script src="/app/shop.js"></script>  
 <script src="/app/render.js"></script>
+<script src="/app/gui.js"></script>
 <script src="/app/game.js"></script>
 
 <?php if(($_GET['sub']=='random')||($_GET['sub']=='multi')){ ?>        

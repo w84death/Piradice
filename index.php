@@ -5,14 +5,15 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
   <title>Piradice - Turn-based strategy game in HTML5</title>
-  <meta name="description" content="Pirates and dices in paradise! Free turn-based strategy game in Your browser.">        
+  <meta name="description" content="Pirates and dices in paradise! Free turn-based strategy game in Your browser." />        
+  <meta name = "viewport" content="user-scalable=no, initial-scale=1.0, maximum-scale=1.0, width=device-width"/>
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   <link rel="apple-touch-icon" href="/media/apple-touch-icon-precomposed.png"/>
-  <link rel="apple-touch-startup-image" href="/media/startup.png">
-  <link rel="shortcut icon" href="/media/favicon.ico">
-  <link href='http://fonts.googleapis.com/css?family=VT323' rel='stylesheet' type='text/css'>
-  <link rel="stylesheet" href="/app/app.css">        
+  <link rel="apple-touch-startup-image" href="/media/startup.png"/>
+  <link rel="shortcut icon" href="/media/favicon.ico"/>
+  <link href='http://fonts.googleapis.com/css?family=VT323' rel='stylesheet' type='text/css'/>
+  <link rel="stylesheet" href="/app/app.css"/>        
 </head>
 <body>
 

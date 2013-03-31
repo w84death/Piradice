@@ -1,13 +1,16 @@
 var shop = {
-    prices: [
-        {unit: 'pirate',price: 10},
-        {unit: 'range_pirate',price: 15},
-        {unit: 'lumberjack',price: 10},
-        {unit: 'skeleton',price: 15},
-        {unit: 'dust',price: 80},
-        {unit: 'ship',price: 80},
-        {unit: 'cementary',price: 80},
-        {unit: 'octopus',price: 15}],
+    price_list: [],
+
+    init: function(){
+        this.price_list['pirate'] = 10;
+        this.price_list['range_pirate'] = 15;
+        this.price_list['lumberjack'] = 10;
+        this.price_list['skeleton'] = 15;
+        this.price_list['dust'] = 80;
+        this.price_list['ship'] = 80;
+        this.price_list['cementary'] = 80;
+        this.price_list['octopus'] = 15;
+    },
 
     buy: function(args){
         var newX = 0,
@@ -17,7 +20,6 @@ var shop = {
             hasCementary = 0;            
         
         if(args.unit == 'cementary'){
-
 
             var chests = [],
                 cementars = 0;
@@ -99,6 +101,8 @@ var shop = {
 
 
         if(this.makeTransaction({team:team, unit:args.unit})){
+            
+            var use_moves = true;                        
 
             for (var i = 0; i < world.map.entities.length; i++) {
                 if(world.map.entities[i].x == newX && world.map.entities[i].y == newY){
@@ -107,7 +111,7 @@ var shop = {
             };
             
             if(args.unit == 'pirate'){            
-                world.map.entities.push(new Pirate({x:newX,y:newY,team:team, ai:ai}));              
+                world.map.entities.push(new Pirate({x:newX,y:newY,team:team, ai:ai}));                                             
             }
             
             if(args.unit == 'range_pirate'){            
@@ -120,6 +124,8 @@ var shop = {
             
             if(args.unit == 'ship'){
                 world.map.entities.push(new Ship({x:newX,y:newY,team:team, ai:ai}));
+                use_moves = false;
+                game.teams[game.turn.team].bought = true;
             }
 
             if(args.unit == 'skeleton'){
@@ -132,23 +138,29 @@ var shop = {
             
             if(args.unit == 'octopus'){
                 world.map.entities.push(new Octopus({x:newX,y:newY,team:team, ai:ai}));                
+                use_moves = false;
+                game.teams[game.turn.team].bought = true;
             }
             
             if(args.unit == 'cementary'){
                 world.clearTerrain({x:newX, y:newY, size:1});
                 world.map.entities.push(new Cementary({x:newX,y:newY,team:team, ai:ai, hasCementary:hasCementary}));
+                use_moves = false;
+                game.teams[game.turn.team].bought = true;
             }
 
             world.map.entities[world.map.entities.length-1].shout();
 
             if(game.unit_selected > -1 ){
-                world.map.entities[game.unit_selected].moves = 0;
+                if(use_moves){
+                    world.map.entities[game.unit_selected].moves = 0;                
+                    world.map.entities[game.unit_selected].important = false;
+                    world.map.entities[game.unit_selected].message = '+1';
+                }                
                 world.map.entities[game.unit_selected].unselect();
-                world.map.entities[game.unit_selected].important = false;
-                world.map.entities[game.unit_selected].message = '+1';
                 game.unit_selected = -1;  
             }                
-
+            this.show();
             game.updateUnits();
             fogOfWar.update();
             render.render({entities:true, gui:true});
@@ -159,56 +171,82 @@ var shop = {
     },
 
     makeTransaction: function(args){
-        for (var i = 0; i < this.prices.length; i++) {
-            if(this.prices[i].unit == args.unit){
-                if(game.teams[args.team].wallet >= this.prices[i].price){
-                    game.teams[args.team].wallet -= this.prices[i].price;
-                    game.updateWallet();
-                    return true;  
-                }
-            }
-        };
+        if((args.unit == 'octopus' || args.unit == 'cementary' || args.unit == 'ship') && game.teams[game.turn.team].bought){
+            return false;
+        }
+
+        if(game.teams[args.team].wallet >= this.price_list[args.unit]){
+            game.teams[args.team].wallet -= this.price_list[args.unit];
+            game.updateWallet();
+            return true;  
+        }
         
         return false;
     },
 
-    open: function(args){        
-        if(args.team === 0){
+    open: function(args){    
+        console.log('open');
+    },
 
-            document.getElementById('player1_shop').style.display = 'inline-block';            
-            document.getElementById('player2_shop').style.display = 'none';            
-            document.getElementById('player2_shop').removeAttribute('class');
+    show: function(args){    
+        GUI.show = [];  
+        GUI.show.push('wallet');
+        GUI.show.push('end');
 
-            if(args.more){
-                document.getElementById('player1_shop').setAttribute('class','buy');            
-            }
-              
-        }else{
-            document.getElementById('player2_shop').style.display = 'inline-block';            
-            document.getElementById('player1_shop').style.display = 'none';            
-            document.getElementById('player1_shop').removeAttribute('class');
-            if(args.more){
-                document.getElementById('player2_shop').setAttribute('class','buy');
-            }            
-            
+        if(!args){
+            args = {more:false};
         }
+
+        if(game.teams[game.turn.team].pirates){
+            if(!game.teams[game.turn.team].bought){
+                if(game.teams[game.turn.team].wallet >= this.price_list['ship']){ 
+                    GUI.show.push('ship');            
+                }
+            }
+            if(args.more){
+                if(game.teams[game.turn.team].wallet >= this.price_list['pirate']){ 
+                    GUI.show.push('pirate');
+                }
+                if(game.teams[game.turn.team].wallet >= this.price_list['range_pirate']){ 
+                    GUI.show.push('range_pirate');
+                }
+                if(game.teams[game.turn.team].wallet >= this.price_list['lumberjack']){ 
+                    GUI.show.push('lumberjack');
+                }
+            }
+        }
+
+        if(game.teams[game.turn.team].skeletons){
+            if(!game.teams[game.turn.team].bought){
+                if(game.teams[game.turn.team].wallet >= this.price_list['cementary']){ 
+                    GUI.show.push('cementary');            
+                }
+                if(game.teams[game.turn.team].wallet >= this.price_list['octopus']){ 
+                    GUI.show.push('octopus');
+                }
+            }
+            if(args.more){
+                if(game.teams[game.turn.team].wallet >= this.price_list['skeleton']){ 
+                    GUI.show.push('skeleton');
+                }
+                if(game.teams[game.turn.team].wallet >= this.price_list['dust']){ 
+                    GUI.show.push('dust');                
+                }
+            }
+        }
+        
+        render.render({menu:true});
     },
 
     close: function(args){
-        document.getElementById('player1_shop').removeAttribute('class');        
-        document.getElementById('player2_shop').removeAttribute('class');
-        
-        if(args.all){
-            document.getElementById('player1_shop').style.display = 'none';         
-            document.getElementById('player2_shop').style.display = 'none'; 
-        }
+        this.show({more:false});
     },
 
     buyStarter: function(){
-        if(game.turn.team === 0){
+        if(game.teams[game.turn.team].pirates){
             this.buy({unit:'ship'});
         }else
-        if(game.turn.team == 1){
+        if(game.teams[game.turn.team].skeletons){
             this.buy({unit:'cementary'});
         }
     },

@@ -19,17 +19,19 @@
 */
 
 var game = {
-    version: 'BETA3.1 30-03-2013',
-    mobile: false || navigator.userAgent.match(/(iPhone)|(iPod)|(android)|(webOS)/i),
+    version: 'BETA3.3 31-03-2013',
+    mobile: false || navigator.userAgent.match(/(iPhone)|(iPod)|(iPad)|(android)|(webOS)/i),
     tablet: false || navigator.userAgent.match(/(iPad)/i),
     teams: [{
             pirates: true,
             ai: false,
             wallet: 200,
+            bought: false,            
         },{
             skeletons: true,
             ai: false,
             wallet: 200, 
+            bought: false,
         }],
     turn: {
         id: 1,
@@ -43,27 +45,21 @@ var game = {
     init: function(args){                    
         console.log(this.version);  
         
-        if(this.mobile){
-            args.w = 15;
-            args.h = 8;
-        }
-
         world.init({
             width: 24 || args.w,
-            height: 14 || args.h
+            height: 18 || args.h
         });        
+        shop.init();
         render.init();
-        fogOfWar.init();
-        render.render({all:true});                
     },
 
     start: function(){
-        game.play = true;
-        document.getElementById('playGame').style.display = 'none';
-        document.getElementById('settings').style.display = 'none';
-        document.getElementById('random').style.display = 'none';
-        shop.open({team:game.turn.team, more:false});
+        game.play = true;      
+        GUI.show = [];
+        shop.show();
         shop.buyStarter();
+        GUI.show.push('end');
+        render.render({menu:true});
         multi.show();
     },    
 
@@ -98,6 +94,7 @@ var game = {
         render.init();
         fogOfWar.init();
         io.init();
+        GUI.init();
         render.render({all:true}); 
     },
 
@@ -163,9 +160,7 @@ var game = {
     },
 
     nextTurn: function(){
-            
-            shop.close({all:true});
-
+                        
             var loose = true;
             // change to true!
 
@@ -202,11 +197,13 @@ var game = {
                      ai.loop();
                 }        
             
-                fogOfWar.update();
-                render.render({gui:true, entities:true, sky:true});
+                this.teams[this.turn.team].bought = false;
+                fogOfWar.update();                
                 multi.show();
                 this.payDay();
-                shop.open({team:game.turn.team, more:false});                 
+                shop.show();   
+                GUI.show.push('end');   
+                render.render({gui:true, menu:true, entities:true, sky:true});           
             }
 
             if(this.turn.id == 1){
@@ -254,13 +251,11 @@ var game = {
             
     win: function(){
         window.alert('You win!'); 
-        //this.restart();          
         window.location.reload();
     },
 
     lose: function(){        
         window.alert('You lose');
-        //this.restart();
         window.location.reload();
     },
 
@@ -274,14 +269,11 @@ var game = {
     },
     
     updateWallet: function(){
-        var player1_gold = document.getElementById('player1_gold'),
-            player2_gold = document.getElementById('player2_gold');                
-        
-        player1_gold.innerHTML = game.teams[0].wallet;
-        player2_gold.innerHTML = game.teams[1].wallet;            
+        render.render({menu:true});
     },
     
     updateUnits: function(){
+       /*
         var player1_units = 0,
             player2_units = 0;
         
@@ -304,6 +296,7 @@ var game = {
         document.getElementById('player1_units').setAttribute('style','width: ' + percent(player1_units, player1_units+player2_units) + '%');
         document.getElementById('player2_units').innerHTML = player2_units;
         document.getElementById('player2_units').setAttribute('style','width: ' + percent(player2_units, player1_units+player2_units) + '%');
+        */
     },
 
     
@@ -320,7 +313,6 @@ var game = {
 var multi = {
     
     show: function(msg){ 
-        document.getElementById('nextTurn').style.display = 'none';
         if(!game.teams[0].ai && !game.teams[1].ai && !game.editor){
             fogOfWar.update();            
             document.getElementById('multi').style.display = 'block';  
@@ -336,8 +328,7 @@ var multi = {
     },
     
     play: function(){
-        document.getElementById('multi').style.display = 'none';
-        document.getElementById('nextTurn').style.display = 'inline-block';
+        document.getElementById('multi').style.display = 'none';      
     },
 };
 

@@ -22,17 +22,21 @@ var io = {
         var gameDiv = document.getElementById('game'),
             cX = (px - gameDiv.offsetLeft)/render.box<<0,
             cY = (py - gameDiv.offsetTop)/render.box<<0;
-                
-        if(game.play){        
+        
+        if(cY >= GUI.conf.bottom){
+            GUI.select(cX,cY);
+        }else{
+            if(game.play){        
 
-            if(game.unit_selected > -1){
-                game.attackOrMove(cX, cY)
-                render.render({entities:true, gui:true});
-            }else{
-                game.select(cX, cY);
-                render.render({gui:true});
+                if(game.unit_selected > -1){
+                    game.attackOrMove(cX, cY)
+                    render.render({entities:true, gui:true});
+                }else{
+                    game.select(cX, cY);
+                    render.render({gui:true});
+                }
+
             }
-
         }
     },
 

@@ -99,21 +99,26 @@ var render = {
                 
                 render.sprites[53] = [render.makeSprite(6,4, false),render.makeSprite(6,4, true)]; // lumberjack
                 
-                render.sprites[54] = render.makeSprite(5,7, false); // cutted palm
-                render.sprites[55] = render.makeSprite(3,7, false); // palm
-                render.sprites[56] = render.makeSprite(4,7, false); // forest            
+                render.sprites[54] = render.makeSprite(3,6, false); // cutted palm
+                render.sprites[55] = render.makeSprite(1,6, false); // palm
+                render.sprites[56] = render.makeSprite(2,6, false); // forest            
     
                 render.sprites[57] = render.makeSprite(6,2, false); // shout
                 render.sprites[58] = render.makeSprite(4,2, false); // message
+
+
+                GUI.init();
+                fogOfWar.init();
     
-                render.render({map:true, entities:true,});
+                render.render({all:true});
             };
-    
+            
+            /*
             this.next_turn.src = "/media/next_turn.png";
             this.next_turn.onload = function(){                
                 render.render({gui:true});
             };
-            
+            */
             this.render_initialized = true;
         }else{
             this.destroyDOM();
@@ -143,7 +148,7 @@ var render = {
         gameDiv.appendChild(guiDiv);            
                 
         gameDiv.style.width = (world.conf.width*this.box)+'px';
-        gameDiv.style.height = (world.conf.height*this.box)+'px';
+        gameDiv.style.height = ((world.conf.height+2)*this.box)+'px'; // for GUI
         
         document.getElementById('play').style.width = gameDiv.style.width;
 
@@ -159,7 +164,7 @@ var render = {
 
         this.gui.canvas = document.getElementById('gui');
         this.gui.canvas.width = world.conf.width*this.box;
-        this.gui.canvas.height = world.conf.height*this.box;
+        this.gui.canvas.height = (world.conf.height+2)*this.box;
         this.gui.ctx = this.gui.canvas.getContext('2d');
         
         this.sky.canvas = document.getElementById('sky');
@@ -298,6 +303,7 @@ var render = {
         if(args.all){
             args.map = true;
             args.gui = true;
+            args.menu = true;
             args.sky = true;
         }
 
@@ -327,50 +333,14 @@ var render = {
             }
         }
 
-        if(args.gui){
-            this.gui.ctx.clearRect(0, 0, world.conf.width*this.box, world.conf.height*this.box);
-            if(!game.teams[game.turn.team].ai){
-                for(i=0; i<world.map.entities.length; i++){
-                    if(world.map.entities[i].selected){
-                        this.gui.ctx.drawImage(this.sprites[10], world.map.entities[i].x*this.box, world.map.entities[i].y*this.box);
-                        for (var j = 0; j < world.map.entities[i].move_area.length; j++) {
-                            var block = null;
-                            if(world.map.entities[i].move_area[j].move){
-                                block = 9;
-                            }
-                            if(world.map.entities[i].move_area[j].attack){
-                                block = 12;
-                            }
-                            if(world.map.entities[i].move_area[j].merge){
-                                block = 8;
-                            }
-                            if(world.map.entities[i].move_area[j].buy){
-                                block = 37;
-                            }
-                            if(world.map.entities[i].move_area[j].forest){
-                                block = 38;
-                            }
-                            if(block){
-                                render.gui.ctx.drawImage(render.sprites[block], world.map.entities[i].move_area[j].x*render.box, world.map.entities[i].move_area[j].y*render.box);
-                            }
-                        }
-                    }else{
-                        if(world.map.entities[i].message && world.map.entities[i].alive){
-                            this.drawMessage(world.map.entities[i].message,world.map.entities[i].x, world.map.entities[i].y, world.map.entities[i].important)
-                        }
-                    }
-                    if(world.map.entities[i].reloading > 0 && world.map.entities[i].alive ){
-                        render.gui.ctx.drawImage(render.sprites[15], world.map.entities[i].x*render.box, world.map.entities[i].y*render.box);
-                    }
-                    if(world.map.entities[i].moves < 1 && world.map.entities[i].alive){
-                        render.gui.ctx.drawImage(render.sprites[11], world.map.entities[i].x*render.box, world.map.entities[i].y*render.box);
-                    }
-                }
-            }
-
-            this.drawNextTurn();
+        if(args.gui){            
+            GUI.render({game:true});
         }
         
+        if(args.menu){            
+            GUI.render({menu:true});
+        }
+
         if(args.sky && game.play && !game.teams[game.turn.team].ai){
             this.sky.ctx.clearRect(0, 0, world.conf.width*this.box, world.conf.height*this.box);
             var f = 0;
@@ -386,16 +356,7 @@ var render = {
         
         if(args.clearSky){
             this.sky.ctx.clearRect(0, 0, world.conf.width*this.box, world.conf.height*this.box);
-        }    
-          
-        /* * 
-        map_data_i = 0;
-        for(var y=0; y<world.conf.height; y++){
-            for(var x=0; x<world.conf.width; x++){  
-                this.sky.ctx.drawImage(this.sprites[world.map.moves[map_data_i++]], x*this.box, y*this.box);
-            }
-        }
-        */
+        }                      
 
     },
 
