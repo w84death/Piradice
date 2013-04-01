@@ -29,13 +29,7 @@ var world = {
 
         this.conf.islands = 2 + (Math.random()*6)<<0;
         this.conf.islands_size = 10 + (Math.random()*70)<<0;
-        this.conf.chests = 6;   
-
-        if(this.conf.width < 19){
-            this.conf.islands = 1 + (Math.random()*3)<<0;
-            this.conf.islands_size = 10 + (Math.random()*30)<<0;
-            this.conf.chests = 1;   
-        }
+        this.conf.chests = 6;           
         
         this.generate();             
     },

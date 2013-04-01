@@ -89,7 +89,7 @@ var GUI = {
 			};		
 
 		this.buttons['pirate'] = {
-				sprite: this.makeButton({x:4, y:6, sprite_over: 17, width:1, label:shop.price_list['ship']}),
+				sprite: this.makeButton({x:4, y:6, sprite_over: 17, width:1, label:shop.price_list['pirate']}),
 				width:1,
 				position: 4,
 				action: 'buy',
