@@ -22,7 +22,6 @@ var shop = {
         if(args.unit == 'cementary'){
            
             var newLocation = this.freeChests();
-            console.log(newLocation.x,newLocation.y);
             if(newLocation){
                 newX = newLocation.x;
                 newY = newLocation.y;

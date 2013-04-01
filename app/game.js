@@ -317,7 +317,6 @@ var multi = {
     
     show: function(msg){
         GUI.drawReady();
-        console.log('draw');
     },
 };
 
