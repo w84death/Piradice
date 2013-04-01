@@ -422,9 +422,6 @@ Unit.prototype = {
         this.moves = 0;
         game.killZombies();
         game.updateUnits();
-        if(this.cementary){
-            world.map.items[hasCementary].hasCementary = false;
-        }
     },
     
     shout: function(){

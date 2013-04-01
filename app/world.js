@@ -9,7 +9,7 @@ var world = {
         islands_size: 5 + (Math.random()*70)<<0,      
         grass: 0 + (Math.random()*80)<<0,
         palms: 0 + (Math.random()*80)<<0,
-        chests: 6,
+        chests: 2 + (Math.random()*4)<<0,
         wallet: 200
     },
 
@@ -29,7 +29,7 @@ var world = {
 
         this.conf.islands = 2 + (Math.random()*6)<<0;
         this.conf.islands_size = 10 + (Math.random()*70)<<0;
-        this.conf.chests = 6;           
+        this.conf.chests = 2 + (Math.random()*4)<<0;           
         
         this.generate();             
     },
