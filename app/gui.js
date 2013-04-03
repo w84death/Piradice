@@ -207,32 +207,24 @@ var GUI = {
         this.ctx.fillRect(0, this.conf.bottom*render.box, this.conf.width*render.box, 2*render.box);
 	},
 
-	drawReady: function(args){
-		var text = [];
-
-		if(game.teams[game.turn.team].pirates){
-			text.push('PIRATES');
-		}
-		if(game.teams[game.turn.team].skeletons){
-			text.push('SKELETONS');
-		}
-
-		text.push('GET READY');
-		text.push('TURN '+game.turn.id);		
-
+	drawReady: function(args){		
 		this.ctx.fillStyle = this.conf.background;
         this.ctx.fillRect(0, 0, this.conf.width*render.box, world.conf.height*render.box);
 
-		this.ctx.fillStyle = this.conf.color;
-		this.ctx.font = '32px VT323, cursive';
+		if(game.teams[game.turn.team].pirates){
+			this.ctx.drawImage(render.big_sprites[0],((world.conf.width*render.box)*0.5<<0) - ((render.big_sprites[0].width*0.5)<<0),((world.conf.height*render.box)*0.5<<0) - ((render.big_sprites[0].height*0.5)<<0));
+		}
+		if(game.teams[game.turn.team].skeletons){
+			this.ctx.drawImage(render.big_sprites[1],((world.conf.width*render.box)*0.5<<0) - ((render.big_sprites[1].width*0.5)<<0),((world.conf.height*render.box)*0.5<<0) - ((render.big_sprites[1].height*0.5)<<0));
+		}
+
+		this.ctx.fillStyle = this.conf.color2;
+		this.ctx.font = '24px VT323, cursive';
 		this.ctx.textBaseline = 'middle';
 		this.ctx.textAlign = 'center';
-
-		this.ctx.fillText(text[0], (this.conf.width*render.box)*0.5<<0, (world.conf.height*render.box)*0.5<<0);
-		this.ctx.font = '24px VT323, cursive';
-		this.ctx.fillText(text[1], (this.conf.width*render.box)*0.5<<0, (world.conf.height*render.box)*0.6<<0);
-		this.ctx.fillStyle = this.conf.color2;
-		this.ctx.fillText(text[2], (this.conf.width*render.box)*0.5<<0, (world.conf.height*render.box)*0.8<<0);
+		
+		this.ctx.fillText('TURN '+game.turn.id, (this.conf.width*render.box)*0.5<<0, (world.conf.height*render.box)*0.9<<0);
+		
 		this.show = [];
 		this.show.push('ready');
 		this.render({menu:true});

@@ -19,7 +19,7 @@
 */
 
 var game = {
-    version: 'BETA3.3 31-03-2013',
+    version: 'BETA3.5 3-04-2013',
     mobile: false || navigator.userAgent.match(/(iPhone)|(iPod)|(iPad)|(android)|(webOS)/i),
     tablet: false || navigator.userAgent.match(/(iPad)/i),
     teams: [{
@@ -159,72 +159,89 @@ var game = {
         return dice[value];
     },
 
+    checkMate: function(){
+        var loose = false,
+            win = false;
+
+        if(this.turn.id > 1){
+            loose = true,
+            win = true;
+        }
+
+        for (i = 0; i < world.map.entities.length; i++) {
+            
+            if(this.turn.id > 1){
+                
+                if(game.teams[this.turn.team].pirates){
+                    if(world.map.entities[i].ship && world.map.entities[i].alive){
+                        loose = false;                       
+                    }
+                    if(world.map.entities[i].cementary && world.map.entities[i].alive){
+                        win = false;
+                    }
+                }
+
+                if(game.teams[this.turn.team].skeletons){
+                    if(world.map.entities[i].cementary && world.map.entities[i].alive){
+                        loose = false;                       
+                    }
+                    if(world.map.entities[i].ship && world.map.entities[i].alive){
+                        win = false;
+                    }
+                }
+           }
+        }
+
+        if(loose){
+            game.lose();
+            return false;
+        }else
+        if(win){            
+            game.win();
+            return false;
+        }
+        
+        return true;
+    },
+
     nextTurn: function(){
             game.play = false;
 
-            var loose = true,
-                win = true;
-            // change to true!
-
-            for (i = 0; i < world.map.entities.length; i++) {
-                if(world.map.entities[i].team == this.turn.team && world.map.entities[i].alive){                    
-                    
-                    if(game.teams[this.turn.team].pirates && world.map.entities[i].ship){
-                        loose = false;                       
-                    }
-
-                    if(game.teams[this.turn.team].skeletons && world.map.entities[i].cementary){
-                        loose = false;                       
-                    }
-
-                    if(game.teams[this.turn.team].pirates && world.map.entities[i].cementary){
-                        win = false;
-                    }
-
-                    if(game.teams[this.turn.team].skeletons && world.map.entities[i].ship){
-                        win = false;                       
-                    }
-                }
- 
-
-                if(world.map.entities[i].range){
-                    world.map.entities[i].reloading--;
-                }
-                
-                world.map.entities[i].moves = 1;                
-                world.map.entities[i].selected = false;
-            }
-
-            game.unit_selected = -1;
-
-            if(loose){
-                game.lose();
-            }else
-            if(win){
-                game.win();
-            }else{                
-                    if(game.turn.team == 1){
-                        game.turn.team = 0;
-                        game.turn.id++;
-                    }else{
-                        game.turn.team = 1;
+            if(this.checkMate()){
+     
+                for (i = 0; i < world.map.entities.length; i++) {
+                    if(world.map.entities[i].range){
+                        world.map.entities[i].reloading--;
                     }
                     
-                    this.killZombies();        
-                    this.shoutTeam();                                        
+                    world.map.entities[i].moves = 1;                
+                    world.map.entities[i].selected = false;
+                }
 
-                    if(this.teams[this.turn.team].ai){
-                         ai.loop();
-                    }        
+                game.unit_selected = -1;
+
+                               
+                if(game.turn.team == 1){
+                    game.turn.team = 0;
+                    game.turn.id++;
+                }else{
+                    game.turn.team = 1;
+                }
                 
-                    this.teams[this.turn.team].bought = false;
-                    fogOfWar.update();                                
-                    this.payDay();
-                    shop.show();   
-                    GUI.show.push('end');
-                    render.render({gui:true, menu:true, entities:true, sky:true});                                   
-            }
+                this.killZombies();        
+                this.shoutTeam();                                        
 
+                if(this.teams[this.turn.team].ai){
+                     ai.loop();
+                }        
+            
+                this.teams[this.turn.team].bought = false;
+                fogOfWar.update();                                
+                this.payDay();
+                shop.show();   
+                GUI.show.push('end');
+                render.render({gui:true, menu:true, entities:true, sky:true});                                   
+            }
 
             if(this.turn.id == 1){
                 shop.buyStarter();

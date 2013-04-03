@@ -22,6 +22,7 @@ var render = {
     noise_img: null,
     next_turn: new Image(),
     sprites: [],
+    big_sprites: [],
     render_initialized: false,
 
     init: function(){
@@ -35,7 +36,7 @@ var render = {
             this.sprites_img.onload = function(){                
 
                 render.sprites_img = render.resize(render.sprites_img, render.scale);
-    
+
                 // map & items & GUI
                 render.sprites[0] = render.makeSprite(0,0, false); // sea
                 render.sprites[1] = render.makeSprite(1,0, false); // water
@@ -106,6 +107,8 @@ var render = {
                 render.sprites[57] = render.makeSprite(6,2, false); // shout
                 render.sprites[58] = render.makeSprite(4,2, false); // message
 
+                render.big_sprites[0] = render.resize(render.sprites[35][0], 8);
+                render.big_sprites[1] = render.resize(render.sprites[36][0], 8);
 
                 GUI.init();
                 fogOfWar.init();
