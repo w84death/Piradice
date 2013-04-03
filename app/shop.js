@@ -4,12 +4,12 @@ var shop = {
     init: function(){
         this.price_list['pirate'] = 10;
         this.price_list['range_pirate'] = 15;
-        this.price_list['lumberjack'] = 40;
+        this.price_list['lumberjack'] = 90;
         this.price_list['skeleton'] = 15;
         this.price_list['dust'] = 60;
-        this.price_list['ship'] = 80;
-        this.price_list['cementary'] = 80;
-        this.price_list['octopus'] = 40;
+        this.price_list['ship'] = 200;
+        this.price_list['cementary'] = 200;
+        this.price_list['octopus'] = 110;
     },
 
     buy: function(args){

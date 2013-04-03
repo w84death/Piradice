@@ -25,12 +25,12 @@ var game = {
     teams: [{
             pirates: true,
             ai: false,
-            wallet: 200,
+            wallet: 400,
             bought: false,            
         },{
             skeletons: true,
             ai: false,
-            wallet: 200, 
+            wallet: 400, 
             bought: false,
         }],
     turn: {
@@ -162,13 +162,30 @@ var game = {
     nextTurn: function(){
             game.play = false;
 
-            var loose = true;
+            var loose = true,
+                win = true;
             // change to true!
 
             for (i = 0; i < world.map.entities.length; i++) {
-                if(world.map.entities[i].team === this.turn.team && world.map.entities[i].alive){                    
-                    loose = false;                    
+                if(world.map.entities[i].team == this.turn.team && world.map.entities[i].alive){                    
+                    
+                    if(game.teams[this.turn.team].pirates && world.map.entities[i].ship){
+                        loose = false;                       
+                    }
+
+                    if(game.teams[this.turn.team].skeletons && world.map.entities[i].cementary){
+                        loose = false;                       
+                    }
+
+                    if(game.teams[this.turn.team].pirates && world.map.entities[i].cementary){
+                        win = false;
+                    }
+
+                    if(game.teams[this.turn.team].skeletons && world.map.entities[i].ship){
+                        win = false;                       
+                    }
                 }
+ 
 
                 if(world.map.entities[i].range){
                     world.map.entities[i].reloading--;
@@ -182,6 +199,9 @@ var game = {
 
             if(loose){
                 game.lose();
+            }else
+            if(win){
+                game.win();
             }else{                
                     if(game.turn.team == 1){
                         game.turn.team = 0;
