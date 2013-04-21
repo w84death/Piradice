@@ -207,8 +207,16 @@ Unit.prototype = {
                 for (var i = 0; i < this.move_area.length; i++) {
                     for (var j = 0; j < world.map.entities.length; j++) { 
                         if( world.map.entities[j].x == this.move_area[i].x && world.map.entities[j].y == this.move_area[i].y && world.map.entities[j].team != this.team ){ 
-                            this.move_area[i].attack = true;    
-                        }
+	                        if(!world.map.entities[j].cementary){
+	                            this.move_area[i].attack = true;    
+	                        }else{
+	                        	if(this.lumberjack) {
+	                        		this.move_area[i].attack = true;
+	                        	}else{
+	                        		this.move_area[i].move = false;
+	                        	}
+	                        }
+                       }
                         
                         if( world.map.entities[j].x == this.move_area[i].x && world.map.entities[j].y == this.move_area[i].y && world.map.entities[j].team == this.team ){ 
                             if(this.name == world.map.entities[j].name && this.merging){
@@ -226,6 +234,7 @@ Unit.prototype = {
     
     unselect: function(){
         this.selected = false;
+        game.unit_selected = -1;
         shop.close();
     },
     
@@ -338,7 +347,7 @@ Unit.prototype = {
                         other.important = false;
                     }else
                     if(dice < dice2){
-                        if(( (Math.abs(this.x - other.x) < 2) && (Math.abs(this.y - other.y) < 2) ) || other.range){
+                        if(( (Math.abs(this.x - other.x) < 2) && (Math.abs(this.y - other.y) < 2) ) || other.range && !other.reloading){
                             this.hit();
                         }
                         this.message = 'miss';
@@ -348,7 +357,7 @@ Unit.prototype = {
                     if(dice > dice2){
                         other.hit();       
                     }else
-                    if(dice < dice2){                   
+                    if(dice < dice2 && !other.reloading){                   
                         this.hit();
                     }
                 }                                                    
@@ -368,11 +377,26 @@ Unit.prototype = {
             this.message = 'omnom';
             this.important = false;
             other.die();
+            return true;
         }else
         if(other.cementary){
             if(this.lumberjack){
+            	var pos = {x:other.x,y:other.y};          
+                // buy new
                 other.die();
-                return true;
+                this.die();
+                game.killZombies();
+                world.map.entities.push(new Pirate({
+                	x:pos.x, 
+                	y:pos.y,
+                	team:this.team, ai:this.ai}));
+                
+                var unit = world.map.entities.length-1;           
+                //world.map.entities[unit].select();
+                world.map.entities[unit].moves = 0;                
+                //world.map.entities[unit].unselect();
+                //render.render({entities:true});
+                return false;
             }
             return false;
         }else{
@@ -570,7 +594,7 @@ var Octopus = function Octopus(args){
     this.name = 'octopus';
     this.octopus = true;
     this.skeleton = true;
-    this.ai = args.ai || true;
+    this.ai = args.ai || false;
     this.x = args.x;
     this.y = args.y;
     this.sprite = 36;

@@ -19,7 +19,7 @@
 */
 
 var game = {
-    version: 'BETA3.5 3-04-2013',
+    version: 'VERSION 4',
     mobile: false || navigator.userAgent.match(/(iPhone)|(iPod)|(iPad)|(android)|(webOS)/i),
     tablet: false || navigator.userAgent.match(/(iPad)/i),
     teams: [{
@@ -118,6 +118,7 @@ var game = {
 
         for (var i = 0; i < world.map.entities[game.unit_selected].move_area.length; i++) {
             if(world.map.entities[game.unit_selected].move_area[i].x == cX && world.map.entities[game.unit_selected].move_area[i].y == cY){
+            	// attack
                 if(world.map.entities[game.unit_selected].move_area[i].attack){
                     if(world.map.entities[game.unit_selected].attack(cX, cY)){
                         if(!world.map.entities[game.unit_selected].range){
@@ -125,14 +126,17 @@ var game = {
                         }
                     };
                 }else
+                // merge
                 if(world.map.entities[game.unit_selected].move_area[i].merge){
                     if(world.map.entities[game.unit_selected].merge(cX, cY)){
                         world.map.entities[game.unit_selected].move(cX, cY);
                     }
                 }else
+                // cut
                 if(world.map.entities[game.unit_selected].move_area[i].forest){                    
                     world.map.entities[game.unit_selected].cut(cX, cY);
                 }else
+                // moce
                 if(world.map.entities[game.unit_selected].move_area[i].move){
                     world.map.entities[game.unit_selected].move(cX, cY);
                 }
@@ -252,6 +256,8 @@ var game = {
             if(!game.ready){
                 multi.show();
             }
+            
+            bank.save();
     },
 
     payDay: function(){
@@ -348,6 +354,28 @@ var game = {
             }
         }
     },
+};
+
+
+var bank = {
+	save: function() {
+		// save game state
+		localStorage.setItem("save",true);
+	},
+	
+	load: function() {
+		if(this.hasSave()){
+			//load map
+		}
+	},
+	
+	hasSave: function(){
+		if(localStorage.getItem('save')){
+			return true;
+		}
+		
+		return false;
+	},
 };
 
 var multi = {
