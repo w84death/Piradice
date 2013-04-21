@@ -312,11 +312,18 @@ var GUI = {
 		}
 
 		if(args.game){
+			var draw = {x:0,y:0}
+
 			this.ctx.clearRect(0, 0, render.viewport.width*render.box, this.conf.bottom*render.box);
+			
 			if(!game.teams[game.turn.team].ai){
                 for(i=0; i<world.map.entities.length; i++){
                     if(world.map.entities[i].selected){
-                        this.ctx.drawImage(render.sprites[10], world.map.entities[i].x*render.box, world.map.entities[i].y*render.box);
+                    	draw.x = world.map.entities[i].x+render.viewport.offset.x;
+                    	draw.y = world.map.entities[i].y+render.viewport.offset.y;
+                    	if(draw.x >= 0 & draw.y >= 0 && draw.x < render.viewport.width && draw.y < render.viewport.height){
+                        	this.ctx.drawImage(render.sprites[10], draw.x*render.box, draw.y*render.box);
+                    	}
                         for (var j = 0; j < world.map.entities[i].move_area.length; j++) {
                             var block = null;
                             if(world.map.entities[i].move_area[j].move){
@@ -335,19 +342,35 @@ var GUI = {
                                 block = 38;
                             }
                             if(block){
-                                this.ctx.drawImage(render.sprites[block], world.map.entities[i].move_area[j].x*render.box, world.map.entities[i].move_area[j].y*render.box);
+                            	draw.x = world.map.entities[i].move_area[j].x+render.viewport.offset.x;
+                    			draw.y = world.map.entities[i].move_area[j].y+render.viewport.offset.y;
+                    			if(draw.x >= 0 & draw.y >= 0 && draw.x < render.viewport.width && draw.y < render.viewport.height){
+                                	this.ctx.drawImage(render.sprites[block],draw.x*render.box, draw.y*render.box);
+                                }
                             }
                         }
                     }else{
                         if(world.map.entities[i].message && world.map.entities[i].alive){
-                            render.drawMessage(world.map.entities[i].message,world.map.entities[i].x, world.map.entities[i].y, world.map.entities[i].important)
+                            draw.x = world.map.entities[i].x+render.viewport.offset.x;
+                   			draw.y = world.map.entities[i].y+render.viewport.offset.y;
+                   			if(draw.x >= 0 & draw.y >= 0 && draw.x < render.viewport.width && draw.y < render.viewport.height){
+                            	render.drawMessage(world.map.entities[i].message,draw.x, draw.y, world.map.entities[i].important);
+                        	}
                         }
                     }
                     if(world.map.entities[i].reloading > 0 && world.map.entities[i].alive ){
-                        this.ctx.drawImage(render.sprites[15], world.map.entities[i].x*render.box, world.map.entities[i].y*render.box);
+						draw.x = world.map.entities[i].x+render.viewport.offset.x;
+                   		draw.y = world.map.entities[i].y+render.viewport.offset.y;
+                   		if(draw.x >= 0 & draw.y >= 0 && draw.x < render.viewport.width && draw.y < render.viewport.height){
+                   	    	this.ctx.drawImage(render.sprites[15], draw.x*render.box, draw.y*render.box);
+                   	    }
                     }
                     if(world.map.entities[i].moves < 1 && world.map.entities[i].alive){
-                        this.ctx.drawImage(render.sprites[11], world.map.entities[i].x*render.box, world.map.entities[i].y*render.box);
+                        draw.x = world.map.entities[i].x+render.viewport.offset.x;
+                   		draw.y = world.map.entities[i].y+render.viewport.offset.y;
+                   		if(draw.x >= 0 & draw.y >= 0 && draw.x < render.viewport.width && draw.y < render.viewport.height){
+                        	this.ctx.drawImage(render.sprites[11], draw.x*render.box, draw.y*render.box);
+                        }
                     }
                 }
             }

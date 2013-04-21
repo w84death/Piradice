@@ -38,6 +38,7 @@ var io = {
                 px = e.pageX;
                 py = e.pageY;
             }
+
             if( px > io.touch.start.x &&  px - io.touch.start.x >= render.box){
                 render.move({x:1,y:0});
                 io.touch.start.x = px;
@@ -76,13 +77,14 @@ var io = {
             GUI.select(cX,cY);
         }else{
             if(game.play){        
-                cX += render.viewport.offset.x;
-                cY += render.viewport.offset.y;
+                realX = cX - render.viewport.offset.x;
+                realY = cY - render.viewport.offset.y;
+
                 if(game.unit_selected > -1){
-                    game.attackOrMove(cX, cY)
+                    game.attackOrMove(realX, realY)
                     render.render({entities:true, gui:true});
                 }else{
-                    game.select(cX, cY);
+                    game.select(realX, realY);
                     render.render({gui:true});
                 }
 

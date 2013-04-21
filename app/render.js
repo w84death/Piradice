@@ -39,7 +39,7 @@ var render = {
 
             this.createDOM();
 
-            this.noise_img = this.fastNoise(world.conf.width*this.box, world.conf.height*this.box, 8 );
+            this.noise_img = this.fastNoise(this.viewport.width*this.box, this.viewport.height*this.box, 8 );
 
             this.sprites_img.src = "/media/sprites.png";
             this.sprites_img.onload = function(){                
@@ -325,6 +325,7 @@ var render = {
 
         if(args.all){
             args.map = true;
+            args.entities = true;
             args.gui = true;
             args.menu = true;
             args.sky = true;
@@ -343,7 +344,7 @@ var render = {
                 for(var x=0; x<this.viewport.width; x++){ 
                     draw.x = x - this.viewport.offset.x;
                     draw.y = y - this.viewport.offset.y;
-                    if(draw.x >= 0 && draw.x < this.viewport.width && draw.y >= 0 && draw.y < this.viewport.height ){                    
+                    if(draw.x >= 0 && draw.x < world.map.width && draw.y >= 0 && draw.y < world.map.height ){                    
                             this.map.ctx.drawImage(this.sprites[world.map.data[(draw.x)+((draw.y)*world.map.width)]], x*this.box, y*this.box);                        
                     }
                 }
@@ -356,7 +357,7 @@ var render = {
             for(i=0; i<world.map.items.length; i++){
                 draw.x = world.map.items[i].x + this.viewport.offset.x;
                 draw.y = world.map.items[i].y + this.viewport.offset.y;
-                if(draw.x >= 0 && draw.x < world.map.width && draw.y >= 0 && draw.y < world.map.height && draw.x < this.viewport.width && draw.y < this.viewport.height){                    
+                if(draw.x >= 0 && draw.x < this.viewport.width && draw.y >= 0 && draw.y < this.viewport.height){                    
                     this.map.ctx.drawImage(this.sprites[ world.map.items[i].sprite ], draw.x*this.box, draw.y*this.box);
                 }
             }
@@ -368,7 +369,7 @@ var render = {
                 if(world.map.entities[i].alive){                
                     draw.x = world.map.entities[i].x + this.viewport.offset.x;
                     draw.y = world.map.entities[i].y + this.viewport.offset.y;
-                    if(draw.x >= 0 && draw.x < world.map.width && draw.y >= 0 && draw.y < world.map.height && draw.x < this.viewport.width && draw.y < this.viewport.height){                    
+                    if(draw.x >= 0 && draw.x < this.viewport.width && draw.y >= 0 && draw.y < this.viewport.height){
                         this.entities.ctx.drawImage(this.sprites[ world.map.entities[i].sprite ][ world.map.entities[i].flip ], draw.x*this.box, draw.y*this.box);
                     }
                 }
