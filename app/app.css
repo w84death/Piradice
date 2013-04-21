@@ -1,6 +1,6 @@
 * {margin: 0; padding: 0;}
-body {background-color:#444; color:#f8f8f8; cursor:url('/media/cur.png'), auto; font:1em 'VT323', cursive;
-	background:#58bdcd url('../media/background.jpg') no-repeat center center fixed; background-size:cover;}
+body {background-color:#58bdcd; color:#f8f8f8; cursor:url('/media/cur.png'), auto; font:1em 'VT323', cursive;
+	/*background:#58bdcd url('../media/background.jpg') no-repeat center center fixed;*/ background-size:cover;}
 
 #loading {display:block; padding:1em 0; text-align:center;}
 #game {color:#444; text-align:center;}
@@ -72,3 +72,12 @@ button.big {padding: 1em 2em;font-size: 2em;}
 .ad {position:absolute; right:4em; bottom:2em;}
 
 .playButtons {margin:32px 0;}
+
+.manual article section {padding:1em; background-color:rgba(0,0,0,0.5); border-bottom: 5px solid rgba(0,0,0,0.8);}
+.manual article section {margin-top:2em;}
+.manual article section h2,
+.manual article section h3 {margin-top:0;}
+.manual article ul.units {margin-top:1em;}
+.manual article ul.units li strong {display:block; font-size:1em;}
+.manual article ul.units li {width:21%; padding:2%; float:left;}
+.manual article ul.units:after {content:' '; display:block; clear:both;}

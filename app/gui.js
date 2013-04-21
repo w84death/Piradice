@@ -9,7 +9,7 @@ var GUI = {
 	},
 	buttons: [],
 	labels: [],
-	show: ['play','random', 'map_size1', 'map_size2', 'map_size3', 'map_size4'],
+	show: ['play','random', 'map_size1', 'map_size2', 'map_size3'],
 
 	init: function(){
 		this.ctx = render.gui.ctx;
@@ -19,7 +19,7 @@ var GUI = {
 		this.buttons['play'] = {				
 				sprite: this.makeButton({x:4, y:8, width:2, text:'PLAY'}),
 				width:2,
-				position: world.conf.width-4,
+				position: render.viewport.width-4,
 				action: 'game',
 				value: 'start',
 			};
@@ -27,7 +27,7 @@ var GUI = {
 		this.buttons['ready'] = {				
 				sprite: this.makeButton({x:4, y:8, width:2, text:'READY'}),
 				width:2,
-				position: world.conf.width-4,
+				position: render.viewport.width-4,
 				action: 'game',
 				value: 'ready',
 			};
@@ -57,25 +57,17 @@ var GUI = {
 			};
 		
 		this.buttons['map_size3'] = {				
-				sprite: this.makeButton({x:4, y:6, width:1, text:'MAX'}),
+				sprite: this.makeButton({x:4, y:6, width:1, text:'BIG'}),
 				width:1,
 				position: 8,
 				action: 'mapSize',
-				value: 'max',
-			};
-
-		this.buttons['map_size4'] = {				
-				sprite: this.makeButton({x:4, y:6, width:1, text:'iPAD'}),
-				width:1,
-				position: 10,
-				action: 'mapSize',
-				value: 'ipad',
-			};
+				value: 'big',
+			};		
 
 		this.buttons['end'] = {
 				sprite: this.makeButton({x:4, y:8, width:2, text:'END TURN'}),
 				width:2,
-				position: world.conf.width-4,
+				position: render.viewport.width-4,
 				action: 'game',
 				value: 'nextTurn',
 			};
@@ -180,14 +172,8 @@ var GUI = {
 			if(this.buttons[key].value == 'normal'){
 				game.mapSize({w:24,h:18});
 			}
-			if(this.buttons[key].value == 'ipad'){
-				game.mapSize({w:32,h:22});
-			}
-			if(this.buttons[key].value == 'max'){
-				game.mapSize({
-					w:(window.innerWidth/render.box)<<0,
-					h:((window.innerHeight/render.box)<<0)-2
-				});
+			if(this.buttons[key].value == 'big'){
+				game.mapSize({w:48,h:32});
 			}
 		}
 		
@@ -198,8 +184,8 @@ var GUI = {
 	},
 
 	resize: function(){
-		this.conf.width = world.conf.width;
-		this.conf.bottom = world.conf.height;
+		this.conf.width = render.viewport.width;
+		this.conf.bottom = render.viewport.height - 2;
 	},
 
 	drawFooter: function(){
@@ -209,13 +195,13 @@ var GUI = {
 
 	drawReady: function(args){		
 		this.ctx.fillStyle = this.conf.background;
-        this.ctx.fillRect(0, 0, this.conf.width*render.box, world.conf.height*render.box);
+        this.ctx.fillRect(0, 0, this.conf.width*render.box, render.viewport.height*render.box);
 
 		if(game.teams[game.turn.team].pirates){
-			this.ctx.drawImage(render.big_sprites[0],((world.conf.width*render.box)*0.5<<0) - ((render.big_sprites[0].width*0.5)<<0),((world.conf.height*render.box)*0.5<<0) - ((render.big_sprites[0].height*0.5)<<0));
+			this.ctx.drawImage(render.big_sprites[0],((render.viewport.width*render.box)*0.5<<0) - ((render.big_sprites[0].width*0.5)<<0),((render.viewport.height*render.box)*0.5<<0) - ((render.big_sprites[0].height*0.5)<<0));
 		}
 		if(game.teams[game.turn.team].skeletons){
-			this.ctx.drawImage(render.big_sprites[1],((world.conf.width*render.box)*0.5<<0) - ((render.big_sprites[1].width*0.5)<<0),((world.conf.height*render.box)*0.5<<0) - ((render.big_sprites[1].height*0.5)<<0));
+			this.ctx.drawImage(render.big_sprites[1],((render.viewport.width*render.box)*0.5<<0) - ((render.big_sprites[1].width*0.5)<<0),((render.viewport.height*render.box)*0.5<<0) - ((render.big_sprites[1].height*0.5)<<0));
 		}
 
 		this.ctx.fillStyle = this.conf.color2;
@@ -223,7 +209,7 @@ var GUI = {
 		this.ctx.textBaseline = 'middle';
 		this.ctx.textAlign = 'center';
 		
-		this.ctx.fillText('TURN '+game.turn.id, (this.conf.width*render.box)*0.5<<0, (world.conf.height*render.box)*0.9<<0);
+		this.ctx.fillText('TURN '+game.turn.id, (this.conf.width*render.box)*0.5<<0, (render.viewport.height*render.box)*0.9<<0);
 		
 		this.show = [];
 		this.show.push('ready');
@@ -326,7 +312,7 @@ var GUI = {
 		}
 
 		if(args.game){
-			this.ctx.clearRect(0, 0, world.conf.width*render.box, world.conf.height*render.box);
+			this.ctx.clearRect(0, 0, render.viewport.width*render.box, this.conf.bottom*render.box);
 			if(!game.teams[game.turn.team].ai){
                 for(i=0; i<world.map.entities.length; i++){
                     if(world.map.entities[i].selected){

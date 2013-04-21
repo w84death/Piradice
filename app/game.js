@@ -47,8 +47,8 @@ var game = {
         console.log(this.version);  
         
         world.init({
-            width: 24 || args.w,
-            height: 18 || args.h
+            width: 28 || args.w,
+            height: 22 || args.h
         });        
         shop.init();
         render.init();

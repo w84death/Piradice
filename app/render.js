@@ -15,6 +15,11 @@ var render = {
         canvas: null,
         ctx: null,
     },
+    viewport: {
+        offset: {x: 0, y:0},
+        width: 0,
+        height: 0
+    },
     box: 16,
     scale: 2,
     sprites_img: new Image(),
@@ -27,7 +32,11 @@ var render = {
 
     init: function(){
         if(!this.render_initialized){
+            
             this.box = this.box * this.scale;
+            this.viewport.width = (window.innerWidth/this.box)<<0;
+            this.viewport.height = (window.innerHeight/this.box)<<0;
+
             this.createDOM();
 
             this.noise_img = this.fastNoise(world.conf.width*this.box, world.conf.height*this.box, 8 );
@@ -150,29 +159,29 @@ var render = {
         gameDiv.appendChild(skyDiv);
         gameDiv.appendChild(guiDiv);            
                 
-        gameDiv.style.width = (world.conf.width*this.box)+'px';
-        gameDiv.style.height = ((world.conf.height+2)*this.box)+'px'; // for GUI
+        gameDiv.style.width = (this.viewport.width*this.box)+'px';
+        gameDiv.style.height = (this.viewport.height*this.box)+'px';
         
         document.getElementById('play').style.width = gameDiv.style.width;
 
         this.map.canvas = document.getElementById('map');
-        this.map.canvas.width = world.conf.width*this.box;
-        this.map.canvas.height = world.conf.height*this.box;
+        this.map.canvas.width = this.viewport.width*this.box;
+        this.map.canvas.height = this.viewport.height*this.box;
         this.map.ctx = this.map.canvas.getContext('2d');
 
         this.entities.canvas = document.getElementById('entities');
-        this.entities.canvas.width = world.conf.width*this.box;
-        this.entities.canvas.height = world.conf.height*this.box;
+        this.entities.canvas.width = this.viewport.width*this.box;
+        this.entities.canvas.height = this.viewport.height*this.box;
         this.entities.ctx = this.entities.canvas.getContext('2d');
 
         this.gui.canvas = document.getElementById('gui');
-        this.gui.canvas.width = world.conf.width*this.box;
-        this.gui.canvas.height = (world.conf.height+2)*this.box;
+        this.gui.canvas.width = this.viewport.width*this.box;
+        this.gui.canvas.height = this.viewport.height*this.box;
         this.gui.ctx = this.gui.canvas.getContext('2d');
         
         this.sky.canvas = document.getElementById('sky');
-        this.sky.canvas.width = world.conf.width*this.box;
-        this.sky.canvas.height = world.conf.height*this.box;
+        this.sky.canvas.width = this.viewport.width*this.box;
+        this.sky.canvas.height = this.viewport.height*this.box;
         this.sky.ctx = this.sky.canvas.getContext('2d');
         io.init();
     },
@@ -300,8 +309,19 @@ var render = {
         }
     },
 
+    move:function(args){
+
+        this.viewport.offset.x += args.x;
+        this.viewport.offset.y += args.y;
+        
+        console.log(args.x, args.y, this.viewport.offset.x,this.viewport.offset.y);
+
+        render.render({all:true});
+    },
+
     render: function(args){
-        var map_data_i = 0;
+        var map_data_i = 0,
+            draw = {x:0,y:0};
 
         if(args.all){
             args.map = true;
@@ -311,10 +331,21 @@ var render = {
         }
 
         if(args.map){
-            this.map.ctx.clearRect(0, 0, world.conf.width*this.box, world.conf.height*this.box);
+            this.map.ctx.clearRect(0, 0, this.viewport.width*this.box, this.viewport.height*this.box);
+            /*
             for(var y=0; y<world.conf.height; y++){
                 for(var x=0; x<world.conf.width; x++){  
                     this.map.ctx.drawImage(this.sprites[world.map.data[map_data_i++]], x*this.box, y*this.box);
+                }
+            }*/
+            
+            for(var y=0; y<this.viewport.height; y++){
+                for(var x=0; x<this.viewport.width; x++){ 
+                    draw.x = x - this.viewport.offset.x;
+                    draw.y = y - this.viewport.offset.y;
+                    if(draw.x >= 0 && draw.x < this.viewport.width && draw.y >= 0 && draw.y < this.viewport.height ){                    
+                            this.map.ctx.drawImage(this.sprites[world.map.data[(draw.x)+((draw.y)*world.map.width)]], x*this.box, y*this.box);                        
+                    }
                 }
             }
             args.items = true;
@@ -323,21 +354,29 @@ var render = {
 
         if(args.items){
             for(i=0; i<world.map.items.length; i++){
-                this.map.ctx.drawImage(this.sprites[ world.map.items[i].sprite ], world.map.items[i].x*this.box, world.map.items[i].y*this.box);
+                draw.x = world.map.items[i].x + this.viewport.offset.x;
+                draw.y = world.map.items[i].y + this.viewport.offset.y;
+                if(draw.x >= 0 && draw.x < world.map.width && draw.y >= 0 && draw.y < world.map.height && draw.x < this.viewport.width && draw.y < this.viewport.height){                    
+                    this.map.ctx.drawImage(this.sprites[ world.map.items[i].sprite ], draw.x*this.box, draw.y*this.box);
+                }
             }
         }
 
         if(args.entities){            
-            this.entities.ctx.clearRect(0, 0, world.conf.width*this.box, world.conf.height*this.box);
+            this.entities.ctx.clearRect(0, 0, this.viewport.width*this.box, this.viewport.height*this.box);
             for(i=0; i<world.map.entities.length; i++){
-                if(world.map.entities[i].alive){                    
-                    this.entities.ctx.drawImage(this.sprites[ world.map.entities[i].sprite ][ world.map.entities[i].flip ], world.map.entities[i].x*this.box, world.map.entities[i].y*this.box);
+                if(world.map.entities[i].alive){                
+                    draw.x = world.map.entities[i].x + this.viewport.offset.x;
+                    draw.y = world.map.entities[i].y + this.viewport.offset.y;
+                    if(draw.x >= 0 && draw.x < world.map.width && draw.y >= 0 && draw.y < world.map.height && draw.x < this.viewport.width && draw.y < this.viewport.height){                    
+                        this.entities.ctx.drawImage(this.sprites[ world.map.entities[i].sprite ][ world.map.entities[i].flip ], draw.x*this.box, draw.y*this.box);
+                    }
                 }
             }
         }
 
         if(args.gui){            
-            GUI.render({game:true});
+            GUI.render({game:true, menu:true});
         }
         
         if(args.menu){            
@@ -345,20 +384,22 @@ var render = {
         }
 
         if(args.sky && game.play && !game.teams[game.turn.team].ai){
-            this.sky.ctx.clearRect(0, 0, world.conf.width*this.box, world.conf.height*this.box);
-            var f = 0;
-            for(var y=0; y<world.conf.height; y++){
-                for(var x=0; x<world.conf.width; x++){
-                    if(fogOfWar.data[game.turn.team][f]){
-                        this.sky.ctx.drawImage(this.sprites[fogOfWar.data[game.turn.team][f]], x*this.box, y*this.box);
+            this.sky.ctx.clearRect(0, 0, this.viewport.width*this.box, this.viewport.height*this.box);
+            for(var y=0; y<this.viewport.height; y++){
+                for(var x=0; x<this.viewport.width; x++){ 
+                    draw.x = x - this.viewport.offset.x;
+                    draw.y = y - this.viewport.offset.y;
+                    if(draw.x >= 0 && draw.x < this.viewport.width && draw.y >= 0 && draw.y < this.viewport.height ){                    
+                        if(fogOfWar.data[game.turn.team][(draw.x)+((draw.y)*world.map.width)]){
+                            this.sky.ctx.drawImage(this.sprites[ fogOfWar.data[game.turn.team][(draw.x)+((draw.y)*world.map.width)] ], x*this.box, y*this.box);                                                   
+                        }
                     }
-                    f++;
                 }
-            }            
+            }                      
         }
         
         if(args.clearSky){
-            this.sky.ctx.clearRect(0, 0, world.conf.width*this.box, world.conf.height*this.box);
+            this.sky.ctx.clearRect(0, 0, this.viewport.width*this.box, this.viewport.height*this.box);
         }                      
 
     },
