@@ -312,10 +312,7 @@ var render = {
     move:function(args){
 
         this.viewport.offset.x += args.x;
-        this.viewport.offset.y += args.y;
-        
-        console.log(args.x, args.y, this.viewport.offset.x,this.viewport.offset.y);
-
+        this.viewport.offset.y += args.y;        
         render.render({all:true});
     },
 
@@ -390,13 +387,16 @@ var render = {
                 for(var x=0; x<this.viewport.width; x++){ 
                     draw.x = x - this.viewport.offset.x;
                     draw.y = y - this.viewport.offset.y;
-                    if(draw.x >= 0 && draw.x < this.viewport.width && draw.y >= 0 && draw.y < this.viewport.height ){                    
+                    if(draw.x >= 0 && draw.x < world.map.width && draw.y >= 0 && draw.y < world.map.height ){                    
                         if(fogOfWar.data[game.turn.team][(draw.x)+((draw.y)*world.map.width)]){
                             this.sky.ctx.drawImage(this.sprites[ fogOfWar.data[game.turn.team][(draw.x)+((draw.y)*world.map.width)] ], x*this.box, y*this.box);                                                   
                         }
+                    }else{
+                        //black sky? end of the map
+                        //this.sky.ctx.drawImage(this.sprites[ 50 ], x*this.box, y*this.box);
                     }
                 }
-            }                      
+            }           
         }
         
         if(args.clearSky){
