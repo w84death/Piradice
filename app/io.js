@@ -19,11 +19,11 @@ var io = {
         }
     },
 
-    begin: function(event){
+    begin: function(e){
         io.touch.init = true;
         if(game.mobile || game.tablet ){
-            io.touch.start.x = event.touches[0].pageX;
-            io.touch.start.y = event.touches[0].pageY;
+            io.touch.start.x = e.touches[0].pageX;
+            io.touch.start.y = e.touches[0].pageY;
         }else{
             io.touch.start.x = e.pageX;
             io.touch.start.y = e.pageY;
@@ -32,7 +32,7 @@ var io = {
 
     move: function(e){
     	e.preventDefault();
-        if(io.touch.init){
+        if(io.touch.init && game.play){
             if(game.mobile || game.tablet ){
                 px = e.touches[0].pageX;
                 py = e.touches[0].pageY;

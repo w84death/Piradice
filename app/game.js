@@ -19,7 +19,7 @@
 */
 
 var game = {
-    version: 'VERSION 4',
+    version: 'VERSION 5',
     mobile: false || navigator.userAgent.match(/(iPhone)|(iPod)|(iPad)|(android)|(webOS)/i),
     tablet: false || navigator.userAgent.match(/(iPad)/i),
     teams: [{
@@ -255,6 +255,7 @@ var game = {
 
             if(!game.ready){
                 multi.show();
+                render.viewport.offset = {x:0, y:0};
             }
             
             bank.save();

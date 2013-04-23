@@ -15,6 +15,11 @@ var render = {
         canvas: null,
         ctx: null,
     },
+    hints: {
+        canvas: null,
+        ctx: null,
+        draw: [],
+    },
     viewport: {
         offset: {x: 0, y:0},
         width: 0,
@@ -89,6 +94,16 @@ var render = {
                 render.sprites[35] = [render.makeSprite(2,2, false),render.makeSprite(2,2, true)]; // ship
                 render.sprites[36] = [render.makeSprite(0,6, false),render.makeSprite(0,6, true)]; // octopus
                 render.sprites[39] = [render.makeSprite(3,2, false),render.makeSprite(3,2, false)]; // cementary
+                
+                render.sprites[40] = render.makeSprite(0,7, false); // hint top
+                render.sprites[41] = render.makeSprite(1,7, false); // hint right
+                render.sprites[42] = render.makeSprite(2,7, false); // hint bottm
+                render.sprites[43] = render.makeSprite(3,7, false); // hint left
+
+                render.sprites[44] = render.makeSprite(0,8, false); // hint top-right
+                render.sprites[45] = render.makeSprite(1,8, false); // hint right-bottom
+                render.sprites[46] = render.makeSprite(2,8, false); // hint bottm-left
+                render.sprites[47] = render.makeSprite(3,8, false); // hint left-top
                 /*
                 render.sprites[40] = [render.makeSprite(1,6, false),render.makeSprite(1,6, true)]; // ship 1
                 render.sprites[41] = [render.makeSprite(2,6, false),render.makeSprite(2,6, true)]; // ship 2
@@ -147,17 +162,21 @@ var render = {
             mapDiv = document.createElement('canvas'),
             entitiesDiv = document.createElement('canvas'),
             skyDiv = document.createElement('canvas'),
-            guiDiv = document.createElement('canvas');
+            guiDiv = document.createElement('canvas'),
+            hintsDiv = document.createElement('canvas');
         
         mapDiv.setAttribute('id','map');
         entitiesDiv.setAttribute('id','entities');
         skyDiv.setAttribute('id','sky');
         guiDiv.setAttribute('id','gui');
+        hintsDiv.setAttribute('id','hints');
                     
         gameDiv.appendChild(mapDiv);
         gameDiv.appendChild(entitiesDiv);
         gameDiv.appendChild(skyDiv);
-        gameDiv.appendChild(guiDiv);            
+        gameDiv.appendChild(hintsDiv);
+        gameDiv.appendChild(guiDiv);
+                    
                 
         gameDiv.style.width = (this.viewport.width*this.box)+'px';
         gameDiv.style.height = (this.viewport.height*this.box)+'px';
@@ -183,6 +202,12 @@ var render = {
         this.sky.canvas.width = this.viewport.width*this.box;
         this.sky.canvas.height = this.viewport.height*this.box;
         this.sky.ctx = this.sky.canvas.getContext('2d');
+
+        this.hints.canvas = document.getElementById('hints');
+        this.hints.canvas.width = this.viewport.width*this.box;
+        this.hints.canvas.height = this.viewport.height*this.box;
+        this.hints.ctx = this.hints.canvas.getContext('2d');
+
         io.init();
     },
         
@@ -310,10 +335,91 @@ var render = {
     },
 
     move:function(args){
+        var margin = {
+            x:(world.map.width*0.5)<<0,
+            y:(world.map.height*0.5)<<0
+        }
 
-        this.viewport.offset.x += args.x;
-        this.viewport.offset.y += args.y;        
-        render.render({all:true});
+        if(this.viewport.offset.x + args.x >= -margin.x && this.viewport.offset.x + args.x < this.viewport.width - margin.x){
+            this.viewport.offset.x += args.x;
+            render.render({all:true});
+        }
+
+        if(this.viewport.offset.y +args.y >= -margin.y && this.viewport.offset.y + args.y < this.viewport.height - margin.y){
+            this.viewport.offset.y += args.y;        
+            render.render({all:true});
+        }
+        
+    },
+
+    drawHints: function(){
+        var indicator = {x:0,y:0, sprite:40};
+
+        for (var i = 0; i < this.hints.draw.length; i++) {
+            
+            if(this.hints.draw[i].x < 0 ){
+                indicator.x = 0;
+                indicator.y = this.hints.draw[i].y;
+                indicator.sprite = 43;
+            }
+            if(this.hints.draw[i].x >= this.viewport.width ){
+                indicator.x = this.viewport.width-1;
+                indicator.y = this.hints.draw[i].y;
+                indicator.sprite = 41;
+            }
+            if(this.hints.draw[i].y < 0 ){
+                indicator.x = this.hints.draw[i].x;
+                indicator.y = 0;            
+                indicator.sprite = 40;
+            }
+            if(this.hints.draw[i].y >= GUI.conf.bottom ){            
+                indicator.x = this.hints.draw[i].x;
+                indicator.y = this.viewport.height-3;
+                indicator.sprite = 42;
+            }
+            /*
+            render.sprites[40] = render.makeSprite(0,7, false); // hint top
+            render.sprites[41] = render.makeSprite(1,7, false); // hint right
+            render.sprites[42] = render.makeSprite(2,7, false); // hint bottm
+            render.sprites[43] = render.makeSprite(3,7, false); // hint left
+
+            render.sprites[44] = render.makeSprite(0,8, false); // hint top-right
+            render.sprites[45] = render.makeSprite(1,8, false); // hint right-bottom
+            render.sprites[46] = render.makeSprite(2,8, false); // hint bottm-left
+            render.sprites[47] = render.makeSprite(3,8, false); // hint left-top
+            */
+
+            if(indicator.x >= this.viewport.width){
+                indicator.x = this.viewport.width-1;                
+            }
+            if(indicator.x < 0){
+                indicator.x = 0;                
+            }
+            if(indicator.y >= GUI.conf.bottom){
+                indicator.y = this.viewport.height-3;                
+            }
+            if(indicator.y < 0){
+                indicator.y = 0;                
+            }
+
+            
+            if(indicator.x === 0 && indicator.y === 0){
+               indicator.sprite = 47; 
+            }
+            if(indicator.x === 0 && indicator.y == this.viewport.height-3){
+               indicator.sprite = 46; 
+            }
+            if(indicator.x == this.viewport.width-1 && indicator.y === 0){
+               indicator.sprite = 44; 
+            }
+            if(indicator.x == this.viewport.width-1 && indicator.y == this.viewport.height-3){
+               indicator.sprite = 45; 
+            }
+
+            if(game.turn.team === this.hints.draw[i].team){                
+                this.hints.ctx.drawImage(this.sprites[ indicator.sprite ], indicator.x*this.box, indicator.y*this.box);
+            }
+        };              
     },
 
     render: function(args){
@@ -326,6 +432,7 @@ var render = {
             args.gui = true;
             args.menu = true;
             args.sky = true;
+            args.hints = true;
         }
 
         if(args.map){
@@ -354,23 +461,26 @@ var render = {
             for(i=0; i<world.map.items.length; i++){
                 draw.x = world.map.items[i].x + this.viewport.offset.x;
                 draw.y = world.map.items[i].y + this.viewport.offset.y;
-                if(draw.x >= 0 && draw.x < this.viewport.width && draw.y >= 0 && draw.y < this.viewport.height){                    
+                if(draw.x >= 0 && draw.x < this.viewport.width && draw.y >= 0 && draw.y < GUI.conf.bottom){                    
                     this.map.ctx.drawImage(this.sprites[ world.map.items[i].sprite ], draw.x*this.box, draw.y*this.box);
                 }
             }
         }
 
         if(args.entities){            
-            this.entities.ctx.clearRect(0, 0, this.viewport.width*this.box, this.viewport.height*this.box);
+            this.entities.ctx.clearRect(0, 0, this.viewport.width*this.box, this.viewport.height*this.box);            
             for(i=0; i<world.map.entities.length; i++){
                 if(world.map.entities[i].alive){                
                     draw.x = world.map.entities[i].x + this.viewport.offset.x;
                     draw.y = world.map.entities[i].y + this.viewport.offset.y;
-                    if(draw.x >= 0 && draw.x < this.viewport.width && draw.y >= 0 && draw.y < this.viewport.height){
+                    if(draw.x >= 0 && draw.x < this.viewport.width && draw.y >= 0 && draw.y < GUI.conf.bottom){
                         this.entities.ctx.drawImage(this.sprites[ world.map.entities[i].sprite ][ world.map.entities[i].flip ], draw.x*this.box, draw.y*this.box);
+                    }else{
+                        this.hints.draw.push({x:draw.x, y:draw.y, team:world.map.entities[i].team});
+                        args.hints = true;
                     }
                 }
-            }
+            }            
         }
 
         if(args.gui){            
@@ -401,7 +511,13 @@ var render = {
         
         if(args.clearSky){
             this.sky.ctx.clearRect(0, 0, this.viewport.width*this.box, this.viewport.height*this.box);
-        }                      
+        }  
+
+        if(args.hints){
+            this.hints.ctx.clearRect(0, 0, this.viewport.width*this.box, this.viewport.height*this.box);
+            this.drawHints();
+            this.hints.draw = [];
+        }                    
 
     },
 

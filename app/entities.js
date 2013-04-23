@@ -61,7 +61,7 @@ Unit.prototype = {
                                     // isthereabettersolution?
                                 }
                             };
-                            if(empty){
+                            if(empty){                                
                                 this.move_area.push({x:x,y:y, buy:true});        
                             }
                         }
@@ -229,6 +229,12 @@ Unit.prototype = {
                 }
             }
 
+            for (var i = 0; i < this.move_area.length; i++) {
+                if(this.move_area[i].x < 0 || this.move_area[i].y < 0 || this.move_area[i].x >= world.map.width || this.move_area[i].y >= world.map.height ){
+                    this.move_area[i].move = false;
+                }
+            };
+            
         }
     },
     
