@@ -345,8 +345,20 @@ var GUI = {
 	        };
 		}
 		if(args.special == 'map'){
+			var offset = {x:8,y:10},
+				pin = 0;
 
-		}
+			for(var y=0; y<world.map.height; y++){
+                for(var x=0; x<world.map.width; x++){                     
+                    pin = world.map.data[x+(y*world.map.width)];
+                    if( pin != 0 && pin != 1){                    	
+                    	m_context.fillStyle = this.conf.color3;
+        				m_context.fillRect(x+offset.x, y+offset.y, 1,1);
+                   	}
+                }
+            }
+	    }
+
 		return m_canvas;	
 	},
 
