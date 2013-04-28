@@ -192,10 +192,12 @@ var shop = {
     },
 
     show: function(args){    
-        GUI.show = [];  
-        GUI.show.push('wallet');
+        GUI.show = [];
+        GUI.show.push('map');
+        GUI.show.push('inventory');
+        GUI.show.push('gold');
+        GUI.show.push('trees');
         GUI.show.push('end');
-
         if(!args){
             args = {more:false};
         }

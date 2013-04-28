@@ -28,6 +28,7 @@ button.big {padding: 1em 2em;font-size: 2em;}
 .ad {float:right; margin:0 4em 2em 0;}
 .ad:after {visibility: hidden; display: block;font-size: 0;content: " ";clear: both;height: 0;}
 nav {margin:1em 0;}
+.play {margin:0; padding:0;}
 
 .manual article section {padding:1em; background-color:rgba(0,0,0,0.5); border-bottom: 5px solid rgba(0,0,0,0.8);}
 .manual article section {margin-top:2em;}

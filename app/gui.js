@@ -3,11 +3,13 @@ var GUI = {
 	conf: {
 		color: '#f8f8f8',
 		color2: '#005e67',
+		color3: '#884d00',
 		background: '#007888',
 		bottom: 0,		
 	},
 	buttons: [],
 	labels: [],
+	hud: [],
 	show: ['play','random', 'map_size1', 'map_size2', 'map_size3'],
 
 	init: function(){
@@ -119,34 +121,86 @@ var GUI = {
 		};
 
 		this.buttons['octopus'] = {
-				sprite: this.makeButton({x:4, y:6, sprite_over: 36, width:1, label:shop.price_list['octopus']}),	
-				width:1,			
-				position: 4,
-				action: 'buy',
-				value: 'octopus'
-			};
+			sprite: this.makeButton({x:4, y:6, sprite_over: 36, width:1, label:shop.price_list['octopus']}),	
+			width:1,			
+			position: 4,
+			action: 'buy',
+			value: 'octopus'
+		};
 
 		this.buttons['skeleton'] = {
-				sprite: this.makeButton({x:4, y:6, sprite_over: 23, width:1, label:shop.price_list['skeleton']}),	
-				width:1,			
-				position: 6,
-				action: 'buy',
-				value: 'skeleton'
-			};
+			sprite: this.makeButton({x:4, y:6, sprite_over: 23, width:1, label:shop.price_list['skeleton']}),	
+			width:1,			
+			position: 6,
+			action: 'buy',
+			value: 'skeleton'
+		};
 
 		this.buttons['dust'] = {
-				sprite: this.makeButton({x:4, y:6, sprite_over: 49, width:1, label:shop.price_list['dust']}),	
-				width:1,			
-				position: 8,
-				action: 'buy',
-				value: 'dust'
-			};		
+			sprite: this.makeButton({x:4, y:6, sprite_over: 49, width:1, label:shop.price_list['dust']}),	
+			width:1,			
+			position: 8,
+			action: 'buy',
+			value: 'dust'
+		};
 
-		this.labels['wallet'] = {
-				text: '$',
-				live: 'wallet',
-				position: 0,
-			};
+		this.hud['map'] = {
+			sprite: this.drawHUD({
+				sprite: {
+					x:8,
+					y:6
+				},
+				width:2,
+				height:2,
+				special: 'map'				
+			}),						
+			position: {x:1,y:1}			
+		};
+
+		this.hud['inventory'] = {
+			sprite: this.drawHUD({
+				sprite: {
+					x:8,
+					y:8
+				},
+				width:2,
+				height:4,
+				icons:				
+					[{	
+						sprite: render.sprites[14],
+						label: '999',
+						position: {x:16,y:16}
+					},
+					{
+						sprite: render.sprites[55],
+						label: '99',
+						position: {x:16,y:68}
+					}]
+				}),											
+			position: {x:1,y:4}				
+		};		
+
+
+		this.labels['gold'] = {
+			text: game.teams[game.turn.team].wallet,
+			position: {
+				x:32,
+				y:52,
+			},
+			live: 'wallet',
+			parent: 'inventory'
+		};
+
+		this.labels['trees'] = {
+			text: game.teams[game.turn.team].trees,
+			position: {
+				x:32,
+				y:104
+			},
+			live: 'trees',
+			parent: 'inventory'
+		};
+
 		this.render({menu:true});
 	},
 
@@ -167,6 +221,10 @@ var GUI = {
 				game.ready = true;
 				this.show = [];
 				shop.show();
+				GUI.show.push('map');
+        		GUI.show.push('inventory');
+				GUI.show.push('gold');
+        		GUI.show.push('trees');
 				GUI.show.push('end');
 				render.render({all:true});
 			}
@@ -218,9 +276,12 @@ var GUI = {
 	},
 	
 	makeButton: function(args){
+		if(!args.height){
+			args.height = 1;
+		}
 		var m_canvas = document.createElement('canvas');
             m_canvas.width = render.box * args.width * 2;
-            m_canvas.height = render.box * 2;
+            m_canvas.height = render.box * args.height * 2;
         var m_context = m_canvas.getContext('2d');
         
         m_context.drawImage(render.sprites_img, -args.x*render.box, -args.y*render.box);
@@ -252,16 +313,41 @@ var GUI = {
 	},	
 
 	drawLabel: function(args){
-		var text = args.text;
-		this.ctx.fillStyle = this.conf.color;
+		var text = args.text,
+			pos = {x:0,y:0};
+
+		this.ctx.fillStyle = this.conf.color3;
 		this.ctx.font = '16px VT323, cursive';
 		this.ctx.textBaseline = 'middle';
 		this.ctx.textAlign = 'center';
-		
-		if(args.live == 'wallet'){
-			text = args.text + game.teams[game.turn.team].wallet;
+
+		if(args.live){
+			if(args.live == 'wallet' ) { text = game.teams[game.turn.team].wallet; }
+			if(args.live == 'trees' ) { text = game.teams[game.turn.team].trees; }
 		}
-		this.ctx.fillText(text, (args.position*render.box*2)+render.box, render.viewport.height*render.box+(render.box));
+		if(args.parent){
+			pos.x = ( this.hud[args.parent].position.x*render.box ) + args.position.x;
+			pos.y = ( this.hud[args.parent].position.y*render.box ) + args.position.y;
+		}
+		this.ctx.fillText(text, pos.x, pos.y );
+	},
+
+	drawHUD: function(args){
+		var m_canvas = document.createElement('canvas');
+            m_canvas.width = render.box * args.width;
+            m_canvas.height = render.box * args.height;
+        var m_context = m_canvas.getContext('2d');
+        
+        m_context.drawImage(render.sprites_img, -args.sprite.x*render.box, -args.sprite.y*render.box);
+		if(args.icons){
+	        for (var i = 0; i < args.icons.length; i++) {        	
+	        	m_context.drawImage(args.icons[i].sprite, args.icons[i].position.x, args.icons[i].position.y);        	
+	        };
+		}
+		if(args.special == 'map'){
+
+		}
+		return m_canvas;	
 	},
 
 	select: function(x,y){
@@ -300,6 +386,14 @@ var GUI = {
 				}
 			}
 
+			for (key in this.hud) {
+				for (var i = 0; i < this.show.length; i++) {
+					if(this.show[i] == key){
+						this.ctx.drawImage(this.hud[key].sprite, this.hud[key].position.x*render.box, this.hud[key].position.y*render.box);
+					}
+				}
+			}
+
 			for (key in this.labels) {
 				for (var i = 0; i < this.show.length; i++) {
 					if(this.show[i] == key){
@@ -307,6 +401,8 @@ var GUI = {
 					}
 				}
 			}
+
+
 		render.post_render();
 	}
 };

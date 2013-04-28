@@ -343,7 +343,7 @@ Unit.prototype = {
                 dice = ((Math.random()*5)<<0) + (this.squad);
                 dice2 = ((Math.random()*5)<<0) + (other.squad);
 
-
+                console.log(this.name + ' ' + dice + ' vs ' + dice2 + ' ' + other.name);
                        
                 total += dice;
                 total2 += dice2;
@@ -370,6 +370,9 @@ Unit.prototype = {
                     }
                 }                                                    
             }    
+
+            console.log('-----------');
+            console.log(total + ' vs ' + total2);
             
             if(this.range){
                 this.reloading = 3;
@@ -400,10 +403,7 @@ Unit.prototype = {
                 	team:this.team, ai:this.ai}));
                 
                 var unit = world.map.entities.length-1;           
-                //world.map.entities[unit].select();
                 world.map.entities[unit].moves = 0;                
-                //world.map.entities[unit].unselect();
-                //render.render({entities:true});
                 return false;
             }
             return false;
@@ -419,9 +419,7 @@ Unit.prototype = {
                 }
                 return false;
             }
-            
-            
-            
+                                
             if(other.squad < 1){                                 
                 this.message = total + '-' + total2;
                 this.important = false;
@@ -467,7 +465,8 @@ Unit.prototype = {
             if(world.map.items[j].x == x && world.map.items[j].y == y){  
                if(world.map.items[j].cut()){
                    this.moves = 0;
-                   this.message = null;
+                   this.message = '+1';
+                   game.teams[this.team].trees += 1;
                }
             }
         }

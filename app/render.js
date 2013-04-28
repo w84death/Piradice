@@ -495,8 +495,7 @@ var render = {
     },
 
     render: function(args){
-        var map_data_i = 0,
-            draw = {x:0,y:0};
+        var draw = {x:0,y:0};
 
         if(args.all){
             args.map = true;
@@ -587,19 +586,15 @@ var render = {
         }
 
         if(args.sky && game.play && !game.teams[game.turn.team].ai){
-            this.sky.ctx.clearRect(0, 0, world.width*this.box, world.height*this.box);
-            for(var y=0; y<world.height; y++){
-                for(var x=0; x<world.width; x++){                                         
+            this.sky.ctx.clearRect(0, 0, world.map.width*this.box, world.map.height*this.box);
+            for(var y=0; y<world.map.height; y++){
+                for(var x=0; x<world.map.width; x++){                                                             
                     if(fogOfWar.data[game.turn.team][x+(y*world.map.width)]){
                         this.sky.ctx.drawImage(this.sprites[ fogOfWar.data[game.turn.team][x+(y*world.map.width)] ], x*this.box, y*this.box);                                                   
                     }
                 }
             }           
-        }
-        
-        if(args.clearSky){
-            this.sky.ctx.clearRect(0, 0, world.width*this.box, world.height*this.box);
-        }  
+        }        
 
         if(args.hints){
             this.hints.ctx.clearRect(0, 0, this.viewport.width*this.box, this.viewport.height*this.box);

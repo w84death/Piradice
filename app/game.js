@@ -26,12 +26,14 @@ var game = {
             pirates: true,
             ai: false,
             wallet: 400,
+            trees: 10,
             bought: false,
             offset: {x:0,y:0}            
         },{
             skeletons: true,
             ai: false,
-            wallet: 400, 
+            wallet: 400,
+            trees: 10,
             bought: false,
             offset: {x:0,y:0}
         }],
@@ -60,6 +62,10 @@ var game = {
         GUI.show = [];
         shop.show();
         shop.buyStarter();
+        GUI.show.push('map');
+        GUI.show.push('inventory');
+        GUI.show.push('gold');
+        GUI.show.push('trees');
         GUI.show.push('end');
         render.render({menu:true});
         multi.show();
@@ -240,7 +246,11 @@ var game = {
                 this.teams[this.turn.team].bought = false;
                 fogOfWar.update();                                
                 this.payDay();
-                shop.show();   
+                shop.show();
+                GUI.show.push('map');
+                GUI.show.push('inventory');
+                GUI.show.push('gold');
+                GUI.show.push('trees');
                 GUI.show.push('end');
                 render.render({gui:true, menu:true, entities:true, sky:true});                                   
             }
