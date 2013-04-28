@@ -4,17 +4,15 @@ var GUI = {
 		color: '#f8f8f8',
 		color2: '#005e67',
 		background: '#007888',
-		width: 0,
-		bottom: 0,
+		bottom: 0,		
 	},
 	buttons: [],
 	labels: [],
 	show: ['play','random', 'map_size1', 'map_size2', 'map_size3'],
 
 	init: function(){
-		this.ctx = render.gui.ctx;
-
-		this.resize();		
+		this.ctx = render.menu.ctx;		
+		this.conf.bottom = render.viewport.height-2;
 
 		this.buttons['play'] = {				
 				sprite: this.makeButton({x:4, y:8, width:2, text:'PLAY'}),
@@ -27,9 +25,17 @@ var GUI = {
 		this.buttons['ready'] = {				
 				sprite: this.makeButton({x:4, y:8, width:2, text:'READY'}),
 				width:2,
-				position: render.viewport.width-4,
+				position: ((render.viewport.width*0.5)<<0)-2,
 				action: 'game',
 				value: 'ready',
+			};
+
+		this.buttons['new_game'] = {				
+				sprite: this.makeButton({x:4, y:8, width:2, text:'END GAME'}),
+				width:2,
+				position: 0,
+				action: 'game',
+				value: 'new',
 			};
 
 		this.buttons['random'] = {				
@@ -183,19 +189,14 @@ var GUI = {
 		
 	},
 
-	resize: function(){
-		this.conf.width = render.viewport.width;
-		this.conf.bottom = render.viewport.height - 2;
-	},
-
 	drawFooter: function(){
 		this.ctx.fillStyle = this.conf.background;
-        this.ctx.fillRect(0, this.conf.bottom*render.box, this.conf.width*render.box, 2*render.box);
+        this.ctx.fillRect(0, (render.viewport.height-2)*render.box, render.viewport.width*render.box, 2*render.box);
 	},
 
-	drawReady: function(args){		
+	drawReady: function(args){			
 		this.ctx.fillStyle = this.conf.background;
-        this.ctx.fillRect(0, 0, this.conf.width*render.box, render.viewport.height*render.box);
+		this.ctx.fillRect(0, 0, render.viewport.width*render.box, render.viewport.height*render.box);
 
 		if(game.teams[game.turn.team].pirates){
 			this.ctx.drawImage(render.big_sprites[0],((render.viewport.width*render.box)*0.5<<0) - ((render.big_sprites[0].width*0.5)<<0),((render.viewport.height*render.box)*0.5<<0) - ((render.big_sprites[0].height*0.5)<<0));
@@ -209,11 +210,11 @@ var GUI = {
 		this.ctx.textBaseline = 'middle';
 		this.ctx.textAlign = 'center';
 		
-		this.ctx.fillText('TURN '+game.turn.id, (this.conf.width*render.box)*0.5<<0, (render.viewport.height*render.box)*0.9<<0);
+		this.ctx.fillText('TURN '+game.turn.id, (render.viewport.width*render.box)*0.5<<0, 2*render.box);		
 		
 		this.show = [];
 		this.show.push('ready');
-		this.render({menu:true});
+		this.show.push('new_game');
 	},
 	
 	makeButton: function(args){
@@ -260,7 +261,7 @@ var GUI = {
 		if(args.live == 'wallet'){
 			text = args.text + game.teams[game.turn.team].wallet;
 		}
-		this.ctx.fillText(text, (args.position*render.box*2)+render.box, this.conf.bottom*render.box+(render.box));
+		this.ctx.fillText(text, (args.position*render.box*2)+render.box, render.viewport.height*render.box+(render.box));
 	},
 
 	select: function(x,y){
@@ -282,14 +283,19 @@ var GUI = {
 	},	
 
 	render: function(args){
-		if(args.menu){
-			this.ctx.clearRect(0, this.conf.bottom*render.box, this.conf.width*render.box, 2*render.box);
-			this.drawFooter();
+		
+			this.ctx.clearRect(0, 0, render.viewport.width*render.box, render.viewport.height*render.box);
 			
+			if(args.ready){
+				this.drawReady();
+			}
+
+			this.drawFooter();
+
 			for (key in this.buttons) {
 				for (var i = 0; i < this.show.length; i++) {
 					if(this.show[i] == key){
-						this.ctx.drawImage(this.buttons[key].sprite, this.buttons[key].position*render.box, this.conf.bottom*render.box);
+						this.ctx.drawImage(this.buttons[key].sprite, this.buttons[key].position*render.box, (render.viewport.height-2)*render.box);
 					}
 				}
 			}
@@ -301,79 +307,6 @@ var GUI = {
 					}
 				}
 			}
-			/*
-			for (var i = 0; i < this.buttons.length; i++) {								
-				this.ctx.drawImage(this.buttons[i].sprite, this.buttons[i].position*render.box, this.conf.bottom*render.box);
-			};
-			for (var i = 0; i < this.labels.length; i++) {				
-				this.drawLabel(this.labels[i]);
-			};
-			*/
-		}
-
-		if(args.game){
-			var draw = {x:0,y:0}
-
-			this.ctx.clearRect(0, 0, render.viewport.width*render.box, this.conf.bottom*render.box);
-			
-			if(!game.teams[game.turn.team].ai){
-                for(i=0; i<world.map.entities.length; i++){
-                    if(world.map.entities[i].selected){
-                    	draw.x = world.map.entities[i].x+render.viewport.offset.x;
-                    	draw.y = world.map.entities[i].y+render.viewport.offset.y;
-                    	if(draw.x >= 0 & draw.y >= 0 && draw.x < render.viewport.width && draw.y < render.viewport.height){
-                        	this.ctx.drawImage(render.sprites[10], draw.x*render.box, draw.y*render.box);
-                    	}
-                        for (var j = 0; j < world.map.entities[i].move_area.length; j++) {
-                            var block = null;
-                            if(world.map.entities[i].move_area[j].move){
-                                block = 9;
-                            }
-                            if(world.map.entities[i].move_area[j].attack){
-                                block = 12;
-                            }
-                            if(world.map.entities[i].move_area[j].merge){
-                                block = 8;
-                            }
-                            if(world.map.entities[i].move_area[j].buy){
-                                block = 37;
-                            }
-                            if(world.map.entities[i].move_area[j].forest){
-                                block = 38;
-                            }
-                            if(block){
-                            	draw.x = world.map.entities[i].move_area[j].x+render.viewport.offset.x;
-                    			draw.y = world.map.entities[i].move_area[j].y+render.viewport.offset.y;
-                    			if(draw.x >= 0 & draw.y >= 0 && draw.x < render.viewport.width && draw.y < render.viewport.height){
-                                	this.ctx.drawImage(render.sprites[block],draw.x*render.box, draw.y*render.box);
-                                }
-                            }
-                        }
-                    }else{
-                        if(world.map.entities[i].message && world.map.entities[i].alive){
-                            draw.x = world.map.entities[i].x+render.viewport.offset.x;
-                   			draw.y = world.map.entities[i].y+render.viewport.offset.y;
-                   			if(draw.x >= 0 & draw.y >= 0 && draw.x < render.viewport.width && draw.y < render.viewport.height){
-                            	render.drawMessage(world.map.entities[i].message,draw.x, draw.y, world.map.entities[i].important);
-                        	}
-                        }
-                    }
-                    if(world.map.entities[i].reloading > 0 && world.map.entities[i].alive ){
-						draw.x = world.map.entities[i].x+render.viewport.offset.x;
-                   		draw.y = world.map.entities[i].y+render.viewport.offset.y;
-                   		if(draw.x >= 0 & draw.y >= 0 && draw.x < render.viewport.width && draw.y < render.viewport.height){
-                   	    	this.ctx.drawImage(render.sprites[15], draw.x*render.box, draw.y*render.box);
-                   	    }
-                    }
-                    if(world.map.entities[i].moves < 1 && world.map.entities[i].alive){
-                        draw.x = world.map.entities[i].x+render.viewport.offset.x;
-                   		draw.y = world.map.entities[i].y+render.viewport.offset.y;
-                   		if(draw.x >= 0 & draw.y >= 0 && draw.x < render.viewport.width && draw.y < render.viewport.height){
-                        	this.ctx.drawImage(render.sprites[11], draw.x*render.box, draw.y*render.box);
-                        }
-                    }
-                }
-            }
-		}
+		render.post_render();
 	}
 };

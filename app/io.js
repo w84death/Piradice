@@ -9,13 +9,13 @@ var io = {
 
     init: function(){
         if(game.mobile || game.tablet ){
-            render.gui.canvas.addEventListener('touchstart', io.begin, false);
-            render.gui.canvas.addEventListener('touchmove', io.move, false);
-            render.gui.canvas.addEventListener('touchend', io.click, false);
+            render.viewport.canvas.addEventListener('touchstart', io.begin, false);
+            render.viewport.canvas.addEventListener('touchmove', io.move, false);
+            render.viewport.canvas.addEventListener('touchend', io.click, false);
         }else{
-            render.gui.canvas.addEventListener('mousedown', io.begin, false);
-            render.gui.canvas.addEventListener('mousemove', io.move, false);
-            render.gui.canvas.addEventListener('mouseup', io.click, false);
+            render.viewport.canvas.addEventListener('mousedown', io.begin, false);
+            render.viewport.canvas.addEventListener('mousemove', io.move, false);
+            render.viewport.canvas.addEventListener('mouseup', io.click, false);
         }
     },
 
@@ -41,22 +41,22 @@ var io = {
                 py = e.pageY;
             }
 
-            if( px > io.touch.start.x &&  px - io.touch.start.x >= render.box){
+            if( px > io.touch.start.x &&  px - io.touch.start.x >= (render.box*0.5) ){
                 render.move({x:1,y:0});
                 io.touch.start.x = px;
                 io.touch.move = true;
             }else
-            if( px < io.touch.start.x &&  io.touch.start.x  - px >= render.box){
+            if( px < io.touch.start.x &&  io.touch.start.x  - px >= (render.box*0.5) ){
                 render.move({x:-1,y:0});
                 io.touch.start.x = px;
                 io.touch.move = true;
             }else
-            if( py > io.touch.start.y &&  py - io.touch.start.y >= render.box){
+            if( py > io.touch.start.y &&  py - io.touch.start.y >= (render.box*0.5) ){
                 render.move({x:0,y:1});
                 io.touch.start.y = py;
                 io.touch.move = true;
             }else
-            if( py < io.touch.start.y &&  io.touch.start.y  - py >= render.box){
+            if( py < io.touch.start.y &&  io.touch.start.y  - py >= (render.box*0.5) ){
                 render.move({x:0,y:-1});
                 io.touch.start.y = py;
                 io.touch.move = true;
@@ -101,7 +101,15 @@ var io = {
         io.touch.move = false;
     },
 
-    clear: function(){
-        render.gui.canvas.removeEventListener('mousedown', io.click, false);
+    clear: function(){        
+        if(game.mobile || game.tablet ){
+            render.viewport.canvas.removeEventListener('touchstart', io.begin, false);
+            render.viewport.canvas.removeEventListener('touchmove', io.move, false);
+            render.viewport.canvas.removeEventListener('touchend', io.click, false);
+        }else{
+            render.viewport.canvas.removeEventListener('mousedown', io.begin, false);
+            render.viewport.canvas.removeEventListener('mousemove', io.move, false);
+            render.viewport.canvas.removeEventListener('mouseup', io.click, false);
+        }
     },
 };

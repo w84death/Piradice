@@ -1,4 +1,4 @@
-var render = {
+var render = {        
     map: {
         canvas: null,
         ctx: null,
@@ -20,7 +20,14 @@ var render = {
         ctx: null,
         draw: [],
     },
+    menu: {
+        canvas: null,
+        ctx: null,
+        draw: [],
+    },
     viewport: {
+        canvas: null,
+        ctx: null,
         offset: {x: 0, y:0},
         width: 0,
         height: 0
@@ -94,35 +101,39 @@ var render = {
                 render.sprites[35] = [render.makeSprite(2,2, false),render.makeSprite(2,2, true)]; // ship
                 render.sprites[36] = [render.makeSprite(0,6, false),render.makeSprite(0,6, true)]; // octopus
                 render.sprites[39] = [render.makeSprite(3,2, false),render.makeSprite(3,2, false)]; // cementary
-                
-                render.sprites[40] = render.makeSprite(0,7, false); // hint top
-                render.sprites[41] = render.makeSprite(1,7, false); // hint right
-                render.sprites[42] = render.makeSprite(2,7, false); // hint bottm
+                render.sprites[49] = [render.makeSprite(6,5, false),render.makeSprite(6,5, true)]; // dust
+                render.sprites[53] = [render.makeSprite(6,4, false),render.makeSprite(6,4, true)]; // lumberjack
+
+                // hints
+                render.sprites[40] = render.makeSprite(2,10, false); // hint top
+                render.sprites[41] = render.makeSprite(2,7, false); // hint right
+                render.sprites[42] = render.makeSprite(2,9, false); // hint bottm
                 render.sprites[43] = render.makeSprite(3,7, false); // hint left
 
                 render.sprites[44] = render.makeSprite(0,8, false); // hint top-right
-                render.sprites[45] = render.makeSprite(1,8, false); // hint right-bottom
-                render.sprites[46] = render.makeSprite(2,8, false); // hint bottm-left
-                render.sprites[47] = render.makeSprite(3,8, false); // hint left-top
+                render.sprites[45] = render.makeSprite(0,7, false); // hint right-bottom
+                render.sprites[46] = render.makeSprite(1,7, false); // hint bottm-left
+                render.sprites[47] = render.makeSprite(1,8, false); // hint left-top
+                
+                render.sprites[60] = render.makeSprite(3,10, false); // hint top red
+                render.sprites[61] = render.makeSprite(2,8, false); // hint right red
+                render.sprites[62] = render.makeSprite(3,9, false); // hint bottm red
+                render.sprites[63] = render.makeSprite(3,8, false); // hint left red
+
+                render.sprites[64] = render.makeSprite(0,9, false); // hint bottom-right red
+                render.sprites[65] = render.makeSprite(0,10, false); // hint top-right red
+                render.sprites[66] = render.makeSprite(1,9, false); // hint bottm-left red
+                render.sprites[67] = render.makeSprite(1,10, false); // hint top-left red
+
                 /*
-                render.sprites[40] = [render.makeSprite(1,6, false),render.makeSprite(1,6, true)]; // ship 1
-                render.sprites[41] = [render.makeSprite(2,6, false),render.makeSprite(2,6, true)]; // ship 2
-                render.sprites[42] = [render.makeSprite(3,6, false),render.makeSprite(3,6, true)]; // ship 3
-                render.sprites[43] = [render.makeSprite(4,6, false),render.makeSprite(4,6, true)]; // ship 4
-                render.sprites[44] = [render.makeSprite(5,6, false),render.makeSprite(5,6, true)]; // ship 5
-                render.sprites[45] = [render.makeSprite(6,6, false),render.makeSprite(6,6, true)]; // ship 6
-    
-                render.sprites[46] = [render.makeSprite(0,7, false),render.makeSprite(0,7, true)]; // black pearl 0
-                render.sprites[47] = [render.makeSprite(1,7, false),render.makeSprite(1,7, true)]; // black pearl 1
-                render.sprites[48] = [render.makeSprite(2,7, false),render.makeSprite(2,7, true)]; // black pearl 2
+                    48
                 */
 
-                render.sprites[49] = [render.makeSprite(6,5, false),render.makeSprite(6,5, true)]; // dust
+                // clouds
                 render.sprites[50] = render.makeSprite(7,0, false); // cloud 0
                 render.sprites[51] = render.makeSprite(7,1, false); // cloud bottom
                 render.sprites[52] = render.makeSprite(7,2, false); // cloud right
-                
-                render.sprites[53] = [render.makeSprite(6,4, false),render.makeSprite(6,4, true)]; // lumberjack
+                                
                 
                 render.sprites[54] = render.makeSprite(3,6, false); // cutted palm
                 render.sprites[55] = render.makeSprite(1,6, false); // palm
@@ -130,9 +141,13 @@ var render = {
     
                 render.sprites[57] = render.makeSprite(6,2, false); // shout
                 render.sprites[58] = render.makeSprite(4,2, false); // message
+                
+                //render.sprites[59] = render.makeLogo(0,9, false); // hint top red
+
+                
 
                 render.big_sprites[0] = render.resize(render.sprites[35][0], 8);
-                render.big_sprites[1] = render.resize(render.sprites[36][0], 8);
+                render.big_sprites[1] = render.resize(render.sprites[36][0], 8);                
 
                 GUI.init();
                 fogOfWar.init();
@@ -157,7 +172,19 @@ var render = {
     
 
     createDOM: function(){
-    
+        var gameDiv = document.getElementById('game'),
+            viewportDiv = document.createElement('canvas');
+
+        viewportDiv.setAttribute('id','viewport');
+
+        gameDiv.appendChild(viewportDiv);
+        gameDiv.style.width = (this.viewport.width*this.box)+'px';
+        gameDiv.style.height = (this.viewport.height*this.box)+'px';
+        
+        document.getElementById('play').style.width = gameDiv.style.width;
+        document.getElementById('play').style.height = gameDiv.style.height;
+
+        /*
         var gameDiv = document.getElementById('game'),
             mapDiv = document.createElement('canvas'),
             entitiesDiv = document.createElement('canvas'),
@@ -182,31 +209,42 @@ var render = {
         gameDiv.style.height = (this.viewport.height*this.box)+'px';
         
         document.getElementById('play').style.width = gameDiv.style.width;
+        */
 
-        this.map.canvas = document.getElementById('map');
-        this.map.canvas.width = this.viewport.width*this.box;
-        this.map.canvas.height = this.viewport.height*this.box;
+        this.viewport.canvas = document.getElementById('viewport');
+        this.viewport.canvas.width = this.viewport.width*this.box;
+        this.viewport.canvas.height = this.viewport.height*this.box;
+        this.viewport.ctx = this.viewport.canvas.getContext('2d');
+
+        this.map.canvas = document.createElement('canvas');
+        this.map.canvas.width = world.map.width*this.box;
+        this.map.canvas.height = world.map.height*this.box;
         this.map.ctx = this.map.canvas.getContext('2d');
 
-        this.entities.canvas = document.getElementById('entities');
-        this.entities.canvas.width = this.viewport.width*this.box;
-        this.entities.canvas.height = this.viewport.height*this.box;
+        this.entities.canvas = document.createElement('canvas');
+        this.entities.canvas.width = world.map.width*this.box;
+        this.entities.canvas.height = world.map.height*this.box;
         this.entities.ctx = this.entities.canvas.getContext('2d');
 
-        this.gui.canvas = document.getElementById('gui');
-        this.gui.canvas.width = this.viewport.width*this.box;
-        this.gui.canvas.height = this.viewport.height*this.box;
+        this.gui.canvas = document.createElement('canvas');
+        this.gui.canvas.width = world.map.width*this.box;
+        this.gui.canvas.height = world.map.height*this.box;
         this.gui.ctx = this.gui.canvas.getContext('2d');
         
-        this.sky.canvas = document.getElementById('sky');
-        this.sky.canvas.width = this.viewport.width*this.box;
-        this.sky.canvas.height = this.viewport.height*this.box;
+        this.sky.canvas = document.createElement('canvas');
+        this.sky.canvas.width = world.map.width*this.box;
+        this.sky.canvas.height = world.map.height*this.box;
         this.sky.ctx = this.sky.canvas.getContext('2d');
 
-        this.hints.canvas = document.getElementById('hints');
+        this.hints.canvas = document.createElement('canvas');
         this.hints.canvas.width = this.viewport.width*this.box;
         this.hints.canvas.height = this.viewport.height*this.box;
         this.hints.ctx = this.hints.canvas.getContext('2d');
+
+        this.menu.canvas = document.createElement('canvas');
+        this.menu.canvas.width = this.viewport.width*this.box;
+        this.menu.canvas.height = this.viewport.height*this.box;
+        this.menu.ctx = this.menu.canvas.getContext('2d');
 
         io.init();
     },
@@ -342,18 +380,41 @@ var render = {
 
         if(this.viewport.offset.x + args.x >= -margin.x && this.viewport.offset.x + args.x < this.viewport.width - margin.x){
             this.viewport.offset.x += args.x;
-            render.render({all:true});
+            game.teams[game.turn.team].offset.x = this.viewport.offset.x;
+            this.drawHints();
+            this.post_render();                    
         }
 
         if(this.viewport.offset.y +args.y >= -margin.y && this.viewport.offset.y + args.y < this.viewport.height - margin.y){
             this.viewport.offset.y += args.y;        
-            render.render({all:true});
+            game.teams[game.turn.team].offset.y = this.viewport.offset.y;
+            this.drawHints();
+            this.post_render();
         }
+
+        
+        
         
     },
 
-    drawHints: function(){
-        var indicator = {x:0,y:0, sprite:40};
+    drawHints: function(){        
+        var indicator = {x:0,y:0, sprite:40},
+            draw = {x:0,y:0, red:false};
+        this.hints.draw = [];
+        this.hints.ctx.clearRect(0, 0, this.viewport.width*this.box, this.viewport.height*this.box);
+
+        for(i=0; i<world.map.entities.length; i++){
+            if(world.map.entities[i].alive && world.map.entities[i].team === game.turn.team){                
+                draw.x = world.map.entities[i].x + this.viewport.offset.x;
+                draw.y = world.map.entities[i].y + this.viewport.offset.y;                
+                if(draw.x < 0 || draw.x >= this.viewport.width || draw.y < 0 || draw.y >= this.viewport.height){
+                    if(world.map.entities[i].moves > 0 && world.map.entities[i].reloading < 1){
+                        draw.red = true;
+                    }
+                    this.hints.draw.push({x:draw.x, y:draw.y, red:draw.red});
+                }
+            }
+        } 
 
         for (var i = 0; i < this.hints.draw.length; i++) {
             
@@ -361,33 +422,34 @@ var render = {
                 indicator.x = 0;
                 indicator.y = this.hints.draw[i].y;
                 indicator.sprite = 43;
+                if(this.hints.draw[i].red){
+                    indicator.sprite = 63;
+                }
             }
             if(this.hints.draw[i].x >= this.viewport.width ){
                 indicator.x = this.viewport.width-1;
                 indicator.y = this.hints.draw[i].y;
                 indicator.sprite = 41;
+                if(this.hints.draw[i].red){
+                    indicator.sprite = 61;
+                }
             }
             if(this.hints.draw[i].y < 0 ){
                 indicator.x = this.hints.draw[i].x;
                 indicator.y = 0;            
                 indicator.sprite = 40;
+                if(this.hints.draw[i].red){
+                    indicator.sprite = 60;
+                }
             }
             if(this.hints.draw[i].y >= GUI.conf.bottom ){            
                 indicator.x = this.hints.draw[i].x;
                 indicator.y = this.viewport.height-3;
                 indicator.sprite = 42;
+                if(this.hints.draw[i].red){
+                    indicator.sprite = 62;
+                }
             }
-            /*
-            render.sprites[40] = render.makeSprite(0,7, false); // hint top
-            render.sprites[41] = render.makeSprite(1,7, false); // hint right
-            render.sprites[42] = render.makeSprite(2,7, false); // hint bottm
-            render.sprites[43] = render.makeSprite(3,7, false); // hint left
-
-            render.sprites[44] = render.makeSprite(0,8, false); // hint top-right
-            render.sprites[45] = render.makeSprite(1,8, false); // hint right-bottom
-            render.sprites[46] = render.makeSprite(2,8, false); // hint bottm-left
-            render.sprites[47] = render.makeSprite(3,8, false); // hint left-top
-            */
 
             if(indicator.x >= this.viewport.width){
                 indicator.x = this.viewport.width-1;                
@@ -405,20 +467,30 @@ var render = {
             
             if(indicator.x === 0 && indicator.y === 0){
                indicator.sprite = 47; 
+               if(this.hints.draw[i].red){
+                    indicator.sprite = 67;
+                }
             }
             if(indicator.x === 0 && indicator.y == this.viewport.height-3){
                indicator.sprite = 46; 
+               if(this.hints.draw[i].red){
+                    indicator.sprite = 66;
+                }
             }
             if(indicator.x == this.viewport.width-1 && indicator.y === 0){
                indicator.sprite = 44; 
+               if(this.hints.draw[i].red){
+                    indicator.sprite = 65;
+                }
             }
             if(indicator.x == this.viewport.width-1 && indicator.y == this.viewport.height-3){
                indicator.sprite = 45; 
+               if(this.hints.draw[i].red){
+                    indicator.sprite = 64;
+                }
             }
-
-            if(game.turn.team === this.hints.draw[i].team){                
-                this.hints.ctx.drawImage(this.sprites[ indicator.sprite ], indicator.x*this.box, indicator.y*this.box);
-            }
+                
+            this.hints.ctx.drawImage(this.sprites[ indicator.sprite ], indicator.x*this.box, indicator.y*this.box);
         };              
     },
 
@@ -436,21 +508,11 @@ var render = {
         }
 
         if(args.map){
-            this.map.ctx.clearRect(0, 0, this.viewport.width*this.box, this.viewport.height*this.box);
-            /*
-            for(var y=0; y<world.conf.height; y++){
-                for(var x=0; x<world.conf.width; x++){  
-                    this.map.ctx.drawImage(this.sprites[world.map.data[map_data_i++]], x*this.box, y*this.box);
-                }
-            }*/
+            this.map.ctx.clearRect(0, 0, world.map.width*this.box, world.map.height*this.box);
             
-            for(var y=0; y<this.viewport.height; y++){
-                for(var x=0; x<this.viewport.width; x++){ 
-                    draw.x = x - this.viewport.offset.x;
-                    draw.y = y - this.viewport.offset.y;
-                    if(draw.x >= 0 && draw.x < world.map.width && draw.y >= 0 && draw.y < world.map.height ){                    
-                            this.map.ctx.drawImage(this.sprites[world.map.data[(draw.x)+((draw.y)*world.map.width)]], x*this.box, y*this.box);                        
-                    }
+            for(var y=0; y<world.map.height; y++){
+                for(var x=0; x<world.map.width; x++){                     
+                    this.map.ctx.drawImage(this.sprites[world.map.data[x+(y*world.map.width)]], x*this.box, y*this.box);                                            
                 }
             }
             args.items = true;
@@ -459,66 +521,113 @@ var render = {
 
         if(args.items){
             for(i=0; i<world.map.items.length; i++){
-                draw.x = world.map.items[i].x + this.viewport.offset.x;
-                draw.y = world.map.items[i].y + this.viewport.offset.y;
-                if(draw.x >= 0 && draw.x < this.viewport.width && draw.y >= 0 && draw.y < GUI.conf.bottom){                    
-                    this.map.ctx.drawImage(this.sprites[ world.map.items[i].sprite ], draw.x*this.box, draw.y*this.box);
-                }
+                this.map.ctx.drawImage(this.sprites[ world.map.items[i].sprite ], world.map.items[i].x*this.box, world.map.items[i].y*this.box);            
             }
         }
 
         if(args.entities){            
-            this.entities.ctx.clearRect(0, 0, this.viewport.width*this.box, this.viewport.height*this.box);            
+            this.entities.ctx.clearRect(0, 0, world.map.width*this.box, world.map.height*this.box);            
             for(i=0; i<world.map.entities.length; i++){
                 if(world.map.entities[i].alive){                
-                    draw.x = world.map.entities[i].x + this.viewport.offset.x;
-                    draw.y = world.map.entities[i].y + this.viewport.offset.y;
-                    if(draw.x >= 0 && draw.x < this.viewport.width && draw.y >= 0 && draw.y < GUI.conf.bottom){
-                        this.entities.ctx.drawImage(this.sprites[ world.map.entities[i].sprite ][ world.map.entities[i].flip ], draw.x*this.box, draw.y*this.box);
-                    }else{
-                        this.hints.draw.push({x:draw.x, y:draw.y, team:world.map.entities[i].team});
-                        args.hints = true;
-                    }
+                    this.entities.ctx.drawImage(this.sprites[ world.map.entities[i].sprite ][ world.map.entities[i].flip ], world.map.entities[i].x*this.box, world.map.entities[i].y*this.box);                                        
                 }
-            }            
+            }
+            this.drawHints();         
         }
 
-        if(args.gui){            
-            GUI.render({game:true, menu:true});
+        if(args.gui){ 
+            var draw = {x:0,y:0}
+
+            this.gui.ctx.clearRect(0, 0, world.map.width*render.box, world.map.height*render.box);
+            
+            if(!game.teams[game.turn.team].ai){
+                for(i=0; i<world.map.entities.length; i++){
+                    if(world.map.entities[i].selected){
+                        
+                        this.gui.ctx.drawImage(render.sprites[10], world.map.entities[i].x*render.box, world.map.entities[i].y*render.box);                        
+                        
+                        for (var j = 0; j < world.map.entities[i].move_area.length; j++) {
+                            var block = null;
+                            if(world.map.entities[i].move_area[j].move){
+                                block = 9;
+                            }
+                            if(world.map.entities[i].move_area[j].attack){
+                                block = 12;
+                            }
+                            if(world.map.entities[i].move_area[j].merge){
+                                block = 8;
+                            }
+                            if(world.map.entities[i].move_area[j].buy){
+                                block = 37;
+                            }
+                            if(world.map.entities[i].move_area[j].forest){
+                                block = 38;
+                            }
+                            if(block){                                    
+                                    this.gui.ctx.drawImage(render.sprites[block],world.map.entities[i].move_area[j].x*render.box, world.map.entities[i].move_area[j].y*render.box);                                
+                            }
+                        }
+                    }else{
+                        if(world.map.entities[i].message && world.map.entities[i].alive){                        
+                            render.drawMessage(world.map.entities[i].message,world.map.entities[i].x, world.map.entities[i].y, world.map.entities[i].important);                            
+                        }
+                    }
+                    if(world.map.entities[i].reloading > 0 && world.map.entities[i].alive ){
+                        this.gui.ctx.drawImage(render.sprites[15], world.map.entities[i].x*render.box, world.map.entities[i].y*render.box);                        
+                    }
+                    if(world.map.entities[i].moves < 1 && world.map.entities[i].alive){                        
+                        this.gui.ctx.drawImage(render.sprites[11], world.map.entities[i].x*render.box, world.map.entities[i].y*render.box);                        
+                    }
+                }
+            }
         }
         
-        if(args.menu){            
+        if(args.menu){  
             GUI.render({menu:true});
         }
 
         if(args.sky && game.play && !game.teams[game.turn.team].ai){
-            this.sky.ctx.clearRect(0, 0, this.viewport.width*this.box, this.viewport.height*this.box);
-            for(var y=0; y<this.viewport.height; y++){
-                for(var x=0; x<this.viewport.width; x++){ 
-                    draw.x = x - this.viewport.offset.x;
-                    draw.y = y - this.viewport.offset.y;
-                    if(draw.x >= 0 && draw.x < world.map.width && draw.y >= 0 && draw.y < world.map.height ){                    
-                        if(fogOfWar.data[game.turn.team][(draw.x)+((draw.y)*world.map.width)]){
-                            this.sky.ctx.drawImage(this.sprites[ fogOfWar.data[game.turn.team][(draw.x)+((draw.y)*world.map.width)] ], x*this.box, y*this.box);                                                   
-                        }
-                    }else{
-                        //black sky? end of the map
-                        //this.sky.ctx.drawImage(this.sprites[ 50 ], x*this.box, y*this.box);
+            this.sky.ctx.clearRect(0, 0, world.width*this.box, world.height*this.box);
+            for(var y=0; y<world.height; y++){
+                for(var x=0; x<world.width; x++){                                         
+                    if(fogOfWar.data[game.turn.team][x+(y*world.map.width)]){
+                        this.sky.ctx.drawImage(this.sprites[ fogOfWar.data[game.turn.team][x+(y*world.map.width)] ], x*this.box, y*this.box);                                                   
                     }
                 }
             }           
         }
         
         if(args.clearSky){
-            this.sky.ctx.clearRect(0, 0, this.viewport.width*this.box, this.viewport.height*this.box);
+            this.sky.ctx.clearRect(0, 0, world.width*this.box, world.height*this.box);
         }  
 
         if(args.hints){
             this.hints.ctx.clearRect(0, 0, this.viewport.width*this.box, this.viewport.height*this.box);
             this.drawHints();
-            this.hints.draw = [];
         }                    
 
+        this.post_render();
+    },
+
+    post_render: function(){
+        var layers = [],
+            draw = {x:0,y:0};
+
+        layers.push(this.map.canvas);
+        layers.push(this.entities.canvas);
+        layers.push(this.gui.canvas);
+        layers.push(this.sky.canvas);                            
+
+        draw.x = this.viewport.offset.x;
+        draw.y = this.viewport.offset.y;
+
+        this.viewport.ctx.clearRect(0, 0, this.viewport.width*this.box, this.viewport.height*this.box);
+        for (var i = 0; i < layers.length; i++) {                        
+            this.viewport.ctx.drawImage( layers[i], draw.x*this.box, draw.y*this.box );
+        };
+        this.viewport.ctx.drawImage( this.hints.canvas, 0,0);
+        this.viewport.ctx.drawImage( this.menu.canvas, 0,0);
+        
     },
 
 };

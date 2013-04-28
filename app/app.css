@@ -1,6 +1,5 @@
 * {margin: 0; padding: 0;}
-body {background-color:#00b2bd; color:#f8f8f8; cursor:url('/media/cur.png'), auto; font:1em 'VT323', cursive;
-	/*background:#58bdcd url('../media/background.jpg') no-repeat center center fixed;*/ background-size:cover;}
+body {background-color:#804f00; color:#f8f8f8; cursor:url('/media/cur.png'), auto; font:1em 'VT323', cursive;}
 
 #loading {display:block; padding:1em 0; text-align:center;}
 #game {color:#444; text-align:center;}
@@ -10,54 +9,13 @@ canvas {display: block; position:absolute;
     image-rendering: -webkit-optimize-contrast;
     image-rendering: optimize-contrast;}
 
-#multi {position:absolute; width:100%; height:100%; top:0; left:0; text-align:center; display:none; 
-    background-color:#f8f8f8; color:#444; line-height:40px; z-index:500;}
-#multi h2 {color:#000;}
-
-nav {width:100%; height:32px; background-color:#444;}
-nav.bottom {top:auto; bottom:0; text-align: center;}
-nav ul {background-color:#444;}
-nav ul li {display:inline-block; padding:0 32px; line-height:32px; position:relative;}
-nav ul li a {display:block; text-decoration:none; color:#f8f8f8;}
-nav ul li:hover {background-color:#f8f8f8; color:#444;}
-nav ul li:hover a  {text-decoration:none; color:#444;}
-nav ul li:hover ul {display:block;}
-nav ul li ul li a {color:#f8f8f8 !important;}
-nav ul li ul li:hover a {color:#444 !important;}
-nav ul li:hover ul,
-nav ul li:active ul,
-nav ul li::focus ul {display:block;}
-nav ul li ul {position:absolute; top:32px; left:0; z-index:200; width:256px; display:none; box-shadow:0 4px 8px #000;}
-nav.bottom ul li ul {top:auto; bottom:32px; text-align:left; box-shadow:0 -4px 8px #000;}
-nav ul li ul li {width:192px; color:#f8f8f8; margin-top:8px;}
-nav ul li ul li:first-child {margin-top:0;}
-nav ul li ul li:hover {background-color:#f8f8f8; color:#444;}
-nav ul li ul li input{float:right;}
-nav ul li.right {float:right;}
-nav ul li ul li:hover ul {display:block !important;}
-nav ul li ul li ul {display:none !important; left:256px; top:0;}
-nav ul.right {position: absolute; bottom: 0;right: 0;}
-nav ul.left {position: absolute; bottom: 0;left: 0;}
-
-.progress {display:inline-block; width:80px; background-color:#555; text-align: left;}
-.progress em {display: inline-block; background-color: #d2fa71; color:#77c216; padding-left:8px;}
-.progress.right {text-align:right;}
-.progress.right em {padding-right:8px; padding-left:0;}
-.desktop {width:512px; margin:0 auto;}    
-li.hide {display:none;}
-.buy li.hide {display:inline-block;}
-.buy,
-.gold {background-color:#d2fa71; color:#77c216; }
-.buy a {color:#77c216;}
 article {margin-top:32px; padding:2em 4em; }
 article h2 {margin-top:2em;}
 article h3 {margin-top:1em;}
-article p {margin-top:1em;}
+article p {margin-top:1em; font-size:1.2em; color:#000;}
 a {color:#444;text-decoration:none;}
 a:hover {text-decoration:underline;}
 ul {list-style:none;}
-
-article.play {margin:0;padding:0; position:relative;}
 
 input,
 select {border:none; background-color:#f8f8f8; color:#444; padding:0.5em 1em;  font:1em 'VT323', cursive; cursor:url('../media/cur.png'), auto;}
@@ -66,12 +24,10 @@ button {border:none; background-color:#f8f8f8; color:#444; padding:0.5em 2em;  f
 button:hover {background-color:#ffec93;}
 button.hot {background-color:#e44; color:#fff;}
 .disabled {opacity:0.2;}
-aside ul.play {border: 1px dashed #fff;}
-aside ul.play li {text-align:center;}
 button.big {padding: 1em 2em;font-size: 2em;}
-.ad {position:absolute; right:4em; bottom:2em;}
-
-.playButtons {margin:32px 0;}
+.ad {float:right; margin:0 4em 2em 0;}
+.ad:after {visibility: hidden; display: block;font-size: 0;content: " ";clear: both;height: 0;}
+nav {margin:1em 0;}
 
 .manual article section {padding:1em; background-color:rgba(0,0,0,0.5); border-bottom: 5px solid rgba(0,0,0,0.8);}
 .manual article section {margin-top:2em;}
@@ -81,3 +37,5 @@ button.big {padding: 1em 2em;font-size: 2em;}
 .manual article ul.units li strong {display:block; font-size:1em;}
 .manual article ul.units li {width:21%; padding:2%; float:left;}
 .manual article ul.units:after {content:' '; display:block; clear:both;}
+
+.home {background:#58bdcd url('../media/background.jpg') no-repeat center center fixed; background-size:cover;}

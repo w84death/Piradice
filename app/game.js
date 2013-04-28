@@ -26,12 +26,14 @@ var game = {
             pirates: true,
             ai: false,
             wallet: 400,
-            bought: false,            
+            bought: false,
+            offset: {x:0,y:0}            
         },{
             skeletons: true,
             ai: false,
             wallet: 400, 
             bought: false,
+            offset: {x:0,y:0}
         }],
     turn: {
         id: 1,
@@ -65,10 +67,6 @@ var game = {
 
     restart: function(){
         game.play = false;
-        document.getElementById('nextTurn').style.display = 'none';
-        document.getElementById('playGame').style.display = 'inline-block';
-        document.getElementById('settings').style.display = 'inline-block';
-        document.getElementById('random').style.display = 'inline-block';
         shop.close({all:false});
         this.turn.start = true;
         this.turn.id = 0;
@@ -255,7 +253,9 @@ var game = {
 
             if(!game.ready){
                 multi.show();
-                render.viewport.offset = {x:0, y:0};
+                render.viewport.offset = {
+                    x:this.teams[this.turn.team].offset.x, 
+                    y:this.teams[this.turn.team].offset.y};
             }
             
             bank.save();
@@ -382,7 +382,7 @@ var bank = {
 var multi = {
     
     show: function(msg){
-        GUI.drawReady();
+        GUI.render({ready:true});
     },
 };
 
