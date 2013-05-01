@@ -17,9 +17,9 @@
 </head>
 <body>
 
-  <article class="<?php echo pwd(); ?>" id="play">       
+  <section class="<?php echo pwd(); ?>" id="play">       
     <?php article(); ?>
-  </article>        
+  </section>        
   
   <script type="text/javascript">
   
