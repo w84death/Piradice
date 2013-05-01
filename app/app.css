@@ -1,5 +1,5 @@
 * {margin: 0; padding: 0;}
-body {background-color:#804f00; color:#f8f8f8; cursor:url('/media/cur.png'), auto; font:1em 'VT323', cursive;}
+body {background-color:#f8f8f8; color:#21474d; cursor:url('/media/cur.png'), auto; font:1em 'VT323', cursive;}
 
 #loading {display:block; padding:1em 0; text-align:center;}
 #game {color:#444; text-align:center;}
@@ -9,7 +9,7 @@ canvas {display: block; position:absolute;
     image-rendering: -webkit-optimize-contrast;
     image-rendering: optimize-contrast;}
 
-article {margin-top:32px; padding:2em 4em; }
+article {margin-top:32px; padding:2em 4em; max-width:36em; margin:0 auto;}
 article h2 {margin-top:2em;}
 article h3 {margin-top:1em;}
 article p {margin-top:1em; font-size:1.2em; color:#000;}
@@ -25,10 +25,11 @@ button:hover {background-color:#ffec93;}
 button.hot {background-color:#e44; color:#fff;}
 .disabled {opacity:0.2;}
 button.big {padding: 1em 2em;font-size: 2em;}
-.ad {float:right; margin:0 4em 2em 0;}
+.ad {position:absolute; top:1em; right:1em;}
 .ad:after {visibility: hidden; display: block;font-size: 0;content: " ";clear: both;height: 0;}
-nav {margin:1em 0;}
+
 .play {margin:0; padding:0;}
+.center {text-align:center;}
 
 .manual article section {padding:1em; background-color:rgba(0,0,0,0.5); border-bottom: 5px solid rgba(0,0,0,0.8);}
 .manual article section {margin-top:2em;}
@@ -39,4 +40,11 @@ nav {margin:1em 0;}
 .manual article ul.units li {width:21%; padding:2%; float:left;}
 .manual article ul.units:after {content:' '; display:block; clear:both;}
 
-.home {background:#58bdcd url('../media/background.jpg') no-repeat center center fixed; background-size:cover;}
+header, footer {padding:1em;text-align:center;
+	background:#58bdcd url('../media/background.jpg') no-repeat center center fixed; background-size:cover;}
+nav { text-align:center; }
+nav ul {}
+nav ul li {display:inline-block;}
+nav ul li a {display:block; padding:1em 2em; background-color:#58bdcd; color:#fff; 
+	font-size:1em; border-bottom: 2px solid #21474d;}
+nav ul li a:hover {text-decoration:none; background-color:#5dc9da; border-bottom: 2px solid #3c828d;}
