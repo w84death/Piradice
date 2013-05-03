@@ -4,142 +4,221 @@ var GUI = {
 		color: '#f8f8f8',
 		color2: '#005e67',
 		color3: '#884d00',
-		background: '#007888',
-		bottom: 0,		
+		background: '#007888'		
 	},
 	buttons: [],
 	labels: [],
 	hud: [],
-	show: ['play','random', 'map_size1', 'map_size2', 'map_size3'],
+	show: ['logo', 'play','random', 'map_size1', 'map_size2', 'map_size3'],
 
 	init: function(){
 		this.ctx = render.menu.ctx;		
 		this.conf.bottom = render.viewport.height-2;
 
+
+		this.hud['logo'] = {
+			sprite: this.drawHUD({
+				sprite: {
+					x:0,
+					y:11
+				},
+				width:4,
+				height:2,
+				scale: 4			
+			}),						
+			position: {
+				x:((render.viewport.width*0.5)<<0)-8,
+				y:1}			
+		};
+		
 		this.buttons['play'] = {				
-				sprite: this.makeButton({x:4, y:8, width:2, text:'PLAY'}),
-				width:2,
-				position: render.viewport.width-4,
+				sprite: this.makeButton({x:4, y:8, width:4, height:2, text:'PLAY'}),
+				width: 4,
+				height: 2,
+				position: {
+					x: ((render.viewport.width*0.5)<<0)-2,
+					y: 13
+				},
 				action: 'game',
 				value: 'start',
 			};
 
 		this.buttons['ready'] = {				
-				sprite: this.makeButton({x:4, y:8, width:2, text:'READY'}),
-				width:2,
-				position: ((render.viewport.width*0.5)<<0)-2,
+				sprite: this.makeButton({x:4, y:8, width:4, height:2, text:'READY'}),
+				width: 4,
+				height: 2,
+				position: {
+					x: render.viewport.width-5,
+					y: 1
+				},
 				action: 'game',
 				value: 'ready',
 			};
 
 		this.buttons['new_game'] = {				
-				sprite: this.makeButton({x:4, y:8, width:2, text:'END GAME'}),
-				width:2,
-				position: 0,
+				sprite: this.makeButton({x:4, y:8, width:4, height:2, text:'MENU'}),
+				width: 4,
+				height: 2,
+				position: {
+					x: 1,
+					y: 1
+				},
 				action: 'game',
-				value: 'new',
+				value: 'menu',
 			};
 
 		this.buttons['random'] = {				
-				sprite: this.makeButton({x:4, y:8, width:2, text:'RANDOMIZE'}),
-				width:2,
-				position: 0,
+				sprite: this.makeButton({x:4, y:8, width:4, height:2, text:'RANDOMIZE'}),
+				width: 4,
+				height: 2,
+				position: {
+					x: ((render.viewport.width*0.5)<<0)-2,
+					y: 5
+				},
 				action: 'game',
 				value: 'random',
 			};
 
 		this.buttons['map_size1'] = {				
-				sprite: this.makeButton({x:4, y:6, width:1, text:'SMALL'}),
-				width:1,
-				position: 4,
+				sprite: this.makeButton({x:4, y:6, width:2, height:2, text:'SMALL'}),
+				width: 2,
+				height: 2,
+				position: {
+					x: ((render.viewport.width*0.5)<<0)-1,
+					y: 7
+				},
 				action: 'mapSize',
 				value: 'small',
 			};
 
 		this.buttons['map_size2'] = {				
-				sprite: this.makeButton({x:4, y:6, width:1, text:'NORMAL'}),
-				width:1,
-				position: 6,
+				sprite: this.makeButton({x:4, y:6, width:2, height:2, text:'NORMAL'}),
+				width: 2,
+				height: 2,
+				position: {
+					x: ((render.viewport.width*0.5)<<0)-1,
+					y: 9
+				},
 				action: 'mapSize',
 				value: 'normal',
 			};
 		
 		this.buttons['map_size3'] = {				
-				sprite: this.makeButton({x:4, y:6, width:1, text:'BIG'}),
-				width:1,
-				position: 8,
+				sprite: this.makeButton({x:4, y:6, width:2, height:2, text:'BIG'}),
+				width: 2,
+				height: 2,
+				position: {
+					x: ((render.viewport.width*0.5)<<0)-1,
+					y: 11
+				},
 				action: 'mapSize',
 				value: 'big',
 			};		
 
 		this.buttons['end'] = {
-				sprite: this.makeButton({x:4, y:8, width:2, text:'END TURN'}),
-				width:2,
-				position: render.viewport.width-4,
+				sprite: this.makeButton({x:4, y:8, width:4, height:2, text:'END TURN'}),
+				width: 4,
+				height: 2,
+				position: {
+					x: render.viewport.width-5,
+					y: render.viewport.height-3
+				},
 				action: 'game',
 				value: 'nextTurn',
 			};
 
 		this.buttons['ship'] = {
-				sprite: this.makeButton({x:4, y:6, sprite_over: 35, width:1, label:shop.price_list['ship']}),
-				width:1,
-				position: 2,
+				sprite: this.makeButton({x:4, y:6, sprite_over: 35, width:2, height:2, label:shop.price_list['ship']}),
+				width: 2,
+				height: 2,
+				position: {
+					x: render.viewport.width-3,
+					y: 1
+				},
 				action: 'buy',
 				value: 'ship'
 			};		
 
 		this.buttons['pirate'] = {
-				sprite: this.makeButton({x:4, y:6, sprite_over: 17, width:1, label:shop.price_list['pirate']}),
-				width:1,
-				position: 4,
+				sprite: this.makeButton({x:4, y:6, sprite_over: 17, width:2, height:2, label:shop.price_list['pirate']}),
+				width: 2,
+				height: 2,
+				position: {
+					x: render.viewport.width-3,
+					y: 3
+				},
 				action: 'buy',
 				value: 'pirate'
 			};
 
 		this.buttons['range_pirate'] = {
-				sprite: this.makeButton({x:4, y:6, sprite_over: 29, width:1, label:shop.price_list['range_pirate']}),
-				width:1,
-				position: 6,
+				sprite: this.makeButton({x:4, y:6, sprite_over: 29, width:2, height:2, label:shop.price_list['range_pirate']}),
+				width: 2,
+				height: 2,
+				position: {
+					x: render.viewport.width-3,
+					y: 5
+				},
 				action: 'buy',
 				value: 'range_pirate'
 			};
 
 		this.buttons['lumberjack'] = {
-				sprite: this.makeButton({x:4, y:6, sprite_over: 53, width:1, label:shop.price_list['lumberjack']}),
-				width:1,
-				position: 8,
+				sprite: this.makeButton({x:4, y:6, sprite_over: 53, width:2, height:2, label:shop.price_list['lumberjack']}),
+				width: 2,
+				height: 2,
+				position: {
+					x: render.viewport.width-3,
+					y: 7
+				},
 				action: 'buy',
 				value: 'lumberjack'
 			};
 
 		this.buttons['cementary'] = {
-			sprite: this.makeButton({x:4, y:6, sprite_over: 39, width:1, label:shop.price_list['cementary']}),
-			width:1,
-			position: 2,
+			sprite: this.makeButton({x:4, y:6, sprite_over: 39, width:2, height:2, label:shop.price_list['cementary']}),
+			width: 2,
+			height: 2,
+			position: {
+				x: render.viewport.width-3,
+				y: 1
+			},
 			action: 'buy',
 			value: 'cementary'
 		};
 
 		this.buttons['octopus'] = {
-			sprite: this.makeButton({x:4, y:6, sprite_over: 36, width:1, label:shop.price_list['octopus']}),	
-			width:1,			
-			position: 4,
+			sprite: this.makeButton({x:4, y:6, sprite_over: 36, width:2, height:2, label:shop.price_list['octopus']}),	
+			width: 2,
+			height: 2,			
+			position: {
+				x: render.viewport.width-3,
+				y: 3
+			},
 			action: 'buy',
 			value: 'octopus'
 		};
 
 		this.buttons['skeleton'] = {
-			sprite: this.makeButton({x:4, y:6, sprite_over: 23, width:1, label:shop.price_list['skeleton']}),	
-			width:1,			
-			position: 6,
+			sprite: this.makeButton({x:4, y:6, sprite_over: 23, width:2, height:2, label:shop.price_list['skeleton']}),	
+			width: 2,
+			height: 2,			
+			position: {
+				x: render.viewport.width-3,
+				y: 5
+			},
 			action: 'buy',
 			value: 'skeleton'
 		};
 
 		this.buttons['dust'] = {
-			sprite: this.makeButton({x:4, y:6, sprite_over: 49, width:1, label:shop.price_list['dust']}),	
-			width:1,			
-			position: 8,
+			sprite: this.makeButton({x:4, y:6, sprite_over: 49, width:2, height:2, label:shop.price_list['dust']}),	
+			width: 2,
+			height: 2,			
+			position: {
+				x: render.viewport.width-3,
+				y: 7
+			},
 			action: 'buy',
 			value: 'dust'
 		};
@@ -209,6 +288,9 @@ var GUI = {
 			if(this.buttons[key].value == 'start'){
 				game.start();
 			}
+			if(this.buttons[key].value == 'menu'){
+				game.restart();
+			}
 			if(this.buttons[key].value == 'random'){
 				game.randomMap();
 			}
@@ -277,11 +359,11 @@ var GUI = {
 	
 	makeButton: function(args){
 		if(!args.height){
-			args.height = 1;
+			args.height = 2;
 		}
 		var m_canvas = document.createElement('canvas');
-            m_canvas.width = render.box * args.width * 2;
-            m_canvas.height = render.box * args.height * 2;
+            m_canvas.width = render.box * args.width;
+            m_canvas.height = render.box * args.height;
         var m_context = m_canvas.getContext('2d');
         
         m_context.drawImage(render.sprites_img, -args.x*render.box, -args.y*render.box);
@@ -339,6 +421,7 @@ var GUI = {
         var m_context = m_canvas.getContext('2d');
         
         m_context.drawImage(render.sprites_img, -args.sprite.x*render.box, -args.sprite.y*render.box);
+        
 		if(args.icons){
 	        for (var i = 0; i < args.icons.length; i++) {        	
 	        	m_context.drawImage(args.icons[i].sprite, args.icons[i].position.x, args.icons[i].position.y);        	
@@ -358,15 +441,19 @@ var GUI = {
                 }
             }
 	    }
-
-		return m_canvas;	
+		if(args.scale){
+			return render.resize(m_canvas, args.scale);
+		}else{
+			return m_canvas;	
+		}
 	},
 
 	select: function(x,y){
 		var selected = false;
 
-		for (key in this.buttons) {				
-			if(x >= this.buttons[key].position && x < this.buttons[key].position+(this.buttons[key].width*render.scale) ){
+		for (key in this.buttons) {	
+			console.log(x,y);
+			if(x >= this.buttons[key].position.x && x < this.buttons[key].position.x+(this.buttons[key].width) && y >= this.buttons[key].position.y && y < this.buttons[key].position.y+(this.buttons[key].height) ){				
 				for (var i = 0; i < this.show.length; i++) {					
 					if(key == this.show[i]){
 						selected = key;
@@ -376,7 +463,10 @@ var GUI = {
 		}
 
 		if(selected){
-			this.action(selected);			
+			this.action(selected);
+			return true;			
+		}else{
+			return false;
 		}
 	},	
 
@@ -388,12 +478,12 @@ var GUI = {
 				this.drawReady();
 			}
 
-			this.drawFooter();
+			//this.drawFooter();
 
 			for (key in this.buttons) {
 				for (var i = 0; i < this.show.length; i++) {
 					if(this.show[i] == key){
-						this.ctx.drawImage(this.buttons[key].sprite, this.buttons[key].position*render.box, (render.viewport.height-2)*render.box);
+						this.ctx.drawImage(this.buttons[key].sprite, this.buttons[key].position.x*render.box, this.buttons[key].position.y*render.box);
 					}
 				}
 			}

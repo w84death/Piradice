@@ -44,21 +44,23 @@ var game = {
     },
     ai_speed: 100,
     play: false,
-    ready: false,
+   	ready: false,
+    map: true, 
     unit_selected: -1,
 
     init: function(args){                    
         console.log(this.version);  
-        
+      
         world.init({
-            width: 28 || args.w,
-            height: 22 || args.h
+            width: 48 || args.w,
+            height: 32 || args.h
         });        
         shop.init();
         render.init();
     },
 
-    start: function(){              
+    start: function(){
+    	this.map = false;             
         GUI.show = [];
         shop.show();
         shop.buyStarter();
@@ -72,11 +74,31 @@ var game = {
     },    
 
     restart: function(){
-        game.play = false;
-        shop.close({all:false});
+    	this.teams = [{
+            pirates: true,
+            ai: false,
+            wallet: 400,
+            trees: 10,
+            bought: false,
+            offset: {x:0,y:0}            
+        },{
+            skeletons: true,
+            ai: false,
+            wallet: 400,
+            trees: 10,
+            bought: false,
+            offset: {x:0,y:0}
+        }];
+		GUI.show = ['logo', 'play','random', 'map_size1', 'map_size2', 'map_size3'];
         this.turn.start = true;
-        this.turn.id = 0;
+        this.turn.id = 1;
+        this.turn.team = 0;
         world.restartMap();
+        this.play = false;
+        this.ready = false;
+    	this.map = true;
+    	render.viewport.offset = {x:0,y:0};
+        render.render({all:true});
     },
 
     randomMap: function(){
@@ -95,10 +117,14 @@ var game = {
 
     mapSize: function(args){
         world.mapSize(args);
-        render.init();
+        render.destroyDOM();
+        render.createDOM();
+        //render.init();
         fogOfWar.init();
-        io.init();
-        GUI.init();
+        //io.init();
+        //GUI.init();
+        GUI.ctx = render.menu.ctx;
+        render.viewport.offset = {x:0,y:0};
         render.render({all:true}); 
     },
 

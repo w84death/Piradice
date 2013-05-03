@@ -410,6 +410,8 @@ var render = {
                 if(draw.x < 0 || draw.x >= this.viewport.width || draw.y < 0 || draw.y >= this.viewport.height){
                     if(world.map.entities[i].moves > 0 && world.map.entities[i].reloading < 1){
                         draw.red = true;
+                    }else{
+                    	draw.red = false;
                     }
                     this.hints.draw.push({x:draw.x, y:draw.y, red:draw.red});
                 }
@@ -444,7 +446,7 @@ var render = {
             }
             if(this.hints.draw[i].y >= GUI.conf.bottom ){            
                 indicator.x = this.hints.draw[i].x;
-                indicator.y = this.viewport.height-3;
+                indicator.y = this.viewport.height-1;
                 indicator.sprite = 42;
                 if(this.hints.draw[i].red){
                     indicator.sprite = 62;
@@ -458,7 +460,7 @@ var render = {
                 indicator.x = 0;                
             }
             if(indicator.y >= GUI.conf.bottom){
-                indicator.y = this.viewport.height-3;                
+                indicator.y = this.viewport.height-1;                
             }
             if(indicator.y < 0){
                 indicator.y = 0;                
@@ -471,7 +473,7 @@ var render = {
                     indicator.sprite = 67;
                 }
             }
-            if(indicator.x === 0 && indicator.y == this.viewport.height-3){
+            if(indicator.x === 0 && indicator.y == this.viewport.height-1){
                indicator.sprite = 46; 
                if(this.hints.draw[i].red){
                     indicator.sprite = 66;
@@ -483,7 +485,7 @@ var render = {
                     indicator.sprite = 65;
                 }
             }
-            if(indicator.x == this.viewport.width-1 && indicator.y == this.viewport.height-3){
+            if(indicator.x == this.viewport.width-1 && indicator.y == this.viewport.height-1){
                indicator.sprite = 45; 
                if(this.hints.draw[i].red){
                     indicator.sprite = 64;
@@ -609,9 +611,9 @@ var render = {
             draw = {x:0,y:0};
 
         layers.push(this.map.canvas);
-        layers.push(this.entities.canvas);
+         if(game.play){ layers.push(this.entities.canvas); }
         layers.push(this.gui.canvas);
-        layers.push(this.sky.canvas);                            
+        if(game.play){ layers.push(this.sky.canvas); }                         
 
         draw.x = this.viewport.offset.x;
         draw.y = this.viewport.offset.y;

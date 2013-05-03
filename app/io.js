@@ -32,7 +32,7 @@ var io = {
 
     move: function(e){
     	e.preventDefault();
-        if(io.touch.init && game.play){
+        if(io.touch.init && (game.play || game.map)){
             if(game.mobile || game.tablet ){
                 px = e.touches[0].pageX;
                 py = e.touches[0].pageY;
@@ -80,8 +80,8 @@ var io = {
 	            cX = ((px - gameDiv.offsetLeft)/render.box<<0),
 	            cY = ((py - gameDiv.offsetTop)/render.box<<0);
 	        
-	        if(cY >= GUI.conf.bottom){
-	            GUI.select(cX,cY);
+	        if(GUI.select(cX,cY)){
+	            return true;
 	        }else{
 	            if(game.play){        
 	                realX = cX - render.viewport.offset.x;
