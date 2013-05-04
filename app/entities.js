@@ -19,11 +19,11 @@ var Unit = function Unit(){
     this.move_area = [];
     this.pirate = false;
     this.skeleton = false;
+    this.structure = false;
     this.squad = 1;
+    this.bonus = false;
     this.max = 6;
-    this.range = false;
-    this.transport = false;
-    this.on_board = [];
+    this.range = false;   
     this.team = 0;
     this.moves = 1;
     this.disable_moves = false;
@@ -36,7 +36,7 @@ var Unit = function Unit(){
     this.flip = 0; 
     this.fow = 3;
     this.create_unit = false;
-    this.hasCementary = false;
+    this.can_destroy_structure = false;
     this.merging = true;
 };
 
@@ -319,248 +319,202 @@ Unit.prototype = {
         }
     },
     
+
     attack: function(x,y){
-        var other = null,
-            log = null,
-            start = {
-                left: 0,
-                right: 0
-            };
-            
+        var turn = 0,
+            other = null,
+            this_army = {
+                squad: 0,
+                dice: 0,
+                total: 0,
+                bonus: 0,
+                utf8_dices: '',                
+            },
+            other_army = {
+                squad: 0,
+                dice: 0,
+                total: 0,
+                bonus: 0,
+                utf8_dices: '',                
+            },
+            war_log = {
+                title: '',
+                message: ''
+            },
+            fight_result = false;
+
+        // search opponent
         for (var i = 0; i < world.map.entities.length; i++) {
             if(world.map.entities[i].x == x && world.map.entities[i].y == y && world.map.entities[i].alive){
                 other = world.map.entities[i];                   
             }
         }
-        
-        // dust i octo = 6
-        // turns
-        // while
 
-        if(other && !this.dust && !other.cementary && !this.octopus){ 
+        // if found lets fight!        
+        if(other){
+            // save army stats
+            this_army.squad = this.squad;
+            other_army.squad = other.squad;
 
-            var dice = null,
-                dice2 = null,
-                total = 0,
-                total2 = 0;
-                bonus = 1;
-                bonus2 = 1;
-                dices = {
-                    left: '',
-                    right: ''
-                }
-            start.left = this.squad;
-            start.right = other.squad;
-
+            // flip sprite to the oponenet
             if(this.x > other.x){
                 this.flip = 1;
             }else{
                 this.flip = 0;
-            }                        
+            }
 
-            for (var i = 1; i <= this.start.left; i++) {
-            	//alert(i + ' ' + this.squad + ' ' + other.squad);
-            	if(this.squad>0 && other.squad>0){
-            		
-            		bonus = 1+(this.squad*0.5)<<0;
-            		bonus2 = 1+(other.squad*0.5)<<0;
-            		
-	                dice = ((Math.random()*5)<<0)+bonus; 
-	                dice2 = ((Math.random()*5)<<0)+bonus2;                                                
-	
-	                dices.left += utilities.toDice(dice);
-	                dices.right += utilities.toDice(dice2);
-	
-	                total += dice;
-	                total2 += dice2;
-	                                            
-	                if(this.range){
-	                    if(dice > dice2){
-	                        other.hit();
-	                        other.message = '!';
-	                        other.important = false;
-	                    }else
-	                    if(dice < dice2){
-	                        if(( (Math.abs(this.x - other.x) < 2) && (Math.abs(this.y - other.y) < 2) ) || other.range && !other.reloading){
-	                            this.hit();
-	                        }
-	                        this.message = 'miss';
-	                        this.important = false;
-	                    }
-	                }else{
-	                    if(dice > dice2){
-	                        other.hit();                        
-	                    }else
-	                    if(dice < dice2 && !other.reloading){                   
-	                        this.hit();
-	                    }
-	                }         
-                }                                                      
-            }                            
+            // start fight
+            white(turn <= this_army.squad && this.squad > 0 && other.squad > 0){
 
+                // bonuses    
+                if(this.bonus){
+                    this_army.bonus = this.bonus;
+                }else{
+                    // squad bonus (50%)            
+                    this_army.bonus = 1+(this.squad*0.5)<<0;
+                }
+                
+                //throwing the dice + saveing warlog
+                this_army.dice = ((Math.random()*5)<<0)+this_army.bonus;                
+                if(this_army.dice>6){this_army.dice=6;}
+                this_army.utf8_dices += utilities.toDice(this_army.dice);
+                this_army.total += this_army.dice;
+
+                // bonuses
+                if(this.bonus){
+                    this_army.bonus = this.bonus;
+                }else{ 
+                    // squad bonus (50%)
+                    other_army.bonus = 1+(other.squad*0.5)<<0;
+                }
+                
+                // throwing the dice + saveing warlog
+                if(other.reloading){
+                    // while reloading unit has very low attack
+                    other_army.dice = 1
+                }else{
+                    other_army.dice = ((Math.random()*5)<<0)+other_army.bonus;
+                }
+
+                if(other_army.dice>6){other_army.dice=6;}
+                other_army.utf8_dices += utilities.toDice(other_army.dice);
+                other_army.total += other_army.dice;
+
+                // range unit
+                if(this.range){
+                    
+                    if(this_army.dice > other_army.dice){
+                        other.hit();
+                    }
+                    if(this_army.dice < other_army.dice){
+                        // if enemy is near
+                        if(( (Math.abs(this.x - other.x) < 2) && (Math.abs(this.y - other.y) < 2) ) || ( other.range && !other.reloading )){
+                            this.hit();
+                        }
+                        // else = nothing happend
+                    }
+                    if(this_army.dice == other_army.dice){
+                        // nothing happend
+                    }  
+
+                }else{
+                // normal units
+
+                    if(this_army.dice > other_army.dice){
+                        other.hit();
+                    }
+                    if(this_army.dice < other_army.dice){
+                        this.hit();
+                    }
+                    if(this_army.dice == other_army.dice){
+                        // nothing happend
+                    } 
+
+                }
+
+                turn++;
+            }
+
+            // range units must reload their weapons
             if(this.range){
                 this.reloading = 3;
-            }            
-        }        
-            
-        if(this.dust){            
-            other.die();
-            this.die();
-
-            GUI.warReport({
-                left: {
-                    sprite: this.sprite,
-                    hit: dices.left
-                },                
-                right: {
-                    sprite: other.sprite,
-                    hit: dices.right
-                },
-                message: 'Both heroses loses..'
-            });
-            render.render({menu:true});
-
-            return false;
-        }else
-        if(this.octopus){
-            this.message = 'omnom';
-            this.important = false;
-            other.die();
-            GUI.warReport({
-                left: {
-                    sprite: this.sprite,
-                    hit: dices.left
-                },                
-                right: {
-                    sprite: other.sprite,
-                    hit: dices.right
-                },
-                message: 'Octopus sunk the ship!'
-            });
-            render.render({menu:true});
-            return true;
-        }else
-        if(other.cementary){
-            if(this.lumberjack){
-            	var pos = {x:other.x,y:other.y};          
-                // buy new
-                other.die();
-                this.die();
-                game.killZombies();
-                world.map.entities.push(new Pirate({
-                	x:pos.x, 
-                	y:pos.y,
-                	team:this.team, ai:this.ai}));
-                
-                var unit = world.map.entities.length-1;           
-                world.map.entities[unit].moves = 0;   
-
-                GUI.warReport({
-                left: {
-                    sprite: this.sprite,
-                    hit: dices.left
-                },                
-                right: {
-                    sprite: other.sprite,
-                    hit: dices.right
-                },
-                message: 'Cementery was destroyed'
-            });
-            render.render({menu:true});
-
-                return false;
             }
-            return false;
-        }else{
+            if(other.range){
+                other.reloading = 3;
+            }
+
+            // unit has no more moves
             this.moves = 0;
-            
-            if(this.squad < 1 ){
-                other.message = total + '-' + total2;
-                other.important = false;
+
+            // special units
+            if(this.dust){
                 this.die();
-                if(other.squad < 1){                                                 
-                    other.die();    
-                }
-
-                GUI.warReport({
-                    left: {
-                        sprite: this.sprite,
-                        hit: dices.left
-                    },                
-                    right: {
-                        sprite: other.sprite,
-                        hit: dices.right
-                    },
-                    message: this.name + ' loose the fight..'
-                });
-                render.render({menu:true});
-                return false;
             }
-                                
-            if(other.squad < 1){                                 
-                this.message = total + '-' + total2;
-                this.important = false;
+
+            // fight end
+
+            if(this.squad < 1 ){
+                this.die();
+                fight_result = false;
+                war_log.header = this.name + ' lose the fight..';
+            }
+            if(other.squad < 1 ){
                 other.die();
-
-                GUI.warReport({
-                    left: {
-                        sprite: this.sprite,
-                        hit: dices.left
-                    },                
-                    right: {
-                        sprite: other.sprite,
-                        hit: dices.right
-                    },
-                    message: this.name + ' win that fight!'
-                });
-                render.render({menu:true});
-
-                return true;
+                fight_result = true;
+                if(this.squad > 0){
+                    war_log.header = this.name + ' win the fight!';
+                }
+                if(this.octopus && other.ship){
+                    war_log.message = this.name + ' sunk the ship!';
+                }
             }
-            
             if(this.squad > 0 && other.squad > 0){
-                this.message = total;
-                other.message = total2;
-                this.important = false;
-                other.important = false;
-                var msg = 'Fight ended in a draw.',
-                    diff = 0;
-                if(start.left > this.squad && start.right > other.squad){
-                    msg = 'We lose '+ (start.left-this.squad)+ ' and enemy lose '+ (start.right-other.squad)+ ' units.';
+                fight_result = false;
+                war_log.header = 'Fight ended in a draw.';
+
+                // calculate loses
+                var diff = 0;
+
+                if(this_army.squad > this.squad && other_army.skeleton > other.squad){
+                    war_log.message = this.name + ' lost '+ (this_army.squad-this.squad)+ ', '+ other.name + ' ' + (start.right-other.squad)+ ' units.';
                 }else
-                if(start.left > this.squad){
-                    diff = (start.left-this.squad);
+                if(this_army.squad > this.squad){
+                    diff = (this_army.squad-this.squad);
                     if(diff == 1){
-                        msg = 'We lose one unit.';
+                        msg = this.name + ' lost one unit.';
                     }else{
-                        msg = 'We lose '+ diff + ' units.';
+                        msg = this.name + ' lost '+ diff + ' units.';
                     }
                 }else
-                if(start.right > other.squad){
-                   diff = (start.right-other.squad);
+                if(other_army.squad > other.squad){
+                   diff = (other_army.squad-other.squad);
                     if(diff == 1){
-                        msg = 'Enemy lose one unit.';
+                        msg = other.name + ' lost one unit.';
                     }else{
-                        msg = 'Enemy lose '+ diff + ' units.';
+                        msg = other.name + ' lost '+ diff + ' units.';
                     }
                 }
-                
-                GUI.warReport({
-                    left: {
-                        sprite: this.sprite,
-                        hit: dices.left
-                    },                
-                    right: {
-                        sprite: other.sprite,
-                        hit: dices.right
-                    },
-                    message: msg
-                });
-                render.render({menu:true});
 
-                return false;
             }
-        }                  
+
+            // war log
+            GUI.warReport({
+                left: {
+                    sprite: this.sprite,
+                    hit: dices.left
+                },                
+                right: {
+                    sprite: other.sprite,
+                    hit: dices.right
+                },
+                title: war_log.title,
+                message: war_log.message
+            });
+            render.render({menu:true});
+        
+            return fight_result;
+        }
+
     },
     
     hit: function(){        
@@ -572,12 +526,7 @@ Unit.prototype = {
         }
     },
     
-    die: function(){  
-        /*
-        if(this.pirate){
-            game.teams[1].wallet += 5;
-            game.updateWallet();
-        } */    
+    die: function(){             
         this.sprite = 48;
         this.alive = false;
         this.moves = 0;
