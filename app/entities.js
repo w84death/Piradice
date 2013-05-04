@@ -241,7 +241,9 @@ Unit.prototype = {
     unselect: function(){
         this.selected = false;
         game.unit_selected = -1;
-        shop.close();
+        if(game.play){
+            shop.close();
+        }
     },
     
     move: function(x,y){
@@ -318,62 +320,84 @@ Unit.prototype = {
     },
     
     attack: function(x,y){
-        var other = null;
-            
+        var other = null,
+            log = null,
+            start = {
+                left: 0,
+                right: 0
+            };
             
         for (var i = 0; i < world.map.entities.length; i++) {
             if(world.map.entities[i].x == x && world.map.entities[i].y == y && world.map.entities[i].alive){
                 other = world.map.entities[i];                   
             }
         }
-                
-        if(other && !this.dust && !other.cementary && !this.octopus){            
+        
+        // dust i octo = 6
+        // turns
+        // while
+
+        if(other && !this.dust && !other.cementary && !this.octopus){ 
+
             var dice = null,
                 dice2 = null,
                 total = 0,
                 total2 = 0;
-            
+                bonus = 1;
+                bonus2 = 1;
+                dices = {
+                    left: '',
+                    right: ''
+                }
+            start.left = this.squad;
+            start.right = other.squad;
+
             if(this.x > other.x){
                 this.flip = 1;
             }else{
                 this.flip = 0;
-            }
-                        
-            for (var i = 1; i <= this.squad; i++) {
-                dice = ((Math.random()*5)<<0) + (this.squad);
-                dice2 = ((Math.random()*5)<<0) + (other.squad);
+            }                        
 
-                console.log(this.name + ' ' + dice + ' vs ' + dice2 + ' ' + other.name);
-                       
-                total += dice;
-                total2 += dice2;
-                                                            
-                if(this.range){
-                    if(dice > dice2){
-                        other.hit();
-                        other.message = '!';
-                        other.important = false;
-                    }else
-                    if(dice < dice2){
-                        if(( (Math.abs(this.x - other.x) < 2) && (Math.abs(this.y - other.y) < 2) ) || other.range && !other.reloading){
-                            this.hit();
-                        }
-                        this.message = 'miss';
-                        this.important = false;
-                    }
-                }else{
-                    if(dice > dice2){
-                        other.hit();       
-                    }else
-                    if(dice < dice2 && !other.reloading){                   
-                        this.hit();
-                    }
-                }                                                    
-            }    
+            for (var i = 1; i <= this.start.left; i++) {
+            	//alert(i + ' ' + this.squad + ' ' + other.squad);
+            	if(this.squad>0 && other.squad>0){
+            		
+            		bonus = 1+(this.squad*0.5)<<0;
+            		bonus2 = 1+(other.squad*0.5)<<0;
+            		
+	                dice = ((Math.random()*5)<<0)+bonus; 
+	                dice2 = ((Math.random()*5)<<0)+bonus2;                                                
+	
+	                dices.left += utilities.toDice(dice);
+	                dices.right += utilities.toDice(dice2);
+	
+	                total += dice;
+	                total2 += dice2;
+	                                            
+	                if(this.range){
+	                    if(dice > dice2){
+	                        other.hit();
+	                        other.message = '!';
+	                        other.important = false;
+	                    }else
+	                    if(dice < dice2){
+	                        if(( (Math.abs(this.x - other.x) < 2) && (Math.abs(this.y - other.y) < 2) ) || other.range && !other.reloading){
+	                            this.hit();
+	                        }
+	                        this.message = 'miss';
+	                        this.important = false;
+	                    }
+	                }else{
+	                    if(dice > dice2){
+	                        other.hit();                        
+	                    }else
+	                    if(dice < dice2 && !other.reloading){                   
+	                        this.hit();
+	                    }
+	                }         
+                }                                                      
+            }                            
 
-            console.log('-----------');
-            console.log(total + ' vs ' + total2);
-            
             if(this.range){
                 this.reloading = 3;
             }            
@@ -382,12 +406,38 @@ Unit.prototype = {
         if(this.dust){            
             other.die();
             this.die();
+
+            GUI.warReport({
+                left: {
+                    sprite: this.sprite,
+                    hit: dices.left
+                },                
+                right: {
+                    sprite: other.sprite,
+                    hit: dices.right
+                },
+                message: 'Both heroses loses..'
+            });
+            render.render({menu:true});
+
             return false;
         }else
         if(this.octopus){
             this.message = 'omnom';
             this.important = false;
             other.die();
+            GUI.warReport({
+                left: {
+                    sprite: this.sprite,
+                    hit: dices.left
+                },                
+                right: {
+                    sprite: other.sprite,
+                    hit: dices.right
+                },
+                message: 'Octopus sunk the ship!'
+            });
+            render.render({menu:true});
             return true;
         }else
         if(other.cementary){
@@ -403,7 +453,21 @@ Unit.prototype = {
                 	team:this.team, ai:this.ai}));
                 
                 var unit = world.map.entities.length-1;           
-                world.map.entities[unit].moves = 0;                
+                world.map.entities[unit].moves = 0;   
+
+                GUI.warReport({
+                left: {
+                    sprite: this.sprite,
+                    hit: dices.left
+                },                
+                right: {
+                    sprite: other.sprite,
+                    hit: dices.right
+                },
+                message: 'Cementery was destroyed'
+            });
+            render.render({menu:true});
+
                 return false;
             }
             return false;
@@ -417,13 +481,40 @@ Unit.prototype = {
                 if(other.squad < 1){                                                 
                     other.die();    
                 }
+
+                GUI.warReport({
+                    left: {
+                        sprite: this.sprite,
+                        hit: dices.left
+                    },                
+                    right: {
+                        sprite: other.sprite,
+                        hit: dices.right
+                    },
+                    message: this.name + ' loose the fight..'
+                });
+                render.render({menu:true});
                 return false;
             }
                                 
             if(other.squad < 1){                                 
                 this.message = total + '-' + total2;
                 this.important = false;
-                other.die();    
+                other.die();
+
+                GUI.warReport({
+                    left: {
+                        sprite: this.sprite,
+                        hit: dices.left
+                    },                
+                    right: {
+                        sprite: other.sprite,
+                        hit: dices.right
+                    },
+                    message: this.name + ' win that fight!'
+                });
+                render.render({menu:true});
+
                 return true;
             }
             
@@ -432,14 +523,53 @@ Unit.prototype = {
                 other.message = total2;
                 this.important = false;
                 other.important = false;
+                var msg = 'Fight ended in a draw.',
+                    diff = 0;
+                if(start.left > this.squad && start.right > other.squad){
+                    msg = 'We lose '+ (start.left-this.squad)+ ' and enemy lose '+ (start.right-other.squad)+ ' units.';
+                }else
+                if(start.left > this.squad){
+                    diff = (start.left-this.squad);
+                    if(diff == 1){
+                        msg = 'We lose one unit.';
+                    }else{
+                        msg = 'We lose '+ diff + ' units.';
+                    }
+                }else
+                if(start.right > other.squad){
+                   diff = (start.right-other.squad);
+                    if(diff == 1){
+                        msg = 'Enemy lose one unit.';
+                    }else{
+                        msg = 'Enemy lose '+ diff + ' units.';
+                    }
+                }
+                
+                GUI.warReport({
+                    left: {
+                        sprite: this.sprite,
+                        hit: dices.left
+                    },                
+                    right: {
+                        sprite: other.sprite,
+                        hit: dices.right
+                    },
+                    message: msg
+                });
+                render.render({menu:true});
+
                 return false;
             }
-        }                
+        }                  
     },
     
     hit: function(){        
         this.squad--;
-        this.sprite--;
+        if(this.squad<1){
+            this.sprite = 48;
+        }else{
+            this.sprite--;
+        }
     },
     
     die: function(){  
@@ -448,6 +578,7 @@ Unit.prototype = {
             game.teams[1].wallet += 5;
             game.updateWallet();
         } */    
+        this.sprite = 48;
         this.alive = false;
         this.moves = 0;
         game.killZombies();

@@ -78,7 +78,8 @@ var render = {
                 render.sprites[16] = render.makeSprite(2,1, false); // pirate flag
                 render.sprites[37] = render.makeSprite(7,3, false); // buy area
                 render.sprites[38] = render.makeSprite(6,3, false); // cut forest
-    
+                render.sprites[48] = render.makeSprite(9,4, false); // cross / die
+
                 // entities
                 render.sprites[17] = [render.makeSprite(0,3, false),render.makeSprite(0,3, true)]; // pirate 1
                 render.sprites[18] = [render.makeSprite(1,3, false),render.makeSprite(1,3, true)]; // pirate 2
@@ -125,9 +126,7 @@ var render = {
                 render.sprites[66] = render.makeSprite(1,9, false); // hint bottm-left red
                 render.sprites[67] = render.makeSprite(1,10, false); // hint top-left red
 
-                /*
-                    48
-                */
+                
 
                 // clouds
                 render.sprites[50] = render.makeSprite(7,0, false); // cloud 0
@@ -611,9 +610,9 @@ var render = {
             draw = {x:0,y:0};
 
         layers.push(this.map.canvas);
-         if(game.play){ layers.push(this.entities.canvas); }
+        if(!game.map){ layers.push(this.entities.canvas); }
         layers.push(this.gui.canvas);
-        if(game.play){ layers.push(this.sky.canvas); }                         
+        if(!game.map){ layers.push(this.sky.canvas); }                         
 
         draw.x = this.viewport.offset.x;
         draw.y = this.viewport.offset.y;

@@ -43,6 +43,7 @@ var game = {
         team: 0
     },
     ai_speed: 100,
+    game_speed: 500,
     play: false,
    	ready: false,
     map: true, 
@@ -61,14 +62,10 @@ var game = {
 
     start: function(){
     	this.map = false;             
-        GUI.show = [];
+        GUI.show = ['map','inventory','gold','trees','end'];
+        GUI.hud['map'].position = {x:1,y:1};
         shop.show();
-        shop.buyStarter();
-        GUI.show.push('map');
-        GUI.show.push('inventory');
-        GUI.show.push('gold');
-        GUI.show.push('trees');
-        GUI.show.push('end');
+        shop.buyStarter();        
         render.render({menu:true});
         multi.show();
     },    
@@ -89,7 +86,8 @@ var game = {
             bought: false,
             offset: {x:0,y:0}
         }];
-		GUI.show = ['logo', 'play','random', 'map_size1', 'map_size2', 'map_size3'];
+		GUI.show = ['logo', 'map','play','random', 'map_size1', 'map_size2', 'map_size3'];
+        GUI.hud['map'].position = {x:((render.viewport.width*0.5)<<0)-4,y:8};
         this.turn.start = true;
         this.turn.id = 1;
         this.turn.team = 0;
@@ -103,6 +101,7 @@ var game = {
 
     randomMap: function(){
         world.randomMap();
+        GUI.refreshMap();
         render.render({all:true});
     },
 
@@ -119,11 +118,9 @@ var game = {
         world.mapSize(args);
         render.destroyDOM();
         render.createDOM();
-        //render.init();
         fogOfWar.init();
-        //io.init();
-        //GUI.init();
         GUI.ctx = render.menu.ctx;
+        GUI.refreshMap();
         render.viewport.offset = {x:0,y:0};
         render.render({all:true}); 
     },
@@ -166,7 +163,7 @@ var game = {
                 if(world.map.entities[game.unit_selected].move_area[i].forest){                    
                     world.map.entities[game.unit_selected].cut(cX, cY);
                 }else
-                // moce
+                // move
                 if(world.map.entities[game.unit_selected].move_area[i].move){
                     world.map.entities[game.unit_selected].move(cX, cY);
                 }
@@ -179,19 +176,7 @@ var game = {
         
         fogOfWar.update();
 
-    },
-
-    toDice: function(value){
-        var dice = [];
-        dice[1] = "⚀";
-        dice[2] = "⚁";
-        dice[3] = "⚂";
-        dice[4] = "⚃";
-        dice[5] = "⚄";
-        dice[6] = "⚅";
-
-        return dice[value];
-    },
+    },    
 
     checkMate: function(){
         var loose = false,
@@ -441,7 +426,19 @@ var utilities = {
         }
     
         return to;
-    }
+    },
+
+    toDice: function(value){
+        var dice = [];
+        dice[1] = "⚀";
+        dice[2] = "⚁";
+        dice[3] = "⚂";
+        dice[4] = "⚃";
+        dice[5] = "⚄";
+        dice[6] = "⚅";
+
+        return dice[value];
+    },
 };
 
 var fogOfWar = {

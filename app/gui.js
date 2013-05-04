@@ -4,12 +4,21 @@ var GUI = {
 		color: '#f8f8f8',
 		color2: '#005e67',
 		color3: '#884d00',
+		labelColor: '#8d611a',
 		background: '#007888'		
 	},
 	buttons: [],
 	labels: [],
 	hud: [],
-	show: ['logo', 'play','random', 'map_size1', 'map_size2', 'map_size3'],
+	popUp: {
+		show: false,
+		canvas: null,
+		position: {
+			x: 0,
+			y: 0
+		}
+	},
+	show: ['logo', 'map', 'play','random', 'map_size1', 'map_size2', 'map_size3'],
 
 	init: function(){
 		this.ctx = render.menu.ctx;		
@@ -36,11 +45,89 @@ var GUI = {
 				width: 4,
 				height: 2,
 				position: {
-					x: ((render.viewport.width*0.5)<<0)-2,
-					y: 13
+					x: ((render.viewport.width*0.5)<<0),
+					y: 10
 				},
 				action: 'game',
 				value: 'start',
+			};
+
+		
+
+		this.buttons['random'] = {				
+				sprite: this.makeButton({x:4, y:8, width:4, height:2, text:'RANDOMIZE'}),
+				width: 4,
+				height: 2,
+				position: {
+					x: ((render.viewport.width*0.5)<<0)-4,
+					y: 10
+				},
+				action: 'game',
+				value: 'random',
+			};
+
+		this.hud['map'] = {
+			sprite: this.drawHUD({
+				sprite: {
+					x:8,
+					y:6
+				},
+				width:2,
+				height:2,
+				special: 'map'				
+			}),						
+			position: {
+				x:((render.viewport.width*0.5)<<0)-4,
+				y:8
+			}			
+		};
+
+		this.buttons['map_size1'] = {				
+				sprite: this.makeButton({x:4, y:6, width:2, height:2, text:'SMALL'}),
+				width: 2,
+				height: 2,
+				position: {
+					x: ((render.viewport.width*0.5)<<0)-2,
+					y: 8
+				},
+				action: 'mapSize',
+				value: 'small',
+			};
+
+		this.buttons['map_size2'] = {				
+				sprite: this.makeButton({x:4, y:6, width:2, height:2, text:'NORMAL'}),
+				width: 2,
+				height: 2,
+				position: {
+					x: ((render.viewport.width*0.5)<<0),
+					y: 8
+				},
+				action: 'mapSize',
+				value: 'normal',
+			};
+		
+		this.buttons['map_size3'] = {				
+				sprite: this.makeButton({x:4, y:6, width:2, height:2, text:'BIG'}),
+				width: 2,
+				height: 2,
+				position: {
+					x: ((render.viewport.width*0.5)<<0)+2,
+					y: 8
+				},
+				action: 'mapSize',
+				value: 'big',
+			};		
+
+		this.buttons['close'] = {				
+				sprite: this.makeButton({x:4, y:8, width:4, height:2, text:'CLOSE'}),
+				width: 4,
+				height: 2,
+				position: {
+					x: ((render.viewport.width*0.5)<<0)-2,
+					y: 10
+				},
+				action: 'war',
+				value: 'close',
 			};
 
 		this.buttons['ready'] = {				
@@ -66,54 +153,6 @@ var GUI = {
 				action: 'game',
 				value: 'menu',
 			};
-
-		this.buttons['random'] = {				
-				sprite: this.makeButton({x:4, y:8, width:4, height:2, text:'RANDOMIZE'}),
-				width: 4,
-				height: 2,
-				position: {
-					x: ((render.viewport.width*0.5)<<0)-2,
-					y: 5
-				},
-				action: 'game',
-				value: 'random',
-			};
-
-		this.buttons['map_size1'] = {				
-				sprite: this.makeButton({x:4, y:6, width:2, height:2, text:'SMALL'}),
-				width: 2,
-				height: 2,
-				position: {
-					x: ((render.viewport.width*0.5)<<0)-1,
-					y: 7
-				},
-				action: 'mapSize',
-				value: 'small',
-			};
-
-		this.buttons['map_size2'] = {				
-				sprite: this.makeButton({x:4, y:6, width:2, height:2, text:'NORMAL'}),
-				width: 2,
-				height: 2,
-				position: {
-					x: ((render.viewport.width*0.5)<<0)-1,
-					y: 9
-				},
-				action: 'mapSize',
-				value: 'normal',
-			};
-		
-		this.buttons['map_size3'] = {				
-				sprite: this.makeButton({x:4, y:6, width:2, height:2, text:'BIG'}),
-				width: 2,
-				height: 2,
-				position: {
-					x: ((render.viewport.width*0.5)<<0)-1,
-					y: 11
-				},
-				action: 'mapSize',
-				value: 'big',
-			};		
 
 		this.buttons['end'] = {
 				sprite: this.makeButton({x:4, y:8, width:4, height:2, text:'END TURN'}),
@@ -221,20 +260,7 @@ var GUI = {
 			},
 			action: 'buy',
 			value: 'dust'
-		};
-
-		this.hud['map'] = {
-			sprite: this.drawHUD({
-				sprite: {
-					x:8,
-					y:6
-				},
-				width:2,
-				height:2,
-				special: 'map'				
-			}),						
-			position: {x:1,y:1}			
-		};
+		};		
 
 		this.hud['inventory'] = {
 			sprite: this.drawHUD({
@@ -323,10 +349,26 @@ var GUI = {
 			}
 		}
 		
+		if(this.buttons[key].action == 'war'){
+			if(this.buttons[key].value == 'close'){
+				this.popUp.show = false;
+				GUI.show = ['map','inventory','gold','trees','end'];
+				game.play = true;
+				render.render({menu:true});
+			}
+		}
+
 		if(this.buttons[key].action == 'buy'){
 			shop.buy({unit:this.buttons[key].value});
 		}
 		
+	},
+
+	refreshMap: function(){
+		this.hud['map'].sprite = this.drawHUD({
+                sprite: {x:8,y:6},
+                width:2, height:2,
+                special: 'map'});
 	},
 
 	drawFooter: function(){
@@ -374,16 +416,18 @@ var GUI = {
 
         if(args.text || args.label){
         	var font_size = '16px',
-        		color = this.conf.color;
-        		text = args.text
+        		color = this.conf.color,
+        		text = args.text,
         		x = (m_canvas.width*0.5)<<0,
         		y = (m_canvas.height*0.5)<<0;
+
         	if(args.label){
         		font_size = '12px';
-        		color = this.conf.color2;
+        		color = this.conf.labelColor;
         		text = args.label;
         		y = (m_canvas.height*0.8)<<0;
         	}
+
         	m_context.fillStyle = color;        	
 			m_context.font = font_size+' VT323, cursive';
 			m_context.textBaseline = 'middle';
@@ -448,11 +492,65 @@ var GUI = {
 		}
 	},
 
+	warReport: function(args){
+		var x = ((render.viewport.width*0.5)<<0)-4,
+			y = ((render.viewport.height*0.5)<<0)-3,
+			width = 8,
+			height = 7;
+
+		var m_canvas = document.createElement('canvas');
+            m_canvas.width = render.box * width;
+            m_canvas.height = render.box * height;
+        var m_context = m_canvas.getContext('2d');
+		var center = (((m_canvas.width*0.5)/render.box)<<0);
+		
+		m_context.fillStyle = '#ffda90';
+		m_context.fillRect(0, 0, width*render.box, height*render.box);
+
+		if(args.left.sprite != 48 ){
+			m_context.drawImage(render.sprites[ args.left.sprite ][ 0 ], center*render.box-(render.box*0.5), render.box-(render.box*0.5));
+		}else{
+			m_context.drawImage(render.sprites[ args.left.sprite ], center*render.box-(render.box*0.5), render.box-(render.box*0.5));
+		}
+		if(args.right.sprite != 48){
+			m_context.drawImage(render.sprites[ args.right.sprite ][ 1 ], center*render.box-(render.box*0.5), 5*render.box-(render.box*0.5));
+		}else{
+			m_context.drawImage(render.sprites[ args.right.sprite ], center*render.box-(render.box*0.5), 5*render.box-(render.box*0.5));
+		}
+
+		m_context.fillStyle = this.conf.labelColor;        	
+		m_context.font = '18px VT323, cursive';
+		m_context.textBaseline = 'middle';
+		m_context.textAlign = 'center';
+		m_context.fillText(args.left.hit, center*render.box, 2*render.box);		
+		m_context.fillText(args.right.hit, center*render.box, 4*render.box);
+		m_context.fillText('vs', center*render.box, 3*render.box);
+		m_context.font = '18px VT323, cursive';
+		m_context.fillText(args.message, center*render.box, 6*render.box);
+		
+		game.play = false;
+		this.show = ['close'];
+		this.buttons['close'].position.y = y+7;
+
+		//render.post_render();
+
+		this.popUp = {
+			show: true,
+			canvas: m_canvas,
+			position: {
+				x: x,
+				y: y
+			}
+		};
+		render.render({menu:true});
+
+		//GUI.warReport({left:{unit:world.map.entities[2],hit:10}, right:{unit:world.map.entities[3],hit:4},message:'test message'});
+	},
+
 	select: function(x,y){
 		var selected = false;
 
 		for (key in this.buttons) {	
-			console.log(x,y);
 			if(x >= this.buttons[key].position.x && x < this.buttons[key].position.x+(this.buttons[key].width) && y >= this.buttons[key].position.y && y < this.buttons[key].position.y+(this.buttons[key].height) ){				
 				for (var i = 0; i < this.show.length; i++) {					
 					if(key == this.show[i]){
@@ -476,6 +574,10 @@ var GUI = {
 			
 			if(args.ready){
 				this.drawReady();
+			}
+
+			if(this.popUp.show){
+				this.ctx.drawImage(this.popUp.canvas, this.popUp.position.x*render.box,this.popUp.position.y*render.box);
 			}
 
 			//this.drawFooter();
