@@ -496,7 +496,7 @@ var GUI = {
 		var x = ((render.viewport.width*0.5)<<0)-4,
 			y = ((render.viewport.height*0.5)<<0)-3,
 			width = 8,
-			height = 7;
+			height = 8;
 
 		var m_canvas = document.createElement('canvas');
             m_canvas.width = render.box * width;
@@ -526,11 +526,13 @@ var GUI = {
 		m_context.fillText(args.right.hit, center*render.box, 4*render.box);
 		m_context.fillText('vs', center*render.box, 3*render.box);
 		m_context.font = '18px VT323, cursive';
-		m_context.fillText(args.message, center*render.box, 6*render.box);
+		m_context.fillText(args.title, center*render.box, 6*render.box);
+		m_context.font = '14px VT323, cursive';
+		m_context.fillText(args.message, center*render.box, 7*render.box);
 		
 		game.play = false;
 		this.show = ['close'];
-		this.buttons['close'].position.y = y+7;
+		this.buttons['close'].position.y = y+8;
 
 		//render.post_render();
 

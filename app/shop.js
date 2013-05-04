@@ -3,7 +3,7 @@ var shop = {
 
     init: function(){
         this.price_list['pirate'] = 10;
-        this.price_list['range_pirate'] = 20;
+        this.price_list['gunner'] = 20;
         this.price_list['lumberjack'] = 90;
         this.price_list['skeleton'] = 10;
         this.price_list['dust'] = 60;
@@ -77,8 +77,8 @@ var shop = {
                 world.map.entities.push(new Pirate({x:newX,y:newY,team:team, ai:ai}));                                             
             }
             
-            if(args.unit == 'range_pirate'){            
-                world.map.entities.push(new RangePirate({x:newX,y:newY,team:team, ai:ai}));
+            if(args.unit == 'gunner'){            
+                world.map.entities.push(new Gunner({x:newX,y:newY,team:team, ai:ai}));
             }
             
             if(args.unit == 'lumberjack'){
@@ -212,8 +212,8 @@ var shop = {
                 if(game.teams[game.turn.team].wallet >= this.price_list['pirate']){ 
                     GUI.show.push('pirate');
                 }
-                if(game.teams[game.turn.team].wallet >= this.price_list['range_pirate']){ 
-                    GUI.show.push('range_pirate');
+                if(game.teams[game.turn.team].wallet >= this.price_list['gunner']){ 
+                    GUI.show.push('gunner');
                 }
                 if(game.teams[game.turn.team].wallet >= this.price_list['lumberjack']){ 
                     GUI.show.push('lumberjack');

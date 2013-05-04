@@ -19,11 +19,14 @@ var Unit = function Unit(){
     this.move_area = [];
     this.pirate = false;
     this.skeleton = false;
+    this.unit = true;
     this.structure = false;
     this.squad = 1;
     this.bonus = false;
     this.max = 6;
-    this.range = false;   
+    this.range = false;
+    this.attack_range = false;  
+    this.move_range = 1; 
     this.team = 0;
     this.moves = 1;
     this.disable_moves = false;
@@ -42,12 +45,15 @@ var Unit = function Unit(){
 
 Unit.prototype = {
     select: function(){
+        // unit can be selected
         if(this.can_select){
             this.selected = true;
+            // 1 = land
             var map_type = 1;                                    
             
             this.move_area = [];
 
+            // unit can create other units
             if(this.create_unit){
 
                 for (var x = this.x - 1; x <= this.x + 1; x++) {
@@ -67,9 +73,8 @@ Unit.prototype = {
                         }
                     }
                 }
-
                 
-
+                // if there is a place to create            
                 if(this.move_area.length > 0){
                     shop.show({more:true});
                 }
@@ -77,167 +82,118 @@ Unit.prototype = {
             }
 
             if(this.water){
+                // water
                 map_type = 0;
             }
 
             if(this.disable_moves){
-                map_type = -1;
+                // unit cant move
+                return false;
             }
-            
+
+            // MOVE FINGIND ALGORITHM
+            // first 4 moves at distance 1
             if(world.map.moves[(this.x-1)+((this.y)*world.map.width)] == map_type){           
-                this.move_area.push({x:this.x-1,y:this.y, move:true});
+                this.move_area.push({x:this.x-1,y:this.y, move:true, distance:1});
             }
             
             if(world.map.moves[(this.x)+((this.y-1)*world.map.width)] == map_type){
-                this.move_area.push({x:this.x,  y:this.y-1, move:true});
+                this.move_area.push({x:this.x,  y:this.y-1, move:true, distance:1});
             }
             
             if(world.map.moves[(this.x)+((this.y+1)*world.map.width)] == map_type){
-                this.move_area.push({x:this.x,  y:this.y+1, move:true});
+                this.move_area.push({x:this.x,  y:this.y+1, move:true, distance:1});
             }
                         
             if(world.map.moves[(this.x+1)+((this.y)*world.map.width)] == map_type){
-                this.move_area.push({x:this.x+1,  y:this.y, move:true});
+                this.move_area.push({x:this.x+1,  y:this.y, move:true, distance:1});
             }
-            
-            
-            if(world.map.moves[(this.x-1)+((this.y-1)*world.map.width)] == map_type){
-                if(world.map.moves[(this.x-1)+((this.y)*world.map.width)] == map_type || world.map.moves[(this.x)+((this.y-1)*world.map.width)] == map_type){
-                    this.move_area.push({x:this.x-1,y:this.y-1, move:true});
-                }
-                
-            }
-            if(world.map.moves[(this.x-1)+((this.y+1)*world.map.width)] == map_type){
-                if(world.map.moves[(this.x-1)+((this.y)*world.map.width)] == map_type || world.map.moves[(this.x)+((this.y+1)*world.map.width)] == map_type){
-                    this.move_area.push({x:this.x-1,y:this.y+1, move:true});
-                }
-            }
-            if(world.map.moves[(this.x+1)+((this.y-1)*world.map.width)] == map_type){
-                if(world.map.moves[(this.x+1)+((this.y)*world.map.width)] == map_type || world.map.moves[(this.x)+((this.y-1)*world.map.width)] == map_type){
-                    this.move_area.push({x:this.x+1,y:this.y-1, move:true});
-                }
-            }
-            if(world.map.moves[(this.x+1)+((this.y+1)*world.map.width)] == map_type){
-                if(world.map.moves[(this.x+1)+((this.y)*world.map.width)] == map_type || world.map.moves[(this.x)+((this.y+1)*world.map.width)] == map_type){
-                    this.move_area.push({x:this.x+1,y:this.y+1, move:true});
-                }
-            }
-            
-            if(!this.lumberjack){
-                if(world.map.moves[(this.x-2)+((this.y)*world.map.width)] == map_type && world.map.moves[(this.x-1)+((this.y)*world.map.width)] == map_type){
-                    this.move_area.push({x:this.x-2,y:this.y, move:true});            
-                }
-                if(world.map.moves[(this.x)+((this.y-2)*world.map.width)] == map_type && world.map.moves[(this.x)+((this.y-1)*world.map.width)] == map_type){
-                    this.move_area.push({x:this.x,  y:this.y-2, move:true});
-                }            
-                if(world.map.moves[(this.x+2)+((this.y)*world.map.width)] == map_type && world.map.moves[(this.x+1)+((this.y)*world.map.width)] == map_type){
-                    this.move_area.push({x:this.x+2,  y:this.y, move:true});
-                }
-                if(world.map.moves[(this.x)+((this.y+2)*world.map.width)] == map_type && world.map.moves[(this.x)+((this.y+1)*world.map.width)] == map_type){
-                    this.move_area.push({x:this.x,  y:this.y+2, move:true});
-                }            
-            }
-            
-            if(this.range || this.ship){
-                if(world.map.moves[(this.x-3)+((this.y)*world.map.width)] == map_type){
-                    if(this.water && world.map.moves[(this.x-2)+((this.y)*world.map.width)] == map_type && this.water && world.map.moves[(this.x-1)+((this.y)*world.map.width)] == map_type){
-                        this.move_area.push({x:this.x-3,y:this.y, move:true});            
-                    }else{
-                        this.move_area.push({x:this.x-3,y:this.y, shoot:true});            
-                    }                    
-                }
-                if(world.map.moves[(this.x)+((this.y-3)*world.map.width)] == map_type){
-                    if(this.water && world.map.moves[(this.x)+((this.y-2)*world.map.width)] == map_type && this.water && world.map.moves[(this.x)+((this.y-1)*world.map.width)] == map_type){
-                        this.move_area.push({x:this.x,  y:this.y-3, move:true});
-                    }else{
-                        this.move_area.push({x:this.x,  y:this.y-3, shoot:true});
-                    }
-                }            
-                if(world.map.moves[(this.x+3)+((this.y)*world.map.width)] == map_type){
-                    if(this.water && world.map.moves[(this.x+2)+((this.y)*world.map.width)] == map_type && this.water && world.map.moves[(this.x+1)+((this.y)*world.map.width)] == map_type){
-                        this.move_area.push({x:this.x+3,  y:this.y, move:true});
-                    }else{
-                        this.move_area.push({x:this.x+3,  y:this.y, shoot:true});
-                    }
-                }
-                if(world.map.moves[(this.x)+((this.y+3)*world.map.width)] == map_type){
-                    if(this.water && world.map.moves[(this.x)+((this.y+2)*world.map.width)] == map_type && world.map.moves[(this.x)+((this.y+1)*world.map.width)] == map_type){
-                        this.move_area.push({x:this.x,  y:this.y+3, move:true});
-                    }else{
-                        this.move_area.push({x:this.x,  y:this.y+3, shoot:true});
-                    }
-                }            
 
+            function check_move_area(area,x,y){
+                for (var z = 0; z < area.length; z++) {
+                    if(area[z].x === x && area[z].y === y){
+                        return true;                        
+                    }
+                }
+                return false;
             }
-              
-            if(this.lumberjack){
-                if(world.map.moves[(this.x-1)+((this.y)*world.map.width)] == 2){           
-                    this.move_area.push({x:this.x-1,y:this.y, forest:true});
-                }
-                
-                if(world.map.moves[(this.x)+((this.y-1)*world.map.width)] == 2){
-                    this.move_area.push({x:this.x,  y:this.y-1, forest:true});
-                }
-                
-                if(world.map.moves[(this.x)+((this.y+1)*world.map.width)] == 2){
-                    this.move_area.push({x:this.x,  y:this.y+1, forest:true});
-                }
-                            
-                if(world.map.moves[(this.x+1)+((this.y)*world.map.width)] == 2){
-                    this.move_area.push({x:this.x+1,  y:this.y, forest:true});
-                }
-            }  
-              
-            if(this.dust || this.octopus){
-                this.move_area = [];
-                for (var x = this.x - 2; x <= this.x + 2; x++) {
-                    for (var y = this.y - 2; y <= this.y + 2; y++) {
-                         if(world.map.moves[(x)+((y)*world.map.width)] == map_type){           
-                            if(x == this.x && y == this.y ){
-                               
-                            }else{
-                                this.move_area.push({x:x,y:y, move:true});
-                            }
+
+            var newX = 0,
+                newY = 0;
+
+            // calculate other moves
+            for (var i = 1; i < this.move_range; i++) {
+                for (var j = 0; j < this.move_area.length; j++) {
+                    if(this.move_area[j].distance === i){
+                        // check moves and add distance
+                        newX = this.move_area[j].x-1;
+                        newY = this.move_area[j].y;
+                        if(world.map.moves[(newX)+((newY)*world.map.width)] === map_type && !check_move_area(this.move_area,newX,newY)){
+                            this.move_area.push({x:newX,y:newY, move:true, distance:i+1});
                         }
-                    }   
-                }
-            }
-
-            if(!this.disable_moves){
-                for (var i = 0; i < this.move_area.length; i++) {
-                    for (var j = 0; j < world.map.entities.length; j++) { 
-                        if( world.map.entities[j].x == this.move_area[i].x && world.map.entities[j].y == this.move_area[i].y && world.map.entities[j].team != this.team ){ 
-	                        if(!world.map.entities[j].cementary){
-	                            this.move_area[i].attack = true;    
-	                        }else{
-	                        	if(this.lumberjack) {
-	                        		this.move_area[i].attack = true;
-	                        	}else{
-	                        		this.move_area[i].move = false;
-	                        	}
-	                        }
-                       }
                         
-                        if( world.map.entities[j].x == this.move_area[i].x && world.map.entities[j].y == this.move_area[i].y && world.map.entities[j].team == this.team ){ 
-                            if(this.name == world.map.entities[j].name && this.merging){
-                                this.move_area[i].merge = true;
-                            }else{
-                                this.move_area[i].move = false;
+                        newX = this.move_area[j].x;
+                        newY = this.move_area[j].y-1;
+                        if(world.map.moves[(newX)+((newY)*world.map.width)] === map_type && !check_move_area(this.move_area,newX,newY)){
+                            this.move_area.push({x:newX,y:newY, move:true, distance:i+1});
+                        }
+                        
+                        newX = this.move_area[j].x;
+                        newY = this.move_area[j].y+1;
+                        if(world.map.moves[(newX)+((newY)*world.map.width)] === map_type && !check_move_area(this.move_area,newX,newY)){
+                            this.move_area.push({x:newX,y:newY, move:true, distance:i+1});
+                        }
+                         
+                        newX = this.move_area[j].x+1;
+                        newY = this.move_area[j].y;            
+                        if(world.map.moves[(newX)+((newY)*world.map.width)] === map_type && !check_move_area(this.move_area,newX,newY)){
+                            this.move_area.push({x:newX,y:newY, move:true, distance:i+1});
+                        }
+                    }
+                };
+            };
+
+            // clear 0,0
+            for (var r = 0; r < this.move_area.length; r++) {
+                if(this.move_area[r].x === this.x && this.move_area[r].y === this.y){
+                    this.move_area.splice(r,1);
+                }
+            }
+
+            // check if enemy/ally/structure
+            // ..
+            for (var i = 0; i < this.move_area.length; i++) {
+                for (var j = 0; j < world.map.entities.length; j++) { 
+
+                    // unit in movable area
+                    if(this.move_area[i].x === world.map.entities[j].x && this.move_area[i].y === world.map.entities[j].y ){
+                    
+                        // cant move there
+                        this.move_area[i].move = false;
+
+                        // enemy
+                        if(world.map.entities[j].team != this.team && world.map.entities[j].unit){
+                            this.move_area[i].attack = true;
+                        }
+
+                        // ally
+
+                        if(world.map.entities[j].team === this.team && world.map.entities[j].name === this.name && this.merging){                            
+                            this.move_area[i].merge = true;
+                        }
+
+                        // structure
+                        if(world.map.entities[j].structure){                            
+                            if(this.can_destroy_structure){
+                                this.move_area[i].attack = true;
                             }
                         }
                     }
                 }
             }
-
-            for (var i = 0; i < this.move_area.length; i++) {
-                if(this.move_area[i].x < 0 || this.move_area[i].y < 0 || this.move_area[i].x >= world.map.width || this.move_area[i].y >= world.map.height ){
-                    this.move_area[i].move = false;
-                }
-            };
-            
         }
     },
-    
+  
     unselect: function(){
         this.selected = false;
         game.unit_selected = -1;
@@ -276,7 +232,7 @@ Unit.prototype = {
             if(this.water || other.water ){
                 return false
             }else
-            if( (this.range && other.range ) || (!this.range && !other.range) && !this.lumberjack && !other.lumberjack){
+            if( (this.attack_range && other.attack_range ) || (!this.attack_range && !other.attack_range) && !this.lumberjack && !other.lumberjack){
                 while (this.squad < 6 && other.squad > 0) {
                     this.squad++;
                     this.sprite++;
@@ -321,7 +277,7 @@ Unit.prototype = {
     
 
     attack: function(x,y){
-        var turn = 0,
+        var turn = 1,
             other = null,
             this_army = {
                 squad: 0,
@@ -354,7 +310,7 @@ Unit.prototype = {
         if(other){
             // save army stats
             this_army.squad = this.squad;
-            other_army.squad = other.squad;
+            other_army.squad = other.squad;            
 
             // flip sprite to the oponenet
             if(this.x > other.x){
@@ -364,7 +320,7 @@ Unit.prototype = {
             }
 
             // start fight
-            white(turn <= this_army.squad && this.squad > 0 && other.squad > 0){
+            while(turn <= this_army.squad && this.squad > 0 && other.squad > 0){
 
                 // bonuses    
                 if(this.bonus){
@@ -400,15 +356,15 @@ Unit.prototype = {
                 other_army.utf8_dices += utilities.toDice(other_army.dice);
                 other_army.total += other_army.dice;
 
-                // range unit
-                if(this.range){
+                // attack_range unit
+                if(this.attack_range){
                     
                     if(this_army.dice > other_army.dice){
                         other.hit();
                     }
                     if(this_army.dice < other_army.dice){
                         // if enemy is near
-                        if(( (Math.abs(this.x - other.x) < 2) && (Math.abs(this.y - other.y) < 2) ) || ( other.range && !other.reloading )){
+                        if(( (Math.abs(this.x - other.x) < 2) && (Math.abs(this.y - other.y) < 2) ) || ( other.attack_range && !other.reloading )){
                             this.hit();
                         }
                         // else = nothing happend
@@ -435,16 +391,13 @@ Unit.prototype = {
                 turn++;
             }
 
-            // range units must reload their weapons
-            if(this.range){
+            // attack_range units must reload their weapons
+            if(this.attack_range){
                 this.reloading = 3;
             }
-            if(other.range){
+            if(other.attack_range){
                 other.reloading = 3;
-            }
-
-            // unit has no more moves
-            this.moves = 0;
+            }            
 
             // special units
             if(this.dust){
@@ -465,7 +418,7 @@ Unit.prototype = {
                     war_log.header = this.name + ' win the fight!';
                 }
                 if(this.octopus && other.ship){
-                    war_log.message = this.name + ' sunk the ship!';
+                    war_log.message = other.name + ' sank in deep!';
                 }
             }
             if(this.squad > 0 && other.squad > 0){
@@ -475,23 +428,23 @@ Unit.prototype = {
                 // calculate loses
                 var diff = 0;
 
-                if(this_army.squad > this.squad && other_army.skeleton > other.squad){
-                    war_log.message = this.name + ' lost '+ (this_army.squad-this.squad)+ ', '+ other.name + ' ' + (start.right-other.squad)+ ' units.';
+                if(this_army.squad > this.squad && other_army.squad > other.squad){
+                    war_log.message = this.name + ' lost '+ (this_army.squad-this.squad)+ ', '+ other.name + ' ' + (other_army.squad-other.squad)+ ' units.';
                 }else
                 if(this_army.squad > this.squad){
                     diff = (this_army.squad-this.squad);
                     if(diff == 1){
-                        msg = this.name + ' lost one unit.';
+                        war_log.message = this.name + ' lost one unit.';
                     }else{
-                        msg = this.name + ' lost '+ diff + ' units.';
+                        war_log.message = this.name + ' lost '+ diff + ' units.';
                     }
                 }else
                 if(other_army.squad > other.squad){
-                   diff = (other_army.squad-other.squad);
+                    diff = (other_army.squad-other.squad);
                     if(diff == 1){
-                        msg = other.name + ' lost one unit.';
+                        war_log.message = other.name + ' lost one unit.';
                     }else{
-                        msg = other.name + ' lost '+ diff + ' units.';
+                        war_log.message = other.name + ' lost '+ diff + ' units.';
                     }
                 }
 
@@ -501,17 +454,24 @@ Unit.prototype = {
             GUI.warReport({
                 left: {
                     sprite: this.sprite,
-                    hit: dices.left
+                    hit: this_army.utf8_dices
                 },                
                 right: {
                     sprite: other.sprite,
-                    hit: dices.right
+                    hit: other_army.utf8_dices
                 },
-                title: war_log.title,
+                title: war_log.header,
                 message: war_log.message
             });
             render.render({menu:true});
         
+            
+            // unit has no more moves
+            this.moves = 0;
+
+            // clear messages
+            this.message = false;
+
             return fight_result;
         }
 
@@ -560,7 +520,7 @@ Unit.prototype = {
 };
 
 var Pirate = function Pirate(args){
-    this.name = 'pirate';
+    this.name = 'Pirate';
     this.pirate = true;
     this.x = args.x;
     this.y = args.y;
@@ -568,28 +528,32 @@ var Pirate = function Pirate(args){
     this.squad = 1;
     this.sprite = 17;
     this.messages = ['Arr..', 'Yes?', '..y', 'Go!', 'ye!'];
+    this.move_range = 4;
+    this.fow = 5;
 };
 
 Pirate.prototype = new Unit();
 
-var RangePirate = function RangePirate(args){
-    this.name = 'range_pirate';
+var Gunner = function Gunner(args){
+    this.name = 'Gunner';
     this.pirate = true;
     this.x = args.x;
     this.y = args.y;
-    this.sprite = 29;
-    this.range = true;
+    this.sprite = 29; 
+    this.range = true;   
     this.team = 0;
     this.squad = 1;
     this.messages = ['Fire!', 'Aim', 'Yarr!', 'Bum!'];
-    this.fow = 4;
+    this.attack_range = 4;
+    this.move_range = 3;
+    this.fow = 6;
 };
 
-RangePirate.prototype = new Unit();
+Gunner.prototype = new Unit();
 
 
 var Lumberjack = function Lumberjack(args){
-    this.name = 'lumberjack';
+    this.name = 'Lumberjack';
     this.pirate = true;
     this.x = args.x;
     this.y = args.y;
@@ -599,14 +563,15 @@ var Lumberjack = function Lumberjack(args){
     this.max = 1;
     this.sprite = 53;
     this.messages = ['Cut!', 'Hmm', 'Tree'];
-    this.fow = 2;
+    this.move_range = 3;
+    this.fow = 4;
     this.merging = false;
 };
 
 Lumberjack.prototype = new Unit();
 
 var Skeleton = function Skeleton(args){
-    this.name = 'skeleton';
+    this.name = 'Skeleton';
     this.ai = args.ai || false;
     this.skeleton = true;
     this.x = args.x;
@@ -614,13 +579,15 @@ var Skeleton = function Skeleton(args){
     this.team = 1;
     this.squad = 1;
     this.sprite = 23;
-    this.messages = ['...', '..', '.'];    
+    this.messages = ['...', '..', '.'];
+    this.move_range = 3;
+    this.fow = 4;    
 };
 
 Skeleton.prototype = new Unit();
 
 var Dust = function Dust(args){
-    this.name = 'dust';
+    this.name = 'Dust';    
     this.ai = args.ai || false;
     this.dust = true;
     this.skeleton = true;
@@ -631,14 +598,16 @@ var Dust = function Dust(args){
     this.max = 1;
     this.sprite = 49;
     this.messages = ['tsss', 'puf', '!@%'];
+    this.move_range = 3;
     this.fow = 4;
     this.merging = false;
+    this.bonus = 6;
 };
 
 Dust.prototype = new Unit();
 
 var Ship = function Ship(args){
-    this.name = 'ship';
+    this.name = 'Ship';
     this.pirate = true;
     this.ship = true;
     this.team = 0;
@@ -646,11 +615,12 @@ var Ship = function Ship(args){
     this.y = args.y;
     this.sprite = 35;
     this.water = true;
-    this.range = true;    
+    this.attack_range = true;    
     this.create_unit = true;
     this.squad = 1;
     this.messages = ['Sail', 'Ahoy'];
-    this.fow = 5;
+    this.move_range = 5;
+    this.fow = 6;
     this.merging = false;
 };
 
@@ -660,6 +630,8 @@ var Cementary = function Cementary(args){
     this.name = 'Cementary';
     this.ai = args.ai || false;
     this.cementary = true;
+    this.structure = true;
+    this.unit = false;
     this.skeleton = true;
     this.create_unit = true;
     this.x = args.x;
@@ -670,7 +642,7 @@ var Cementary = function Cementary(args){
     this.max = 1;
     this.sprite = 39;
     this.messages = ['uuu', 'ooo'];
-    this.fow = 5;
+    this.fow = 7;
     this.hasCementary = args.hasCementary || false;
     this.merging = false;
 };
@@ -678,7 +650,7 @@ var Cementary = function Cementary(args){
 Cementary.prototype = new Unit();
 
 var Octopus = function Octopus(args){
-    this.name = 'octopus';
+    this.name = 'Octopus';
     this.octopus = true;
     this.skeleton = true;
     this.ai = args.ai || false;
@@ -691,6 +663,10 @@ var Octopus = function Octopus(args){
     this.max = 1;
     this.messages = ['Ooo.', 'oo..', 'o?', ':)', ':o', ':['];
     this.merging = false;
+    this.range = true;
+    this.move_range = 4;
+    this.fow = 5;
+    this.bonus = 6;
 };
 
 Octopus.prototype = new Unit();
