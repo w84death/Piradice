@@ -319,12 +319,12 @@ var game = {
             
     win: function(){
         window.alert('You win!'); 
-        window.location.reload();
+        this.restart();
     },
 
     lose: function(){        
         window.alert('You lose');
-        window.location.reload();
+        this.restart();
     },
 
 

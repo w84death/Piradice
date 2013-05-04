@@ -190,8 +190,8 @@ var GUI = {
 				value: 'pirate'
 			};
 
-		this.buttons['range_pirate'] = {
-				sprite: this.makeButton({x:4, y:6, sprite_over: 29, width:2, height:2, label:shop.price_list['range_pirate']}),
+		this.buttons['gunner'] = {
+				sprite: this.makeButton({x:4, y:6, sprite_over: 29, width:2, height:2, label:shop.price_list['Gunner']}),
 				width: 2,
 				height: 2,
 				position: {
@@ -199,7 +199,7 @@ var GUI = {
 					y: 5
 				},
 				action: 'buy',
-				value: 'range_pirate'
+				value: 'gunner'
 			};
 
 		this.buttons['lumberjack'] = {

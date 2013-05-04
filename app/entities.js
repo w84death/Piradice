@@ -413,7 +413,11 @@ Unit.prototype = {
             }
             if(other.squad < 1 ){
                 other.die();
-                fight_result = true;
+                if(this.range){
+                    fight_result = false;
+                }else{
+                    fight_result = true;
+                }
                 if(this.squad > 0){
                     war_log.header = this.name + ' win the fight!';
                 }
