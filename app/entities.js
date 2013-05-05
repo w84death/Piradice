@@ -745,11 +745,12 @@ var Ship = function Ship(args){
     this.y = args.y;
     this.sprite = 35;
     this.water = true;
-    this.attack_range = true;    
+    this.range = true;
     this.create_unit = true;
     this.squad = 1;
     this.messages = ['Sail', 'Ahoy'];
     this.move_range = 5;
+    this.attack_range = 6;
     this.fow = 6;
     this.merging = false;
 };

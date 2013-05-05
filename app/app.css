@@ -43,8 +43,9 @@ button.big {padding: 1em 2em;font-size: 2em;}
 .manual article ul.units li {width:21%; padding:2%; float:left;}
 .manual article ul.units:after {content:' '; display:block; clear:both;}
 
-header, footer {padding:1em;text-align:center;
+header {padding:1em;text-align:center;
 	background:#58bdcd url('../media/background.jpg') no-repeat center center fixed; background-size:cover;}
+footer {padding:1em;text-align:center;background-color:#58bdcd;}
 nav { text-align:center; }
 nav ul {}
 nav ul li {display:inline-block;}

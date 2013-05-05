@@ -574,7 +574,7 @@ var render = {
                                 block = 38;
                             }
                             if(block){                                    
-                                    this.gui.ctx.drawImage(render.sprites[block],world.map.entities[i].move_area[j].x*render.box, world.map.entities[i].move_area[j].y*render.box);                                
+                                this.gui.ctx.drawImage(render.sprites[block],world.map.entities[i].move_area[j].x*render.box, world.map.entities[i].move_area[j].y*render.box);                                
                             }
                         }
                     }else{

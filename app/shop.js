@@ -160,7 +160,7 @@ var shop = {
         }
         
         return false;
-    },
+    },    
 
     freeChests: function(){
         var locations = [],

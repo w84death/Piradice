@@ -18,7 +18,7 @@ var GUI = {
 			y: 0
 		}
 	},
-	show: ['logo', 'map', 'play','random', 'map_size1', 'map_size2', 'map_size3'],
+	show: ['logo', 'copyright', 'map', 'play','random', 'map_size1', 'map_size2', 'map_size3'],
 
 	init: function(){
 		this.ctx = render.menu.ctx;		
@@ -52,7 +52,13 @@ var GUI = {
 				value: 'start',
 			};
 
-		
+		this.labels['copyright'] = {
+			text: '©2013 Krzysztof Jankowski ' + game.version,
+			position: {
+				x: ((render.viewport.width*0.5)<<0),
+				y: 13
+			}
+		};
 
 		this.buttons['random'] = {				
 				sprite: this.makeButton({x:4, y:8, width:4, height:2, text:'RANDOMIZE'}),
@@ -288,6 +294,7 @@ var GUI = {
 			value: 'dust'
 		};		
 
+	// HUD
 		this.hud['inventory'] = {
 			sprite: this.drawHUD({
 				sprite: {
@@ -330,7 +337,7 @@ var GUI = {
 			},
 			live: 'trees',
 			parent: 'inventory'
-		};
+		};		
 
 		this.render({menu:true});
 	},
@@ -424,6 +431,29 @@ var GUI = {
 		this.show.push('ready');
 		this.show.push('new_game');
 	},
+
+	drawEnd: function(args){			
+		this.ctx.fillStyle = this.conf.color;
+		this.ctx.fillRect(0, 0, render.viewport.width*render.box, render.viewport.height*render.box);
+
+		if(game.teams[game.turn.team].pirates){
+			this.ctx.drawImage(render.big_sprites[0],((render.viewport.width*render.box)*0.5<<0) - ((render.big_sprites[0].width*0.5)<<0),((render.viewport.height*render.box)*0.5<<0) - ((render.big_sprites[0].height*0.5)<<0));
+		}
+		if(game.teams[game.turn.team].skeletons){
+			this.ctx.drawImage(render.big_sprites[1],((render.viewport.width*render.box)*0.5<<0) - ((render.big_sprites[1].width*0.5)<<0),((render.viewport.height*render.box)*0.5<<0) - ((render.big_sprites[1].height*0.5)<<0));
+		}
+
+		this.ctx.fillStyle = this.conf.color2;
+		this.ctx.font = 'bold 32px VT323, cursive';
+		this.ctx.textBaseline = 'middle';
+		this.ctx.textAlign = 'center';
+		this.ctx.fillText('GAME OVER', (render.viewport.width*render.box)*0.5<<0, (render.viewport.height-4)*render.box);		
+		this.ctx.font = '24px VT323, cursive';
+		this.ctx.fillText(args.message, (render.viewport.width*render.box)*0.5<<0, (render.viewport.height-2)*render.box);		
+		
+		this.show = [];
+		this.show.push('new_game');
+	},
 	
 	makeButton: function(args){
 		if(!args.height){
@@ -466,7 +496,10 @@ var GUI = {
 
 	drawLabel: function(args){
 		var text = args.text,
-			pos = {x:0,y:0};
+			pos = {
+				x:args.position.x * render.box,
+				y:args.position.y * render.box
+			};
 
 		this.ctx.fillStyle = this.conf.color3;
 		this.ctx.font = '16px VT323, cursive';
@@ -596,6 +629,10 @@ var GUI = {
 			
 			if(args.ready){
 				this.drawReady();
+			}
+
+			if(args.end){
+				this.drawEnd({message: args.message});
 			}
 
 			if(this.popUp.show){

@@ -26,6 +26,7 @@ var game = {
             pirates: true,
             ai: false,
             wallet: 400,
+            income: 10,
             trees: 10,
             bought: false,
             offset: {x:0,y:0}            
@@ -33,6 +34,7 @@ var game = {
             skeletons: true,
             ai: false,
             wallet: 400,
+            income: 10,
             trees: 10,
             bought: false,
             offset: {x:0,y:0}
@@ -41,7 +43,7 @@ var game = {
         id: 1,
         start: true,
         team: 0
-    },
+    },    
     ai_speed: 100,
     game_speed: 500,
     play: false,
@@ -62,7 +64,7 @@ var game = {
 
     start: function(){
     	this.map = false;             
-        GUI.show = ['map','inventory','gold','trees','end'];
+        GUI.show = ['map','copyright','inventory','gold','trees','end'];
         GUI.hud['map'].position = {x:1,y:1};
         shop.show();
         shop.buyStarter();        
@@ -86,7 +88,7 @@ var game = {
             bought: false,
             offset: {x:0,y:0}
         }];
-		GUI.show = ['logo', 'map','play','random', 'map_size1', 'map_size2', 'map_size3'];
+		GUI.show = ['logo', 'copyright', 'map','play','random', 'map_size1', 'map_size2', 'map_size3'];
         GUI.hud['map'].position = {x:((render.viewport.width*0.5)<<0)-4,y:8};
         this.turn.start = true;
         this.turn.id = 1;
@@ -126,6 +128,7 @@ var game = {
     },
 
     centerMap: function(args){
+        console.log(args);
         if(!args){
             args = {};
             args.x = (world.map.width*0.5)<<0;
@@ -133,6 +136,10 @@ var game = {
         }
         render.viewport.offset.x = ((render.viewport.width*0.5)<<0) - args.x;
         render.viewport.offset.y = ((render.viewport.height*0.5)<<0) - args.y;
+        game.teams[game.turn.team].offset = {
+            x:render.viewport.offset.x,
+            y:render.viewport.offset.y
+        };
         render.render({all:true});
     },
 
@@ -296,24 +303,40 @@ var game = {
     },
 
     payDay: function(){
-        var salary = 5;
-            
-        if(game.teams[game.turn.team].skeletons){
-            for (var i = 0; i < world.map.entities.length; i++) {
+        var salary = 5;            
+    
+        for (var i = 0; i < world.map.entities.length; i++) {
+            if(game.teams[game.turn.team].skeletons){
                 if(world.map.entities[i].cementary){
-                    salary += 10;
+                    salary += game.teams[game.turn.team].income;
                 }
-            };
-        }
-        if(game.teams[game.turn.team].pirates){
-            for (var i = 0; i < world.map.entities.length; i++) {
+            }
+            if(game.teams[game.turn.team].pirates){
                 if(world.map.entities[i].ship){
-                    salary += 10;
+                    salary += game.teams[game.turn.team].income;
                 }
-            };
-        }
+            }
+        };
+        
         game.teams[game.turn.team].wallet += salary;
         game.updateWallet();        
+    },
+
+    income: function(){
+        var income = 5;
+        for (var i = 0; i < world.map.entities.length; i++) {
+            if(game.teams[game.turn.team].pirates){
+                if(world.map.entities[i].ship){
+                    income += game.teams[game.turn.team].income;
+                }
+            }
+            if(game.teams[game.turn.team].skeletons){
+                if(world.map.entities[i].ship){
+                    income += game.teams[game.turn.team].income;
+                }
+            }
+        };
+        return income;
     },
 
     killZombies: function(){
@@ -330,20 +353,20 @@ var game = {
         render.render({entities:true});        
     },
             
-    win: function(){
-        window.alert('You win!');
-        this.ready = false;
+    win: function(){        
+        GUI.render({end:true,message:'You win!'})
+        /*this.ready = false;
         this.play = false;
         this.map = true;
-        this.restart();
+        this.restart();*/
     },
 
     lose: function(){        
-        window.alert('You lose');
-        this.ready = false;
+        GUI.render({end:true,message:'You lose :('})
+        /*this.ready = false;
         this.play = false;
         this.map = true;
-        this.restart();
+        this.restart();*/
     },
 
 
