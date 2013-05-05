@@ -4,12 +4,15 @@ var shop = {
     init: function(){
         this.price_list['pirate'] = 10;
         this.price_list['gunner'] = 20;
-        this.price_list['lumberjack'] = 90;
-        this.price_list['skeleton'] = 10;
-        this.price_list['dust'] = 60;
+        this.price_list['lumberjack'] = 10;
         this.price_list['ship'] = 200;
+        this.price_list['cannon'] = 50;
+        
+        this.price_list['skeleton'] = 10;
+        this.price_list['dust'] = 30;        
         this.price_list['cementary'] = 200;
         this.price_list['octopus'] = 110;
+        this.price_list['daemon'] = 15;
     },
 
     buy: function(args){
@@ -85,6 +88,10 @@ var shop = {
                 world.map.entities.push(new Lumberjack({x:newX,y:newY,team:team, ai:ai}));
             }
             
+            if(args.unit == 'cannon'){
+                world.map.entities.push(new Cannon({x:newX,y:newY,team:team, ai:ai}));
+            }
+            
             if(args.unit == 'ship'){
                 world.map.entities.push(new Ship({x:newX,y:newY,team:team, ai:ai}));
                 use_moves = false;
@@ -97,6 +104,10 @@ var shop = {
             
             if(args.unit == 'dust'){
                 world.map.entities.push(new Dust({x:newX,y:newY,team:team, ai:ai}));
+            }
+            
+            if(args.unit == 'daemon'){
+                world.map.entities.push(new Daemon({x:newX,y:newY,team:team, ai:ai}));
             }
             
             if(args.unit == 'octopus'){
@@ -218,6 +229,9 @@ var shop = {
                 if(game.teams[game.turn.team].wallet >= this.price_list['lumberjack']){ 
                     GUI.show.push('lumberjack');
                 }
+                if(game.teams[game.turn.team].wallet >= this.price_list['cannon']){ 
+                    GUI.show.push('cannon');
+                }
             }
         }
 
@@ -238,6 +252,9 @@ var shop = {
                 }
                 if(game.teams[game.turn.team].wallet >= this.price_list['dust']){ 
                     GUI.show.push('dust');                
+                }
+                if(game.teams[game.turn.team].wallet >= this.price_list['daemon']){ 
+                    GUI.show.push('daemon');                
                 }
             }
         }

@@ -1,4 +1,7 @@
-<section id="game"></section>          
+<section id="game">
+<h1>LOADING GAME</h1>
+<p>Please wait a second..</p>
+</section>          
 <script src="/app/seed.js"></script>
 <script src="/app/entities.js"></script>
 <script src="/app/items.js"></script>
@@ -13,7 +16,24 @@
 
 <?php if(($_GET['sub']=='random')||($_GET['sub']=='multi')){ ?>        
 <script>
-    game.init({multi:true});
+  WebFontConfig = {
+  
+    google: { families: [ 'VT323::latin' ] },
+    active: function() {
+    	game.init({multi:true}); 
+    }
+    
+  };
+  (function() {
+    var wf = document.createElement('script');
+    wf.src = ('https:' == document.location.protocol ? 'https' : 'http') +
+      '://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js';
+    wf.type = 'text/javascript';
+    wf.async = 'true';
+    var s = document.getElementsByTagName('script')[0];
+    s.parentNode.insertBefore(wf, s);
+  })(); 
+    
 </script>
 <?php } ?>
 <?php if($_GET['sub']=='solo'){ ?>        

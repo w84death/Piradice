@@ -51,7 +51,7 @@ var render = {
 
             this.createDOM();
 
-            this.noise_img = this.fastNoise(this.viewport.width*this.box, this.viewport.height*this.box, 8 );
+            this.noise_img = this.fastNoise(world.map.width*this.box, word.map.height*this.box, 8 );
 
             this.sprites_img.src = "/media/sprites.png";
             this.sprites_img.onload = function(){                
@@ -104,7 +104,9 @@ var render = {
                 render.sprites[39] = [render.makeSprite(3,2, false),render.makeSprite(3,2, false)]; // cementary
                 render.sprites[49] = [render.makeSprite(6,5, false),render.makeSprite(6,5, true)]; // dust
                 render.sprites[53] = [render.makeSprite(6,4, false),render.makeSprite(6,4, true)]; // lumberjack
-
+				render.sprites[59] = [render.makeSprite(7,5, false),render.makeSprite(7,5, true)]; // cannon
+				render.sprites[68] = [render.makeSprite(9,5, false),render.makeSprite(9,5, true)]; // daemon
+				
                 // hints
                 render.sprites[40] = render.makeSprite(2,10, false); // hint top
                 render.sprites[41] = render.makeSprite(2,7, false); // hint right
@@ -141,8 +143,6 @@ var render = {
                 render.sprites[57] = render.makeSprite(6,2, false); // shout
                 render.sprites[58] = render.makeSprite(4,2, false); // message
                 
-                //render.sprites[59] = render.makeLogo(0,9, false); // hint top red
-
                 
 
                 render.big_sprites[0] = render.resize(render.sprites[35][0], 8);
@@ -173,7 +173,9 @@ var render = {
     createDOM: function(){
         var gameDiv = document.getElementById('game'),
             viewportDiv = document.createElement('canvas');
-
+		
+		gameDiv.innerHTML = '';
+		
         viewportDiv.setAttribute('id','viewport');
 
         gameDiv.appendChild(viewportDiv);
@@ -373,18 +375,18 @@ var render = {
 
     move:function(args){
         var margin = {
-            x:(world.map.width*0.5)<<0,
-            y:(world.map.height*0.5)<<0
+            x:2,
+            y:2
         }
 
-        if(this.viewport.offset.x + args.x >= -margin.x && this.viewport.offset.x + args.x < this.viewport.width - margin.x){
+        if(this.viewport.offset.x + args.x >= -(world.map.width-margin.x) && this.viewport.offset.x + args.x <= this.viewport.width - margin.x){
             this.viewport.offset.x += args.x;
             game.teams[game.turn.team].offset.x = this.viewport.offset.x;
             this.drawHints();
             this.post_render();                    
         }
 
-        if(this.viewport.offset.y +args.y >= -margin.y && this.viewport.offset.y + args.y < this.viewport.height - margin.y){
+        if(this.viewport.offset.y +args.y >= -(world.map.height-margin.y) && this.viewport.offset.y + args.y <= this.viewport.height - margin.y){
             this.viewport.offset.y += args.y;        
             game.teams[game.turn.team].offset.y = this.viewport.offset.y;
             this.drawHints();

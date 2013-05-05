@@ -264,6 +264,8 @@ var game = {
                 GUI.show.push('trees');
                 GUI.show.push('end');
                 render.render({gui:true, menu:true, entities:true, sky:true});                                   
+            }else{
+            	return true;
             }
 
             if(this.turn.id == 1){
@@ -318,12 +320,18 @@ var game = {
     },
             
     win: function(){
-        window.alert('You win!'); 
+        window.alert('You win!');
+        this.ready = false;
+        this.play = false;
+        this.map = true;
         this.restart();
     },
 
     lose: function(){        
         window.alert('You lose');
+        this.ready = false;
+        this.play = false;
+        this.map = true;
         this.restart();
     },
 

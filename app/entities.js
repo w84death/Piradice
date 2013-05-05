@@ -40,6 +40,7 @@ var Unit = function Unit(){
     this.fow = 3;
     this.create_unit = false;
     this.can_destroy_structure = false;
+    this.can_cut_tree = false;
     this.merging = true;
 };
 
@@ -119,37 +120,58 @@ Unit.prototype = {
             }
 
             var newX = 0,
-                newY = 0;
-
+                newY = 0,
+                check_area = this.move_range;
+				
+				if (this.attack_range > this.move_range) {
+					check_area = this.attack_range;
+				}
+				
             // calculate other moves
-            for (var i = 1; i < this.move_range; i++) {
+            for (var i = 1; i < check_area; i++) {
                 for (var j = 0; j < this.move_area.length; j++) {
                     if(this.move_area[j].distance === i){
                         // check moves and add distance
                         newX = this.move_area[j].x-1;
                         newY = this.move_area[j].y;
                         if(world.map.moves[(newX)+((newY)*world.map.width)] === map_type && !check_move_area(this.move_area,newX,newY)){
-                            this.move_area.push({x:newX,y:newY, move:true, distance:i+1});
-                        }
+                        		if(this.move_range >= i+1){
+                            		this.move_area.push({x:newX,y:newY, move:true, distance:i+1});
+                        		}else{
+                        			this.move_area.push({x:newX,y:newY, move:false, distance:i+1});
+                        		}
+                        	}
                         
                         newX = this.move_area[j].x;
                         newY = this.move_area[j].y-1;
                         if(world.map.moves[(newX)+((newY)*world.map.width)] === map_type && !check_move_area(this.move_area,newX,newY)){
-                            this.move_area.push({x:newX,y:newY, move:true, distance:i+1});
-                        }
+                            	if(this.move_range >= i+1){
+                            		this.move_area.push({x:newX,y:newY, move:true, distance:i+1});
+                        		}else{
+                        			this.move_area.push({x:newX,y:newY, move:false, distance:i+1});
+                        		}
+                            }
                         
                         newX = this.move_area[j].x;
                         newY = this.move_area[j].y+1;
                         if(world.map.moves[(newX)+((newY)*world.map.width)] === map_type && !check_move_area(this.move_area,newX,newY)){
-                            this.move_area.push({x:newX,y:newY, move:true, distance:i+1});
-                        }
+                            	if(this.move_range >= i+1){
+                            		this.move_area.push({x:newX,y:newY, move:true, distance:i+1});
+                        		}else{
+                        			this.move_area.push({x:newX,y:newY, move:false, distance:i+1});
+                        		}
+                            }
                          
                         newX = this.move_area[j].x+1;
                         newY = this.move_area[j].y;            
                         if(world.map.moves[(newX)+((newY)*world.map.width)] === map_type && !check_move_area(this.move_area,newX,newY)){
-                            this.move_area.push({x:newX,y:newY, move:true, distance:i+1});
-                        }
-                    }
+                            	if(this.move_range >= i+1){
+                            		this.move_area.push({x:newX,y:newY, move:true, distance:i+1});
+                        		}else{
+                        			this.move_area.push({x:newX,y:newY, move:false, distance:i+1});
+                        		}	
+                            }
+                    	}
                 };
             };
 
@@ -160,6 +182,29 @@ Unit.prototype = {
                 }
             }
 
+            // trees for cutters
+            if(this.can_cut_tree){
+                
+                // tree/palm
+                map_type = 2;
+
+                if(world.map.moves[(this.x-1)+((this.y)*world.map.width)] == map_type){           
+                    this.move_area.push({x:this.x-1,y:this.y, forest:true});
+                }
+                
+                if(world.map.moves[(this.x)+((this.y-1)*world.map.width)] == map_type){
+                    this.move_area.push({x:this.x,  y:this.y-1, forest:true});
+                }
+                
+                if(world.map.moves[(this.x)+((this.y+1)*world.map.width)] == map_type){
+                    this.move_area.push({x:this.x,  y:this.y+1, forest:true});
+                }
+                            
+                if(world.map.moves[(this.x+1)+((this.y)*world.map.width)] == map_type){
+                    this.move_area.push({x:this.x+1,  y:this.y, forest:true});
+                }
+            }
+
             // check if enemy/ally/structure
             // ..
             for (var i = 0; i < this.move_area.length; i++) {
@@ -167,18 +212,14 @@ Unit.prototype = {
 
                     // unit in movable area
                     if(this.move_area[i].x === world.map.entities[j].x && this.move_area[i].y === world.map.entities[j].y ){
-                    
-                        // cant move there
-                        this.move_area[i].move = false;
-
-                        // enemy
+                                          // enemy
                         if(world.map.entities[j].team != this.team && world.map.entities[j].unit){
                             this.move_area[i].attack = true;
                         }
 
                         // ally
 
-                        if(world.map.entities[j].team === this.team && world.map.entities[j].name === this.name && this.merging){                            
+	                    if(world.map.entities[j].team === this.team && world.map.entities[j].name == this.name && this.merging && this.move_area[i].move){                            
                             this.move_area[i].merge = true;
                         }
 
@@ -188,6 +229,9 @@ Unit.prototype = {
                                 this.move_area[i].attack = true;
                             }
                         }
+                        
+                        // cant move there
+                        this.move_area[i].move = false;
                     }
                 }
             }
@@ -392,10 +436,10 @@ Unit.prototype = {
             }
 
             // attack_range units must reload their weapons
-            if(this.attack_range){
+            if(this.range){
                 this.reloading = 3;
             }
-            if(other.attack_range){
+            if(other.range){
                 other.reloading = 3;
             }            
 
@@ -555,6 +599,24 @@ var Gunner = function Gunner(args){
 
 Gunner.prototype = new Unit();
 
+var Cannon = function Cannon(args){
+    this.name = 'Cannon';
+    this.pirate = true;
+    this.x = args.x;
+    this.y = args.y;
+    this.sprite = 59; 
+    this.range = true;   
+    this.team = 0;
+    this.squad = 1;
+    this.merging = false;
+    this.messages = ['Fire!', 'Yarr!', 'Bum!'];
+    this.attack_range = 5;
+    this.move_range = 2;
+    this.can_destroy_structure = true;
+    this.fow = 6;
+};
+
+Cannon.prototype = new Unit();
 
 var Lumberjack = function Lumberjack(args){
     this.name = 'Lumberjack';
@@ -563,6 +625,7 @@ var Lumberjack = function Lumberjack(args){
     this.y = args.y;
     this.team = 0;
     this.lumberjack = true;
+    this.can_cut_tree = true;
     this.squad = 1;
     this.max = 1;
     this.sprite = 53;
@@ -674,3 +737,21 @@ var Octopus = function Octopus(args){
 };
 
 Octopus.prototype = new Unit();
+
+var Daemon = function Daemon(args){
+    this.name = 'Daemon';
+    this.skeleton = true;
+    this.x = args.x;
+    this.y = args.y;
+    this.sprite = 68; 
+    this.range = true;   
+    this.team = 1;
+    this.squad = 1;
+    this.merging = false;
+    this.messages = ['Sss', 'Phh', 'Fuff', 'Grrr'];
+    this.attack_range = 4;
+    this.move_range = 3;
+    this.fow = 6;
+};
+
+Daemon.prototype = new Unit();

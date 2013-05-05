@@ -191,7 +191,7 @@ var GUI = {
 			};
 
 		this.buttons['gunner'] = {
-				sprite: this.makeButton({x:4, y:6, sprite_over: 29, width:2, height:2, label:shop.price_list['Gunner']}),
+				sprite: this.makeButton({x:4, y:6, sprite_over: 29, width:2, height:2, label:shop.price_list['gunner']}),
 				width: 2,
 				height: 2,
 				position: {
@@ -212,6 +212,18 @@ var GUI = {
 				},
 				action: 'buy',
 				value: 'lumberjack'
+			};
+			
+		this.buttons['cannon'] = {
+				sprite: this.makeButton({x:4, y:6, sprite_over: 59, width:2, height:2, label:shop.price_list['cannon']}),
+				width: 2,
+				height: 2,
+				position: {
+					x: render.viewport.width-3,
+					y: 9
+				},
+				action: 'buy',
+				value: 'cannon'
 			};
 
 		this.buttons['cementary'] = {
@@ -250,13 +262,25 @@ var GUI = {
 			value: 'skeleton'
 		};
 
+		this.buttons['daemon'] = {
+			sprite: this.makeButton({x:4, y:6, sprite_over: 68, width:2, height:2, label:shop.price_list['daemon']}),	
+			width: 2,
+			height: 2,			
+			position: {
+				x: render.viewport.width-3,
+				y: 7
+			},
+			action: 'buy',
+			value: 'daemon'
+		};
+
 		this.buttons['dust'] = {
 			sprite: this.makeButton({x:4, y:6, sprite_over: 49, width:2, height:2, label:shop.price_list['dust']}),	
 			width: 2,
 			height: 2,			
 			position: {
 				x: render.viewport.width-3,
-				y: 7
+				y: 9
 			},
 			action: 'buy',
 			value: 'dust'
@@ -504,8 +528,10 @@ var GUI = {
         var m_context = m_canvas.getContext('2d');
 		var center = (((m_canvas.width*0.5)/render.box)<<0);
 		
-		m_context.fillStyle = '#ffda90';
-		m_context.fillRect(0, 0, width*render.box, height*render.box);
+		//m_context.fillStyle = '#ffda90';
+		//m_context.fillRect(0, 0, width*render.box, height*render.box);
+
+		m_context.drawImage(render.sprites_img, -10*render.box, -4*render.box);
 
 		if(args.left.sprite != 48 ){
 			m_context.drawImage(render.sprites[ args.left.sprite ][ 0 ], center*render.box-(render.box*0.5), render.box-(render.box*0.5));
