@@ -136,7 +136,11 @@ var shop = {
             }                
             this.show();
             game.updateUnits();
-            fogOfWar.update();
+            fogOfWar.update();            
+            game.centerMap({
+                x:newX,
+                y:newY
+            });
             render.render({entities:true, gui:true});
         }else{
             console.log('need more gold!');

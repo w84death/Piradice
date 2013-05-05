@@ -42,6 +42,7 @@ var Unit = function Unit(){
     this.can_destroy_structure = false;
     this.can_cut_tree = false;
     this.merging = true;
+    this.die_after_attack = false;
 };
 
 Unit.prototype = {
@@ -93,23 +94,33 @@ Unit.prototype = {
             }
 
             // MOVE FINGIND ALGORITHM
-            // first 4 moves at distance 1
-            if(world.map.moves[(this.x-1)+((this.y)*world.map.width)] == map_type){           
-                this.move_area.push({x:this.x-1,y:this.y, move:true, distance:1});
-            }
-            
-            if(world.map.moves[(this.x)+((this.y-1)*world.map.width)] == map_type){
-                this.move_area.push({x:this.x,  y:this.y-1, move:true, distance:1});
-            }
-            
-            if(world.map.moves[(this.x)+((this.y+1)*world.map.width)] == map_type){
-                this.move_area.push({x:this.x,  y:this.y+1, move:true, distance:1});
-            }
-                        
-            if(world.map.moves[(this.x+1)+((this.y)*world.map.width)] == map_type){
-                this.move_area.push({x:this.x+1,  y:this.y, move:true, distance:1});
-            }
 
+            
+            // some vars
+            var newX = 0,
+                newY = 0,
+                can_move = false,
+                distance = 0,
+                check_area = this.move_range,
+                entities_mask = [world.map.width+20];
+                
+                if (this.attack_range > this.move_range) {
+                    check_area = this.attack_range;
+                }
+
+            // generate entities mask
+            for (var i = -20; i < world.map.width+20; i++) {
+                entities_mask[i] = [world.map.height+20];
+                for (var j = -20; j < world.map.height+20; j++) {
+                    entities_mask[i][j] = false;
+                };
+            };
+
+            for (var i = 0; i < world.map.entities.length; i++) {
+                entities_mask[world.map.entities[i].x][world.map.entities[i].y] = true;
+            };
+
+            // useful function
             function check_move_area(area,x,y){
                 for (var z = 0; z < area.length; z++) {
                     if(area[z].x === x && area[z].y === y){
@@ -119,59 +130,109 @@ Unit.prototype = {
                 return false;
             }
 
-            var newX = 0,
-                newY = 0,
-                check_area = this.move_range;
-				
-				if (this.attack_range > this.move_range) {
-					check_area = this.attack_range;
-				}
-				
+            // generate first point 0
+            this.move_area.push({x:this.x,  y:this.y, move:true, distance:0});
+            				
             // calculate other moves
-            for (var i = 1; i < check_area; i++) {
+            for (var i = 0; i < check_area; i++) {
                 for (var j = 0; j < this.move_area.length; j++) {
                     if(this.move_area[j].distance === i){
                         // check moves and add distance
                         newX = this.move_area[j].x-1;
                         newY = this.move_area[j].y;
+                        distance = i+1;
                         if(world.map.moves[(newX)+((newY)*world.map.width)] === map_type && !check_move_area(this.move_area,newX,newY)){
-                        		if(this.move_range >= i+1){
-                            		this.move_area.push({x:newX,y:newY, move:true, distance:i+1});
-                        		}else{
-                        			this.move_area.push({x:newX,y:newY, move:false, distance:i+1});
-                        		}
-                        	}
+                    		if(this.move_range >= i+1){
+                        		if(entities_mask[newX][newY]){
+                                    can_move = false;                                    
+                                    distance = -1;
+                                    if(this.range){                                    
+                                        distance = i+1;
+                                    }
+                                }else{
+                                    can_move = true;
+                                    distance = i+1;
+                                    if(!this.move_area[j].move && this.range){                                    
+                                        can_move = false;
+                                    }
+                                }
+                    		}else{
+                    			can_move = false;                                
+                    		}
+
+                            this.move_area.push({x:newX,y:newY, move:can_move, distance:distance});
+                        }
                         
                         newX = this.move_area[j].x;
                         newY = this.move_area[j].y-1;
                         if(world.map.moves[(newX)+((newY)*world.map.width)] === map_type && !check_move_area(this.move_area,newX,newY)){
-                            	if(this.move_range >= i+1){
-                            		this.move_area.push({x:newX,y:newY, move:true, distance:i+1});
-                        		}else{
-                        			this.move_area.push({x:newX,y:newY, move:false, distance:i+1});
-                        		}
+                            if(this.move_range >= i+1){
+                                if(entities_mask[newX][newY]){
+                                    can_move = false;
+                                    distance = -1;
+                                    if(this.range){                                    
+                                        distance = i+1;
+                                    }
+                                }else{
+                                    can_move = true;
+                                    distance = i+1;
+                                    if(!this.move_area[j].move && this.range){                                    
+                                        can_move = false;
+                                    }
+                                }
+                            }else{
+                                can_move = false;
                             }
+
+                            this.move_area.push({x:newX,y:newY, move:can_move, distance:distance});
+                        }
                         
                         newX = this.move_area[j].x;
                         newY = this.move_area[j].y+1;
                         if(world.map.moves[(newX)+((newY)*world.map.width)] === map_type && !check_move_area(this.move_area,newX,newY)){
-                            	if(this.move_range >= i+1){
-                            		this.move_area.push({x:newX,y:newY, move:true, distance:i+1});
-                        		}else{
-                        			this.move_area.push({x:newX,y:newY, move:false, distance:i+1});
-                        		}
+                            if(this.move_range >= i+1){
+                                if(entities_mask[newX][newY]){
+                                    can_move = false;
+                                    distance = -1;
+                                    if(this.range){                                    
+                                        distance = i+1;
+                                    }
+                                }else{
+                                    distance = i+1;
+                                    can_move = true;
+                                    if(!this.move_area[j].move && this.range){                                    
+                                        can_move = false;
+                                    }
+                                }
+                            }else{
+                                can_move = false;
                             }
+                            this.move_area.push({x:newX,y:newY, move:can_move, distance:distance});
+                        }
                          
                         newX = this.move_area[j].x+1;
                         newY = this.move_area[j].y;            
                         if(world.map.moves[(newX)+((newY)*world.map.width)] === map_type && !check_move_area(this.move_area,newX,newY)){
-                            	if(this.move_range >= i+1){
-                            		this.move_area.push({x:newX,y:newY, move:true, distance:i+1});
-                        		}else{
-                        			this.move_area.push({x:newX,y:newY, move:false, distance:i+1});
-                        		}	
+                            if(this.move_range >= i+1){
+                                if(entities_mask[newX][newY]){
+                                    can_move = false;
+                                    distance = -1;
+                                    if(this.range){                                    
+                                        distance = i+1;
+                                    }
+                                }else{
+                                    can_move = true;
+                                    distance = i+1;
+                                    if(!this.move_area[j].move && this.range){                                    
+                                        can_move = false;
+                                    }
+                                }
+                            }else{
+                                can_move = false;
                             }
-                    	}
+                            this.move_area.push({x:newX,y:newY, move:can_move, distance:distance});	
+                        }
+                    }
                 };
             };
 
@@ -443,8 +504,8 @@ Unit.prototype = {
                 other.reloading = 3;
             }            
 
-            // special units
-            if(this.dust){
+            // units that die after attack must die
+            if(this.die_after_attack){
                 this.die();
             }
 
@@ -538,6 +599,7 @@ Unit.prototype = {
         this.sprite = 48;
         this.alive = false;
         this.moves = 0;
+        this.squad = 0;
         game.killZombies();
         game.updateUnits();
     },
@@ -594,7 +656,7 @@ var Gunner = function Gunner(args){
     this.messages = ['Fire!', 'Aim', 'Yarr!', 'Bum!'];
     this.attack_range = 4;
     this.move_range = 3;
-    this.fow = 6;
+    this.fow = 5;
 };
 
 Gunner.prototype = new Unit();
@@ -610,10 +672,10 @@ var Cannon = function Cannon(args){
     this.squad = 1;
     this.merging = false;
     this.messages = ['Fire!', 'Yarr!', 'Bum!'];
-    this.attack_range = 5;
+    this.attack_range = 6;
     this.move_range = 2;
     this.can_destroy_structure = true;
-    this.fow = 6;
+    this.fow = 7;
 };
 
 Cannon.prototype = new Unit();
@@ -669,6 +731,7 @@ var Dust = function Dust(args){
     this.fow = 4;
     this.merging = false;
     this.bonus = 6;
+    this.die_after_attack = true;
 };
 
 Dust.prototype = new Unit();

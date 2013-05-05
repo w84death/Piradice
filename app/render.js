@@ -51,7 +51,7 @@ var render = {
 
             this.createDOM();
 
-            this.noise_img = this.fastNoise(world.map.width*this.box, word.map.height*this.box, 8 );
+            this.noise_img = this.fastNoise(world.map.width*this.box, world.map.height*this.box, 8 );
 
             this.sprites_img.src = "/media/sprites.png";
             this.sprites_img.onload = function(){                
@@ -78,7 +78,7 @@ var render = {
                 render.sprites[16] = render.makeSprite(2,1, false); // pirate flag
                 render.sprites[37] = render.makeSprite(7,3, false); // buy area
                 render.sprites[38] = render.makeSprite(6,3, false); // cut forest
-                render.sprites[48] = render.makeSprite(9,4, false); // cross / die
+                render.sprites[48] = [render.makeSprite(9,4, false),render.makeSprite(9,4, true)]; // cross / die
 
                 // entities
                 render.sprites[17] = [render.makeSprite(0,3, false),render.makeSprite(0,3, true)]; // pirate 1
@@ -150,7 +150,7 @@ var render = {
 
                 GUI.init();
                 fogOfWar.init();
-    
+                game.centerMap();
                 render.render({all:true});
             };
             
@@ -513,7 +513,7 @@ var render = {
             this.map.ctx.clearRect(0, 0, world.map.width*this.box, world.map.height*this.box);
             
             for(var y=0; y<world.map.height; y++){
-                for(var x=0; x<world.map.width; x++){                     
+                for(var x=0; x<world.map.width; x++){
                     this.map.ctx.drawImage(this.sprites[world.map.data[x+(y*world.map.width)]], x*this.box, y*this.box);                                            
                 }
             }
@@ -530,7 +530,7 @@ var render = {
         if(args.entities){            
             this.entities.ctx.clearRect(0, 0, world.map.width*this.box, world.map.height*this.box);            
             for(i=0; i<world.map.entities.length; i++){
-                if(world.map.entities[i].alive){                
+                if(world.map.entities[i].alive){                                 
                     this.entities.ctx.drawImage(this.sprites[ world.map.entities[i].sprite ][ world.map.entities[i].flip ], world.map.entities[i].x*this.box, world.map.entities[i].y*this.box);                                        
                 }
             }
@@ -544,6 +544,14 @@ var render = {
             
             if(!game.teams[game.turn.team].ai){
                 for(i=0; i<world.map.entities.length; i++){
+
+                    if(world.map.entities[i].reloading > 0 && world.map.entities[i].alive ){
+                        this.gui.ctx.drawImage(render.sprites[15], world.map.entities[i].x*render.box, world.map.entities[i].y*render.box);                        
+                    }
+                    if(world.map.entities[i].moves < 1 && world.map.entities[i].alive){                        
+                        this.gui.ctx.drawImage(render.sprites[11], world.map.entities[i].x*render.box, world.map.entities[i].y*render.box);                        
+                    }
+
                     if(world.map.entities[i].selected){
                         
                         this.gui.ctx.drawImage(render.sprites[10], world.map.entities[i].x*render.box, world.map.entities[i].y*render.box);                        
@@ -573,13 +581,7 @@ var render = {
                         if(world.map.entities[i].message && world.map.entities[i].alive){                        
                             render.drawMessage(world.map.entities[i].message,world.map.entities[i].x, world.map.entities[i].y, world.map.entities[i].important);                            
                         }
-                    }
-                    if(world.map.entities[i].reloading > 0 && world.map.entities[i].alive ){
-                        this.gui.ctx.drawImage(render.sprites[15], world.map.entities[i].x*render.box, world.map.entities[i].y*render.box);                        
-                    }
-                    if(world.map.entities[i].moves < 1 && world.map.entities[i].alive){                        
-                        this.gui.ctx.drawImage(render.sprites[11], world.map.entities[i].x*render.box, world.map.entities[i].y*render.box);                        
-                    }
+                    }                    
                 }
             }
         }

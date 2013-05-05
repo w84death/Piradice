@@ -19,7 +19,7 @@
 */
 
 var game = {
-    version: 'VERSION 5',
+    version: 'VERSION 6',
     mobile: false || navigator.userAgent.match(/(iPhone)|(iPod)|(iPad)|(android)|(webOS)/i),
     tablet: false || navigator.userAgent.match(/(iPad)/i),
     teams: [{
@@ -57,7 +57,7 @@ var game = {
             height: 32 || args.h
         });        
         shop.init();
-        render.init();
+        render.init();        
     },
 
     start: function(){
@@ -95,7 +95,7 @@ var game = {
         this.play = false;
         this.ready = false;
     	this.map = true;
-    	render.viewport.offset = {x:0,y:0};
+        this.centerMap();
         render.render({all:true});
     },
 
@@ -121,8 +121,19 @@ var game = {
         fogOfWar.init();
         GUI.ctx = render.menu.ctx;
         GUI.refreshMap();
-        render.viewport.offset = {x:0,y:0};
-        render.render({all:true}); 
+        this.centerMap();
+        //render.render({all:true}); 
+    },
+
+    centerMap: function(args){
+        if(!args){
+            args = {};
+            args.x = (world.map.width*0.5)<<0;
+            args.y = (world.map.height*0.5)<<0;
+        }
+        render.viewport.offset.x = ((render.viewport.width*0.5)<<0) - args.x;
+        render.viewport.offset.y = ((render.viewport.height*0.5)<<0) - args.y;
+        render.render({all:true});
     },
 
     select: function(cX,cY){

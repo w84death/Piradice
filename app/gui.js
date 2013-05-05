@@ -166,12 +166,14 @@ var GUI = {
 				value: 'nextTurn',
 			};
 
+	// STORE
+
 		this.buttons['ship'] = {
 				sprite: this.makeButton({x:4, y:6, sprite_over: 35, width:2, height:2, label:shop.price_list['ship']}),
 				width: 2,
 				height: 2,
 				position: {
-					x: render.viewport.width-3,
+					x: render.viewport.width-5,
 					y: 1
 				},
 				action: 'buy',
@@ -184,7 +186,7 @@ var GUI = {
 				height: 2,
 				position: {
 					x: render.viewport.width-3,
-					y: 3
+					y: 1
 				},
 				action: 'buy',
 				value: 'pirate'
@@ -196,7 +198,7 @@ var GUI = {
 				height: 2,
 				position: {
 					x: render.viewport.width-3,
-					y: 5
+					y: 3
 				},
 				action: 'buy',
 				value: 'gunner'
@@ -208,7 +210,7 @@ var GUI = {
 				height: 2,
 				position: {
 					x: render.viewport.width-3,
-					y: 7
+					y: 5
 				},
 				action: 'buy',
 				value: 'lumberjack'
@@ -220,7 +222,7 @@ var GUI = {
 				height: 2,
 				position: {
 					x: render.viewport.width-3,
-					y: 9
+					y: 7
 				},
 				action: 'buy',
 				value: 'cannon'
@@ -231,7 +233,7 @@ var GUI = {
 			width: 2,
 			height: 2,
 			position: {
-				x: render.viewport.width-3,
+				x: render.viewport.width-5,
 				y: 1
 			},
 			action: 'buy',
@@ -243,7 +245,7 @@ var GUI = {
 			width: 2,
 			height: 2,			
 			position: {
-				x: render.viewport.width-3,
+				x: render.viewport.width-5,
 				y: 3
 			},
 			action: 'buy',
@@ -256,7 +258,7 @@ var GUI = {
 			height: 2,			
 			position: {
 				x: render.viewport.width-3,
-				y: 5
+				y: 1
 			},
 			action: 'buy',
 			value: 'skeleton'
@@ -268,7 +270,7 @@ var GUI = {
 			height: 2,			
 			position: {
 				x: render.viewport.width-3,
-				y: 7
+				y: 3
 			},
 			action: 'buy',
 			value: 'daemon'
@@ -280,7 +282,7 @@ var GUI = {
 			height: 2,			
 			position: {
 				x: render.viewport.width-3,
-				y: 9
+				y: 5
 			},
 			action: 'buy',
 			value: 'dust'
@@ -532,18 +534,10 @@ var GUI = {
 		//m_context.fillRect(0, 0, width*render.box, height*render.box);
 
 		m_context.drawImage(render.sprites_img, -10*render.box, -4*render.box);
-
-		if(args.left.sprite != 48 ){
-			m_context.drawImage(render.sprites[ args.left.sprite ][ 0 ], center*render.box-(render.box*0.5), render.box-(render.box*0.5));
-		}else{
-			m_context.drawImage(render.sprites[ args.left.sprite ], center*render.box-(render.box*0.5), render.box-(render.box*0.5));
-		}
-		if(args.right.sprite != 48){
-			m_context.drawImage(render.sprites[ args.right.sprite ][ 1 ], center*render.box-(render.box*0.5), 5*render.box-(render.box*0.5));
-		}else{
-			m_context.drawImage(render.sprites[ args.right.sprite ], center*render.box-(render.box*0.5), 5*render.box-(render.box*0.5));
-		}
-
+		
+		m_context.drawImage(render.sprites[ args.left.sprite ][ 0 ], center*render.box-(render.box*0.5), render.box-(render.box*0.5));
+		m_context.drawImage(render.sprites[ args.right.sprite ][ 1 ], center*render.box-(render.box*0.5), 5*render.box-(render.box*0.5));
+		
 		m_context.fillStyle = this.conf.labelColor;        	
 		m_context.font = '18px VT323, cursive';
 		m_context.textBaseline = 'middle';
