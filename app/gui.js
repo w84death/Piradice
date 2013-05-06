@@ -53,7 +53,7 @@ var GUI = {
 			};
 
 		this.labels['copyright'] = {
-			text: '©2013 Krzysztof Jankowski ' + game.version,
+			text: '©2013 Krzysztof Jankowski && Przemysław Sikorski',
 			position: {
 				x: ((render.viewport.width*0.5)<<0),
 				y: 13

@@ -50,6 +50,8 @@ Unit.prototype = {
         // unit can be selected
         if(this.can_select){
             this.selected = true;
+            audio.play({sound:'select_unit'});
+
             // 1 = land
             var map_type = 1;                                    
             
@@ -369,6 +371,8 @@ Unit.prototype = {
                             game.teams[game.turn.team].wallet += 50;
                             this.message = '+50';
                         }
+
+                        audio.play({sound:'gold'});
 
                         this.important = false;
                         render.render({map:true, gui:true});

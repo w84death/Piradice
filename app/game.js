@@ -1,12 +1,12 @@
 /*
     ----------------------------------------------------------------------------
 
-        KRZYSZTOF JANKOWSKI
+        KRZYSZTOF JANKOWSKI && PRZEMYSŁAW SIKORSKI
         PIRADICE
 
         abstract: HTML5 Canvas 2D Turn-based Game Engine
         created: 06-03-2013
-        licence: do what you want and dont bother me
+        licence: do what you want and dont bother us
 
     ----------------------------------------------------------------------------
 */
@@ -54,15 +54,19 @@ var game = {
     init: function(args){                    
         console.log(this.version);  
       
+        audio.init();
         world.init({
             width: 48 || args.w,
             height: 32 || args.h
         });        
         shop.init();
-        render.init();        
+        render.init();
+
+        audio.play({sound:'music1'});       
     },
 
     start: function(){
+        audio.changeVolume({sound:'music1', volume:0.4});
     	this.map = false;             
         GUI.show = ['map','copyright','inventory','gold','trees','end'];
         GUI.hud['map'].position = {x:1,y:1};
@@ -73,6 +77,7 @@ var game = {
     },    
 
     restart: function(){
+        audio.changeVolume({sound:'music1', volume:0.9});
     	this.teams = [{
             pirates: true,
             ai: false,
@@ -163,7 +168,8 @@ var game = {
 
         for (var i = 0; i < world.map.entities[game.unit_selected].move_area.length; i++) {
             if(world.map.entities[game.unit_selected].move_area[i].x == cX && world.map.entities[game.unit_selected].move_area[i].y == cY){
-            	// attack
+            	audio.play({sound:'click'});
+                // attack
                 if(world.map.entities[game.unit_selected].move_area[i].attack){
                     if(world.map.entities[game.unit_selected].attack(cX, cY)){
                         if(!world.map.entities[game.unit_selected].range){

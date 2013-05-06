@@ -27,7 +27,7 @@ var io = {
         }else{
             io.touch.start.x = e.pageX;
             io.touch.start.y = e.pageY;
-        }        
+        }            
     },
 
     move: function(e){
@@ -81,6 +81,7 @@ var io = {
 	            cY = ((py - gameDiv.offsetTop)/render.box<<0);
 	        
 	        if(GUI.select(cX,cY)){
+                audio.play({sound:'button'});
 	            return true;
 	        }else{
 	            if(game.play){        
