@@ -101,6 +101,7 @@ Unit.prototype = {
                 newY = 0,
                 can_move = false,
                 distance = 0,
+                analize = true,
                 check_area = this.move_range,
                 entities_mask = [world.map.width+20];
                 
@@ -131,27 +132,28 @@ Unit.prototype = {
             }
 
             // generate first point 0
-            this.move_area.push({x:this.x,  y:this.y, move:true, distance:0});
+            this.move_area.push({x:this.x,  y:this.y, move:true, distance:0, analize:true});
             				
             // calculate other moves
             for (var i = 0; i < check_area; i++) {
                 for (var j = 0; j < this.move_area.length; j++) {
-                    if(this.move_area[j].distance === i){
+                    if(this.move_area[j].distance === i && this.move_area[j].analize){
                         // check moves and add distance
                         newX = this.move_area[j].x-1;
                         newY = this.move_area[j].y;
-                        distance = i+1;
+                        
+                        analize = true;
                         if(world.map.moves[(newX)+((newY)*world.map.width)] === map_type && !check_move_area(this.move_area,newX,newY)){
                     		if(this.move_range >= i+1){
                         		if(entities_mask[newX][newY]){
                                     can_move = false;                                    
-                                    distance = -1;
+                                    analize = false;
                                     if(this.range){                                    
-                                        distance = i+1;
+                                        analize = true;
                                     }
                                 }else{
                                     can_move = true;
-                                    distance = i+1;
+                                    analize = true;
                                     if(!this.move_area[j].move && this.range){                                    
                                         can_move = false;
                                     }
@@ -160,7 +162,7 @@ Unit.prototype = {
                     			can_move = false;                                
                     		}
 
-                            this.move_area.push({x:newX,y:newY, move:can_move, distance:distance});
+                            this.move_area.push({x:newX,y:newY, move:can_move, distance:i+1, analize:analize});
                         }
                         
                         newX = this.move_area[j].x;
@@ -169,13 +171,13 @@ Unit.prototype = {
                             if(this.move_range >= i+1){
                                 if(entities_mask[newX][newY]){
                                     can_move = false;
-                                    distance = -1;
+                                    analize = false;
                                     if(this.range){                                    
-                                        distance = i+1;
+                                        analize = true;
                                     }
                                 }else{
                                     can_move = true;
-                                    distance = i+1;
+                                    analize = true;
                                     if(!this.move_area[j].move && this.range){                                    
                                         can_move = false;
                                     }
@@ -184,7 +186,7 @@ Unit.prototype = {
                                 can_move = false;
                             }
 
-                            this.move_area.push({x:newX,y:newY, move:can_move, distance:distance});
+                            this.move_area.push({x:newX,y:newY, move:can_move, distance:i+1, analize:analize});
                         }
                         
                         newX = this.move_area[j].x;
@@ -193,12 +195,12 @@ Unit.prototype = {
                             if(this.move_range >= i+1){
                                 if(entities_mask[newX][newY]){
                                     can_move = false;
-                                    distance = -1;
+                                    analize = false;
                                     if(this.range){                                    
-                                        distance = i+1;
+                                        analize = true;
                                     }
                                 }else{
-                                    distance = i+1;
+                                    analize = true;
                                     can_move = true;
                                     if(!this.move_area[j].move && this.range){                                    
                                         can_move = false;
@@ -207,7 +209,7 @@ Unit.prototype = {
                             }else{
                                 can_move = false;
                             }
-                            this.move_area.push({x:newX,y:newY, move:can_move, distance:distance});
+                            this.move_area.push({x:newX,y:newY, move:can_move, distance:i+1, analize:analize});
                         }
                          
                         newX = this.move_area[j].x+1;
@@ -216,13 +218,13 @@ Unit.prototype = {
                             if(this.move_range >= i+1){
                                 if(entities_mask[newX][newY]){
                                     can_move = false;
-                                    distance = -1;
+                                    analize = false;
                                     if(this.range){                                    
-                                        distance = i+1;
+                                        analize = true;
                                     }
                                 }else{
                                     can_move = true;
-                                    distance = i+1;
+                                    analize = true;
                                     if(!this.move_area[j].move && this.range){                                    
                                         can_move = false;
                                     }
@@ -230,7 +232,7 @@ Unit.prototype = {
                             }else{
                                 can_move = false;
                             }
-                            this.move_area.push({x:newX,y:newY, move:can_move, distance:distance});	
+                            this.move_area.push({x:newX,y:newY, move:can_move, distance:i+1, analize:analize});	
                         }
                     }
                 };
@@ -280,7 +282,7 @@ Unit.prototype = {
 
                         // ally
 
-	                    if(world.map.entities[j].team === this.team && world.map.entities[j].name == this.name && this.merging && this.move_area[i].move){                            
+	                    if(world.map.entities[j].team === this.team && world.map.entities[j].name == this.name && this.merging && this.move_area[i].distance <= 2){             
                             this.move_area[i].merge = true;
                         }
 
@@ -745,12 +747,11 @@ var Ship = function Ship(args){
     this.y = args.y;
     this.sprite = 35;
     this.water = true;
-    this.range = true;
+    this.attack_range = true;    
     this.create_unit = true;
     this.squad = 1;
     this.messages = ['Sail', 'Ahoy'];
     this.move_range = 5;
-    this.attack_range = 6;
     this.fow = 6;
     this.merging = false;
 };
