@@ -19,23 +19,27 @@
 */
 
 var game = {
-    version: 'VERSION 6',
+    version: 'VERSION 7',
     mobile: false || navigator.userAgent.match(/(iPhone)|(iPod)|(iPad)|(android)|(webOS)/i),
     tablet: false || navigator.userAgent.match(/(iPad)/i),
     teams: [{
             pirates: true,
             ai: false,
-            wallet: 400,
-            income: 10,
-            trees: 10,
+            wallet: {
+                gold:999, //400,
+                trees:999, //22
+            },
+            income: 10,            
             bought: false,
             offset: {x:0,y:0}            
         },{
             skeletons: true,
             ai: false,
-            wallet: 400,
+            wallet: {
+                gold:999, //400,
+                trees:999,// 12
+            },
             income: 10,
-            trees: 10,
             bought: false,
             offset: {x:0,y:0}
         }],
@@ -49,7 +53,8 @@ var game = {
     play: false,
    	ready: false,
     map: true, 
-    unit_selected: -1,
+    audio: false,
+    unit_selected: false,
 
     init: function(args){                    
         console.log(this.version);  
@@ -81,15 +86,19 @@ var game = {
     	this.teams = [{
             pirates: true,
             ai: false,
-            wallet: 400,
-            trees: 10,
+            wallet: {
+                gold:400,
+                trees:12
+            },
             bought: false,
             offset: {x:0,y:0}            
         },{
             skeletons: true,
             ai: false,
-            wallet: 400,
-            trees: 10,
+            wallet: {
+                gold:400,
+                trees:12
+            },
             bought: false,
             offset: {x:0,y:0}
         }];
@@ -133,7 +142,6 @@ var game = {
     },
 
     centerMap: function(args){
-        console.log(args);
         if(!args){
             args = {};
             args.x = (world.map.width*0.5)<<0;
@@ -154,11 +162,14 @@ var game = {
 
         for (var i = 0; i < world.map.entities.length; i++) {
             if(world.map.entities[i].x == cX && world.map.entities[i].y == cY && world.map.entities[i].team == this.turn.team && world.map.entities[i].moves > 0 && world.map.entities[i].reloading < 1) {                
-                world.map.entities[i].select();                
-                world.map.entities[i].open();
                 this.unit_selected = i;
+                world.map.entities[i].select();                
+                world.map.entities[i].open();                
+                return true;
             }
         }
+
+        return false;
     },
 
     attackOrMove: function(cX,cY){
@@ -196,7 +207,7 @@ var game = {
         }
       
         world.map.entities[game.unit_selected].unselect();
-        this.unit_selected = -1;
+        this.unit_selected = false;
         
         fogOfWar.update();
 
@@ -261,7 +272,7 @@ var game = {
                     world.map.entities[i].selected = false;
                 }
 
-                game.unit_selected = -1;
+                game.unit_selected = false;
 
                                
                 if(game.turn.team == 1){
@@ -324,7 +335,7 @@ var game = {
             }
         };
         
-        game.teams[game.turn.team].wallet += salary;
+        game.teams[game.turn.team].wallet.gold += salary;
         game.updateWallet();        
     },
 
@@ -379,7 +390,7 @@ var game = {
         
     setWallet: function(gold){
         for (var i = 0; i < game.teams.length; i++) {
-            game.teams[i].wallet = gold;    
+            game.teams[i].wallet.gold = gold;    
         }
         game.updateWallet();
     },
@@ -388,33 +399,6 @@ var game = {
         render.render({menu:true});
     },
     
-    updateUnits: function(){
-       /*
-        var player1_units = 0,
-            player2_units = 0;
-        
-        for (var i = 0; i < world.map.entities.length; i++) {
-            if(world.map.entities[i].alive){
-                if(world.map.entities[i].team === 0){
-                    player1_units += world.map.entities[i].squad;
-                }else{
-                    player2_units += world.map.entities[i].squad; 
-                }
-            }
-        }
-        
-        function percent(val, total){
-            var per = ((val*100)/total)<<0;                    
-            return per;
-        }
-        
-        document.getElementById('player1_units').innerHTML = player1_units;
-        document.getElementById('player1_units').setAttribute('style','width: ' + percent(player1_units, player1_units+player2_units) + '%');
-        document.getElementById('player2_units').innerHTML = player2_units;
-        document.getElementById('player2_units').setAttribute('style','width: ' + percent(player2_units, player1_units+player2_units) + '%');
-        */
-    },
-
     
     shoutTeam: function(){
         for (var i = 0; i < world.map.entities.length; i++) {

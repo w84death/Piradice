@@ -19,8 +19,50 @@ var io = {
         }
     },
 
+    selected: function(cX,cY){
+                    
+        if(GUI.select(cX,cY)){
+            audio.play({sound:'button'});
+            return true;
+        }else{
+            if(game.play){        
+                realX = cX - render.viewport.offset.x;
+                realY = cY - render.viewport.offset.y;
+
+                if(game.unit_selected !== false){
+                    game.attackOrMove(realX, realY)
+                    render.render({entities:true, gui:true});
+                    return false;
+                }else{
+                    if(game.select(realX, realY)){
+                        render.render({gui:true});
+                        return true;
+                    }else{
+                        return false;
+                    }
+                }
+            }
+        }
+
+        return false
+    },
+
     begin: function(e){
-        io.touch.init = true;
+        
+        var px,py;
+        if(game.mobile || game.tablet ){
+            px = e.changedTouches[0].pageX;
+            py = e.changedTouches[0].pageY;
+        }else{
+            px = e.pageX;
+            py = e.pageY;
+        }
+
+        var gameDiv = document.getElementById('game'),
+            cX = ((px - gameDiv.offsetLeft)/render.box<<0),
+            cY = ((py - gameDiv.offsetTop)/render.box<<0);
+
+        
         if(game.mobile || game.tablet ){
             io.touch.start.x = e.touches[0].pageX;
             io.touch.start.y = e.touches[0].pageY;
@@ -28,6 +70,10 @@ var io = {
             io.touch.start.x = e.pageX;
             io.touch.start.y = e.pageY;
         }            
+
+        if(!io.selected(cX,cY)){
+            io.touch.init = true;
+        }
     },
 
     move: function(e){
@@ -65,40 +111,7 @@ var io = {
     },
 
     click: function(e){
-        io.touch.init = false;
-        if(!io.touch.move){
-   	        var px,py;
-	        if(game.mobile || game.tablet ){
-	            px = e.changedTouches[0].pageX;
-	            py = e.changedTouches[0].pageY;
-	        }else{
-	            px = e.pageX;
-	            py = e.pageY;
-	        }
-	
-	        var gameDiv = document.getElementById('game'),
-	            cX = ((px - gameDiv.offsetLeft)/render.box<<0),
-	            cY = ((py - gameDiv.offsetTop)/render.box<<0);
-	        
-	        if(GUI.select(cX,cY)){
-                audio.play({sound:'button'});
-	            return true;
-	        }else{
-	            if(game.play){        
-	                realX = cX - render.viewport.offset.x;
-	                realY = cY - render.viewport.offset.y;
-	
-	                if(game.unit_selected > -1){
-	                    game.attackOrMove(realX, realY)
-	                    render.render({entities:true, gui:true});
-	                }else{
-	                    game.select(realX, realY);
-	                    render.render({gui:true});
-	                }
-	
-	            }
-	        }
-        }
+        io.touch.init = false;        
         io.touch.move = false;
     },
 

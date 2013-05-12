@@ -78,6 +78,7 @@ var render = {
                 render.sprites[16] = render.makeSprite(2,1, false); // pirate flag
                 render.sprites[37] = render.makeSprite(7,3, false); // buy area
                 render.sprites[38] = render.makeSprite(6,3, false); // cut forest
+                render.sprites[69] = render.makeSprite(7,4, false); // burn forest
                 render.sprites[48] = [render.makeSprite(9,4, false),render.makeSprite(9,4, true)]; // cross / die
 
                 // entities
@@ -106,7 +107,9 @@ var render = {
                 render.sprites[53] = [render.makeSprite(6,4, false),render.makeSprite(6,4, true)]; // lumberjack
 				render.sprites[59] = [render.makeSprite(7,5, false),render.makeSprite(7,5, true)]; // cannon
 				render.sprites[68] = [render.makeSprite(9,5, false),render.makeSprite(9,5, true)]; // daemon
-				
+				render.sprites[70] = [render.makeSprite(8,4, false),render.makeSprite(8,4, false)]; // bonfire
+                render.sprites[71] = [render.makeSprite(8,1, false),render.makeSprite(8,1, false)]; // fort
+
                 // hints
                 render.sprites[40] = render.makeSprite(2,10, false); // hint top
                 render.sprites[41] = render.makeSprite(2,7, false); // hint right
@@ -392,9 +395,6 @@ var render = {
             this.drawHints();
             this.post_render();
         }
-
-        
-        
         
     },
 
@@ -571,7 +571,13 @@ var render = {
                                 block = 37;
                             }
                             if(world.map.entities[i].move_area[j].forest){
-                                block = 38;
+                                if(game.teams[game.turn.team].pirates){
+                                    block = 38;
+                                }
+                                if(game.teams[game.turn.team].skeletons){
+                                    block = 69;
+                                }
+
                             }
                             if(block){                                    
                                 this.gui.ctx.drawImage(render.sprites[block],world.map.entities[i].move_area[j].x*render.box, world.map.entities[i].move_area[j].y*render.box);                                

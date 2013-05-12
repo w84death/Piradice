@@ -38,11 +38,13 @@ var Unit = function Unit(){
     this.water = false;
     this.flip = 0; 
     this.fow = 3;
-    this.create_unit = false;
+    this.can_create_unit = false;
+    this.can_build_structure = false
     this.can_destroy_structure = false;
     this.can_cut_tree = false;
     this.merging = true;
     this.die_after_attack = false;
+    this.shop = [];
 };
 
 Unit.prototype = {
@@ -58,7 +60,7 @@ Unit.prototype = {
             this.move_area = [];
 
             // unit can create other units
-            if(this.create_unit){
+            if(this.can_create_unit){
 
                 for (var x = this.x - 1; x <= this.x + 1; x++) {
                     for (var y = this.y - 1; y <= this.y + 1; y++) {
@@ -81,8 +83,11 @@ Unit.prototype = {
                 // if there is a place to create            
                 if(this.move_area.length > 0){
                     shop.show({more:true});
-                }
-                
+                }                
+            }
+
+            if(this.can_build_structure){
+                shop.show({more:true});
             }
 
             if(this.water){
@@ -305,7 +310,7 @@ Unit.prototype = {
   
     unselect: function(){
         this.selected = false;
-        game.unit_selected = -1;
+        game.unit_selected = false;
         if(game.play){
             shop.close();
         }
@@ -607,7 +612,6 @@ Unit.prototype = {
         this.moves = 0;
         this.squad = 0;
         game.killZombies();
-        game.updateUnits();
     },
     
     shout: function(){
@@ -622,7 +626,7 @@ Unit.prototype = {
                if(world.map.items[j].cut()){
                    this.moves = 0;
                    this.message = '+1';
-                   game.teams[this.team].trees += 1;
+                   game.teams[this.team].wallet.trees += 1;
                }
             }
         }
@@ -701,6 +705,8 @@ var Lumberjack = function Lumberjack(args){
     this.move_range = 3;
     this.fow = 4;
     this.merging = false;
+    this.can_build_structure = true;
+    this.shop = ['fort'];
 };
 
 Lumberjack.prototype = new Unit();
@@ -738,6 +744,9 @@ var Dust = function Dust(args){
     this.merging = false;
     this.bonus = 6;
     this.die_after_attack = true;
+    this.can_cut_tree = true;
+    this.can_build_structure = true;
+    this.shop = ['bonfire'];
 };
 
 Dust.prototype = new Unit();
@@ -752,12 +761,13 @@ var Ship = function Ship(args){
     this.sprite = 35;
     this.water = true;
     this.attack_range = true;    
-    this.create_unit = true;
+    this.can_create_unit = true;
     this.squad = 1;
     this.messages = ['Sail', 'Ahoy'];
     this.move_range = 5;
     this.fow = 6;
     this.merging = false;
+    this.shop = ['pirate','gunner','lumberjack','cannon']
 };
 
 Ship.prototype = new Unit();
@@ -769,7 +779,7 @@ var Cementary = function Cementary(args){
     this.structure = true;
     this.unit = false;
     this.skeleton = true;
-    this.create_unit = true;
+    this.can_create_unit = true;
     this.x = args.x;
     this.y = args.y;
     this.team = 1;
@@ -781,6 +791,7 @@ var Cementary = function Cementary(args){
     this.fow = 7;
     this.hasCementary = args.hasCementary || false;
     this.merging = false;
+    this.shop = ['skeleton','dust','daemon']
 };
 
 Cementary.prototype = new Unit();
@@ -824,3 +835,50 @@ var Daemon = function Daemon(args){
 };
 
 Daemon.prototype = new Unit();
+
+var Bonfire = function Bonfire(args){
+    this.name = 'Bonfire';
+    this.ai = args.ai || false;
+    this.bonfire = true;
+    this.unit = true;
+    this.skeleton = true;
+    this.x = args.x;
+    this.y = args.y;
+    this.team = 1;
+    this.squad = 1;
+    this.max = 1;
+    this.sprite = 70;
+    this.messages = ['Hoo', 'Boosh', 'Poof'];
+    this.fow = 7;
+    this.merging = false;
+    this.range = true;
+    this.move_range = 0;
+    this.attack_range = 6;
+};
+
+Bonfire.prototype = new Unit();
+
+
+var Fort = function Fort(args){
+    this.name = 'Fort';
+    this.ai = args.ai || false;
+    this.fort = true;
+    this.structure = true;
+    this.unit = false;
+    this.pirate = true;
+    this.can_create_unit = true;
+    this.x = args.x;
+    this.y = args.y;
+    this.team = 1;
+    this.disable_moves = true;
+    this.squad = 1;
+    this.max = 1;
+    this.sprite = 71;
+    this.messages = ['Ready', 'Start'];
+    this.fow = 6;
+    this.merging = false;
+    this.shop = ['cannon']
+};
+
+Fort.prototype = new Unit();
+

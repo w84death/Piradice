@@ -2,17 +2,19 @@ var shop = {
     price_list: [],
 
     init: function(){
-        this.price_list['pirate'] = 10;
-        this.price_list['gunner'] = 20;
-        this.price_list['lumberjack'] = 10;
-        this.price_list['ship'] = 200;
-        this.price_list['cannon'] = 50;
+        this.price_list['pirate'] = {gold:10, trees:0};
+        this.price_list['gunner'] = {gold:20, trees:0};
+        this.price_list['lumberjack'] = {gold:10, trees:0};
+        this.price_list['ship'] = {gold:200, trees:10};
+        this.price_list['cannon'] = {gold:10, trees:5};
+        this.price_list['fort'] = {gold:100, trees:10};
         
-        this.price_list['skeleton'] = 10;
-        this.price_list['dust'] = 30;        
-        this.price_list['cementary'] = 200;
-        this.price_list['octopus'] = 110;
-        this.price_list['daemon'] = 15;
+        this.price_list['skeleton'] = {gold:10, trees:0};
+        this.price_list['dust'] = {gold:30, trees:0};        
+        this.price_list['cementary'] = {gold:200, trees:10};
+        this.price_list['octopus'] = {gold:110, trees:0};
+        this.price_list['daemon'] = {gold:15, trees:0};
+        this.price_list['bonfire'] = {gold:0, trees:10};
     },
 
     buy: function(args){
@@ -22,6 +24,10 @@ var shop = {
             team = game.turn.team,
             hasCementary = 0;            
         
+        if(args.unit == 'bonfire' || args.unit == 'fort'){
+            newX = world.map.entities[game.unit_selected].x;
+            newY = world.map.entities[game.unit_selected].y;
+        }else
         if(args.unit == 'cementary'){
            
             var newLocation = this.freeChests();
@@ -109,6 +115,18 @@ var shop = {
             if(args.unit == 'daemon'){
                 world.map.entities.push(new Daemon({x:newX,y:newY,team:team, ai:ai}));
             }
+
+            if(args.unit == 'bonfire'){
+                world.map.entities.push(new Bonfire({x:newX,y:newY,team:team, ai:ai}));
+                world.map.entities[game.unit_selected].die();
+                world.map.entities[game.unit_selected].unselect();
+            }
+
+            if(args.unit == 'fort'){
+                world.map.entities.push(new Fort({x:newX,y:newY,team:team, ai:ai}));
+                world.map.entities[game.unit_selected].die();
+                world.map.entities[game.unit_selected].unselect();
+            }
             
             if(args.unit == 'octopus'){
                 world.map.entities.push(new Octopus({x:newX,y:newY,team:team, ai:ai}));                
@@ -125,17 +143,16 @@ var shop = {
 
             world.map.entities[world.map.entities.length-1].shout();
 
-            if(game.unit_selected > -1 ){
+            if(game.unit_selected !== false){
                 if(use_moves){
                     world.map.entities[game.unit_selected].moves = 0;                
                     world.map.entities[game.unit_selected].important = false;
                     world.map.entities[game.unit_selected].message = '+1';
                 }                
                 world.map.entities[game.unit_selected].unselect();
-                game.unit_selected = -1;  
+                game.unit_selected = false;  
             }                
             this.show();
-            game.updateUnits();
             fogOfWar.update();            
             game.centerMap({
                 x:newX,
@@ -149,16 +166,12 @@ var shop = {
     },
 
     makeTransaction: function(args){
-        if((args.unit == 'octopus' || args.unit == 'cementary' || args.unit == 'ship') && game.teams[game.turn.team].bought){
-            return false;
-        }
-
-        if(game.teams[args.team].wallet >= this.price_list[args.unit]){
-            game.teams[args.team].wallet -= this.price_list[args.unit];
+        if(game.teams[args.team].wallet.gold >= this.price_list[args.unit].gold && game.teams[args.team].wallet.trees >= this.price_list[args.unit].trees){
+            game.teams[args.team].wallet.gold -= this.price_list[args.unit].gold;
+            game.teams[args.team].wallet.trees -= this.price_list[args.unit].trees;
             game.updateWallet();
             return true;  
-        }
-        
+        }        
         return false;
     },    
 
@@ -207,60 +220,24 @@ var shop = {
     },
 
     show: function(args){    
-        GUI.show = [];
-        GUI.show.push('map');
-        GUI.show.push('inventory');
-        GUI.show.push('gold');
-        GUI.show.push('trees');
-        GUI.show.push('end');
+        GUI.show = ['map','inventory','gold','trees','end'];
         if(!args){
             args = {more:false};
         }
 
         if(game.teams[game.turn.team].pirates){
-            if(!game.teams[game.turn.team].bought){
-                if(game.teams[game.turn.team].wallet >= this.price_list['ship']){ 
-                    GUI.show.push('ship');            
-                }
-            }
-            if(args.more){
-                if(game.teams[game.turn.team].wallet >= this.price_list['pirate']){ 
-                    GUI.show.push('pirate');
-                }
-                if(game.teams[game.turn.team].wallet >= this.price_list['gunner']){ 
-                    GUI.show.push('gunner');
-                }
-                if(game.teams[game.turn.team].wallet >= this.price_list['lumberjack']){ 
-                    GUI.show.push('lumberjack');
-                }
-                if(game.teams[game.turn.team].wallet >= this.price_list['cannon']){ 
-                    GUI.show.push('cannon');
-                }
-            }
+            GUI.show.push('ship');            
         }
 
-        if(game.teams[game.turn.team].skeletons){
-            if(!game.teams[game.turn.team].bought){
-                if(game.teams[game.turn.team].wallet >= this.price_list['cementary']){
-                    if(this.freeChests()){
-                        GUI.show.push('cementary');            
-                    }
-                }
-                if(game.teams[game.turn.team].wallet >= this.price_list['octopus']){ 
-                    GUI.show.push('octopus');
-                }
-            }
-            if(args.more){
-                if(game.teams[game.turn.team].wallet >= this.price_list['skeleton']){ 
-                    GUI.show.push('skeleton');
-                }
-                if(game.teams[game.turn.team].wallet >= this.price_list['dust']){ 
-                    GUI.show.push('dust');                
-                }
-                if(game.teams[game.turn.team].wallet >= this.price_list['daemon']){ 
-                    GUI.show.push('daemon');                
-                }
-            }
+        if(game.teams[game.turn.team].skeletons){            
+            GUI.show.push('cementary');            
+            GUI.show.push('octopus');            
+        }
+
+        if(args.more){
+            for (var i = 0; i < world.map.entities[game.unit_selected].shop.length; i++) {
+                GUI.show.push(world.map.entities[game.unit_selected].shop[i]);
+            };
         }
         
         render.render({menu:true});
@@ -268,6 +245,7 @@ var shop = {
 
     close: function(args){
         this.show({more:false});
+        GUI.basket = false;
     },
 
     buyStarter: function(){
