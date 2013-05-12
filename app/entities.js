@@ -767,7 +767,7 @@ var Ship = function Ship(args){
     this.move_range = 5;
     this.fow = 6;
     this.merging = false;
-    this.shop = ['pirate','gunner','lumberjack','cannon']
+    this.shop = ['pirate','gunner','lumberjack'];
 };
 
 Ship.prototype = new Unit();
@@ -791,7 +791,7 @@ var Cementary = function Cementary(args){
     this.fow = 7;
     this.hasCementary = args.hasCementary || false;
     this.merging = false;
-    this.shop = ['skeleton','dust','daemon']
+    this.shop = ['skeleton','dust','daemon'];
 };
 
 Cementary.prototype = new Unit();
@@ -865,11 +865,10 @@ var Fort = function Fort(args){
     this.fort = true;
     this.structure = true;
     this.unit = false;
-    this.pirate = true;
-    this.can_create_unit = true;
+    this.pirate = true;    
     this.x = args.x;
     this.y = args.y;
-    this.team = 1;
+    this.team = 0;
     this.disable_moves = true;
     this.squad = 1;
     this.max = 1;
@@ -877,7 +876,8 @@ var Fort = function Fort(args){
     this.messages = ['Ready', 'Start'];
     this.fow = 6;
     this.merging = false;
-    this.shop = ['cannon']
+    this.can_create_unit = true;
+    this.shop = ['cannon'];
 };
 
 Fort.prototype = new Unit();
