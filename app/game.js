@@ -53,27 +53,40 @@ var game = {
     play: false,
    	ready: false,
     map: true, 
-    audio: false,
+    audio: true,
     unit_selected: false,
 
     init: function(args){                    
         console.log(this.version);  
       
+        if(this.mobile){
+            this.audio = false;
+            args.w = 24;
+            args.h = 18;
+        }
+
         audio.init();
         world.init({
             width: 48 || args.w,
             height: 32 || args.h
         });        
-        shop.init();
-        render.init();
+        shop.init();    
+        render.init();        
+        audio.play({sound:'music1'});
+    },
 
-        audio.play({sound:'music1'});       
+    menu: function(){
+        GUI.show = ['logo', 'copyright', 'map','play','random', 'map_size1', 'map_size2', 'map_size3', 'share'];
+        GUI.hud['map'].position = {
+            x:((render.viewport.width*0.5)<<0)-4,
+            y:render.viewport.height-5
+        };            
     },
 
     start: function(){
         audio.changeVolume({sound:'music1', volume:0.4});
     	this.map = false;             
-        GUI.show = ['map','copyright','inventory','gold','trees','end'];
+        GUI.show = ['map','inventory','gold','trees','end'];
         GUI.hud['map'].position = {x:1,y:1};
         shop.show();
         shop.buyStarter();        
@@ -102,8 +115,7 @@ var game = {
             bought: false,
             offset: {x:0,y:0}
         }];
-		GUI.show = ['logo', 'copyright', 'map','play','random', 'map_size1', 'map_size2', 'map_size3'];
-        GUI.hud['map'].position = {x:((render.viewport.width*0.5)<<0)-4,y:8};
+        this.menu();
         this.turn.start = true;
         this.turn.id = 1;
         this.turn.team = 0;
@@ -408,6 +420,49 @@ var game = {
             }
         }
     },
+
+    shareMap: function(){
+
+        if(!this.sharing){
+            alert('This could take a moment..');
+            this.sharing = true;
+
+            var m_canvas = document.createElement('canvas');
+                m_canvas.width = render.map.canvas.width;
+                m_canvas.height = render.map.canvas.height;
+            var m_context = m_canvas.getContext('2d');
+            
+            // map
+            m_context.drawImage(render.map.canvas, 0, 0);
+
+            // logo
+            m_context.drawImage(GUI.hud['logo'].sprite, ((m_canvas.width*0.5)-(GUI.hud['logo'].sprite.width*0.5))<<0, 16);
+            
+            // hash
+            m_context.fillStyle = GUI.conf.color2;
+            m_context.font = '18px VT323, cursive';
+            m_context.textBaseline = 'bottom';
+            m_context.textAlign = 'center';
+
+            m_context.fillText('TO PLAY THIS MAP USE THIS URL: HTTP://PIRADICE.KRZYSZTOFJANKOWSKI.COM/PLAY/' + window.location.hash, (m_canvas.width*0.5)<<0, m_canvas.height-8);       
+
+            var canvasData = m_canvas.toDataURL("image/png");
+            var uuid = utilities.createUUID();
+            
+            var ajax = new XMLHttpRequest();
+            ajax.open("POST",'share/save.php?filename='+uuid,true);
+            ajax.setRequestHeader('Content-Type', 'application/upload');
+            ajax.send(canvasData); 
+            
+            ajax.onreadystatechange=function(){
+                if (ajax.readyState==4 && ajax.status==200){                
+                    window.open('http://magazyn.krzysztofjankowski.com/share/'+uuid+'.png', '_blank');
+                    game.sharing = false;
+                }
+            };
+        }
+    },
+
 };
 
 
@@ -470,6 +525,21 @@ var utilities = {
         dice[6] = "⚅";
 
         return dice[value];
+    },
+
+    createUUID: function() {
+        // http://www.ietf.org/rfc/rfc4122.txt
+        var s = [];
+        var hexDigits = "0123456789abcdef";
+        for (var i = 0; i < 36; i++) {
+            s[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1);
+        }
+        s[14] = "4";  // bits 12-15 of the time_hi_and_version field to 0010
+        s[19] = hexDigits.substr((s[19] & 0x3) | 0x8, 1);  // bits 6-7 of the clock_seq_hi_and_reserved to 01
+        s[8] = s[13] = s[18] = s[23] = "-";
+        
+        var uuid = s.join("");
+        return uuid;
     },
 };
 

@@ -19,12 +19,10 @@ var GUI = {
 		}
 	},
 	basket: false,
-	show: ['logo', 'copyright', 'map', 'play','random', 'map_size1', 'map_size2', 'map_size3'],
+	show: [],
 
 	init: function(){
 		this.ctx = render.menu.ctx;		
-		this.conf.bottom = render.viewport.height-2;
-
 
 		this.hud['logo'] = {
 			sprite: this.drawHUD({
@@ -42,32 +40,44 @@ var GUI = {
 		};
 		
 		this.buttons['play'] = {				
-				sprite: this.makeButton({x:4, y:8, width:4, height:2, text:'PLAY'}),
-				width: 4,
-				height: 2,
-				position: {
-					x: ((render.viewport.width*0.5)<<0),
-					y: 10
-				},
-				action: 'game',
-				value: 'start',
-			};
+			sprite: this.makeButton({x:4, y:8, width:4, height:2, text:'PLAY'}),
+			width: 4,
+			height: 2,
+			position: {
+				x: ((render.viewport.width*0.5)<<0),
+				y: render.viewport.height-3
+			},
+			action: 'game',
+			value: 'start',
+		};
+
+		this.buttons['share'] = {				
+			sprite: this.makeButton({x:4, y:10, width:4, height:2, text:'SHARE MAP'}),
+			width: 4,
+			height: 2,
+			position: {
+				x: 2,
+				y: render.viewport.height-3
+			},
+			action: 'game',
+			value: 'share',
+		};
 
 		this.labels['copyright'] = {
 			text: 'Krzysztof Jankowski && Przemyslaw Sikorski',
 			position: {
 				x: ((render.viewport.width*0.5)<<0),
-				y: 13
+				y: 5.5
 			}
 		};
 
 		this.buttons['random'] = {				
-				sprite: this.makeButton({x:4, y:8, width:4, height:2, text:'RANDOMIZE'}),
+				sprite: this.makeButton({x:4, y:10, width:4, height:2, text:'RANDOMIZE'}),
 				width: 4,
 				height: 2,
 				position: {
 					x: ((render.viewport.width*0.5)<<0)-4,
-					y: 10
+					y: render.viewport.height-3
 				},
 				action: 'game',
 				value: 'random',
@@ -84,8 +94,8 @@ var GUI = {
 				special: 'map'				
 			}),						
 			position: {
-				x:((render.viewport.width*0.5)<<0)-4,
-				y:8
+				x:1,
+				y:1
 			}			
 		};
 
@@ -95,7 +105,7 @@ var GUI = {
 				height: 2,
 				position: {
 					x: ((render.viewport.width*0.5)<<0)-2,
-					y: 8
+					y: render.viewport.height-5
 				},
 				action: 'mapSize',
 				value: 'small',
@@ -107,7 +117,7 @@ var GUI = {
 				height: 2,
 				position: {
 					x: ((render.viewport.width*0.5)<<0),
-					y: 8
+					y: render.viewport.height-5
 				},
 				action: 'mapSize',
 				value: 'normal',
@@ -119,7 +129,7 @@ var GUI = {
 				height: 2,
 				position: {
 					x: ((render.viewport.width*0.5)<<0)+2,
-					y: 8
+					y: render.viewport.height-5
 				},
 				action: 'mapSize',
 				value: 'big',
@@ -253,7 +263,7 @@ var GUI = {
 			height: 2,
 			position: {
 				x: render.viewport.width-3,
-				y: 9
+				y: 3
 			},
 			action: 'basket',
 			value: 'cannon'
@@ -440,13 +450,19 @@ var GUI = {
 			parent: 'basket'
 		};		
 
-		this.render({menu:true});
+		if(!game.play){
+			game.menu();
+		}
+		//this.render({menu:true});
 	},
 
 	action: function(key){
 		if(this.buttons[key].action == 'game'){
 			if(this.buttons[key].value == 'start'){
 				game.start();
+			}
+			if(this.buttons[key].value == 'share'){				
+				game.shareMap();
 			}
 			if(this.buttons[key].value == 'surrender'){				
 				this.render({surrender:true});
@@ -543,7 +559,9 @@ var GUI = {
 			this.buttons['buy'].position.x = args.x-3;
 			this.buttons['buy'].position.y = args.y;
 			this.buttons['buy'].value = args.unit;			
-			this.show.push('basket', 'basket_gold', 'basket_trees');
+			if(this.show.indexOf('basket')<0){
+				this.show.push('basket', 'basket_gold', 'basket_trees');
+			}
 			if(game.teams[game.turn.team].wallet.gold >= shop.price_list[args.unit].gold && game.teams[game.turn.team].wallet.trees >= shop.price_list[args.unit].trees){
 				if(this.show.indexOf('buy')<0){
 					this.show.push('buy');

@@ -188,33 +188,6 @@ var render = {
         document.getElementById('play').style.width = gameDiv.style.width;
         document.getElementById('play').style.height = gameDiv.style.height;
 
-        /*
-        var gameDiv = document.getElementById('game'),
-            mapDiv = document.createElement('canvas'),
-            entitiesDiv = document.createElement('canvas'),
-            skyDiv = document.createElement('canvas'),
-            guiDiv = document.createElement('canvas'),
-            hintsDiv = document.createElement('canvas');
-        
-        mapDiv.setAttribute('id','map');
-        entitiesDiv.setAttribute('id','entities');
-        skyDiv.setAttribute('id','sky');
-        guiDiv.setAttribute('id','gui');
-        hintsDiv.setAttribute('id','hints');
-                    
-        gameDiv.appendChild(mapDiv);
-        gameDiv.appendChild(entitiesDiv);
-        gameDiv.appendChild(skyDiv);
-        gameDiv.appendChild(hintsDiv);
-        gameDiv.appendChild(guiDiv);
-                    
-                
-        gameDiv.style.width = (this.viewport.width*this.box)+'px';
-        gameDiv.style.height = (this.viewport.height*this.box)+'px';
-        
-        document.getElementById('play').style.width = gameDiv.style.width;
-        */
-
         this.viewport.canvas = document.getElementById('viewport');
         this.viewport.canvas.width = this.viewport.width*this.box;
         this.viewport.canvas.height = this.viewport.height*this.box;
@@ -248,7 +221,9 @@ var render = {
         this.menu.canvas = document.createElement('canvas');
         this.menu.canvas.width = this.viewport.width*this.box;
         this.menu.canvas.height = this.viewport.height*this.box;
-        this.menu.ctx = this.menu.canvas.getContext('2d');
+        this.menu.ctx = this.menu.canvas.getContext('2d');        
+
+        window.addEventListener('resize', this.viewportResize, false);
 
         io.init();
     },
@@ -445,7 +420,7 @@ var render = {
                     indicator.sprite = 60;
                 }
             }
-            if(this.hints.draw[i].y >= GUI.conf.bottom ){            
+            if(this.hints.draw[i].y >= this.viewport.height ){            
                 indicator.x = this.hints.draw[i].x;
                 indicator.y = this.viewport.height-1;
                 indicator.sprite = 42;
@@ -460,7 +435,7 @@ var render = {
             if(indicator.x < 0){
                 indicator.x = 0;                
             }
-            if(indicator.y >= GUI.conf.bottom){
+            if(indicator.y >= this.viewport.height){
                 indicator.y = this.viewport.height-1;                
             }
             if(indicator.y < 0){
@@ -495,6 +470,16 @@ var render = {
                 
             this.hints.ctx.drawImage(this.sprites[ indicator.sprite ], indicator.x*this.box, indicator.y*this.box);
         };              
+    },
+
+    viewportResize: function(){            
+        render.viewport.width = (window.innerWidth/render.box)<<0;
+        render.viewport.height = (window.innerHeight/render.box)<<0;
+        render.viewport.canvas.width = render.viewport.width*render.box;
+        render.viewport.canvas.height = render.viewport.height*render.box;
+        GUI.init();
+        render.render({menu:true})
+        //render.post_render();
     },
 
     render: function(args){

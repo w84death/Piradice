@@ -114,19 +114,16 @@ Unit.prototype = {
                 
                 if (this.attack_range > this.move_range) {
                     check_area = this.attack_range;
+                }            
+
+            function searchEntitie(x,y){
+                for (var i = 0; i < world.map.entities.length; i++) {
+                    if(world.map.entities[i].x === x && world.map.entities[i].y === y){
+                        return true;
+                    }
                 }
-
-            // generate entities mask
-            for (var i = -20; i < world.map.width+20; i++) {
-                entities_mask[i] = [world.map.height+20];
-                for (var j = -20; j < world.map.height+20; j++) {
-                    entities_mask[i][j] = false;
-                };
-            };
-
-            for (var i = 0; i < world.map.entities.length; i++) {
-                entities_mask[world.map.entities[i].x][world.map.entities[i].y] = true;
-            };
+                return false;
+            }
 
             // useful function
             function check_move_area(area,x,y){
@@ -152,7 +149,7 @@ Unit.prototype = {
                         analize = true;
                         if(world.map.moves[(newX)+((newY)*world.map.width)] === map_type && !check_move_area(this.move_area,newX,newY)){
                     		if(this.move_range >= i+1){
-                        		if(entities_mask[newX][newY]){
+                        		if(searchEntitie(newX,newY)){
                                     can_move = false;                                    
                                     analize = false;
                                     if(this.range){                                    
@@ -176,7 +173,7 @@ Unit.prototype = {
                         newY = this.move_area[j].y-1;
                         if(world.map.moves[(newX)+((newY)*world.map.width)] === map_type && !check_move_area(this.move_area,newX,newY)){
                             if(this.move_range >= i+1){
-                                if(entities_mask[newX][newY]){
+                                if(searchEntitie(newX,newY)){
                                     can_move = false;
                                     analize = false;
                                     if(this.range){                                    
@@ -200,7 +197,7 @@ Unit.prototype = {
                         newY = this.move_area[j].y+1;
                         if(world.map.moves[(newX)+((newY)*world.map.width)] === map_type && !check_move_area(this.move_area,newX,newY)){
                             if(this.move_range >= i+1){
-                                if(entities_mask[newX][newY]){
+                                if(searchEntitie(newX,newY)){
                                     can_move = false;
                                     analize = false;
                                     if(this.range){                                    
@@ -223,7 +220,7 @@ Unit.prototype = {
                         newY = this.move_area[j].y;            
                         if(world.map.moves[(newX)+((newY)*world.map.width)] === map_type && !check_move_area(this.move_area,newX,newY)){
                             if(this.move_range >= i+1){
-                                if(entities_mask[newX][newY]){
+                                if(searchEntitie(newX,newY)){
                                     can_move = false;
                                     analize = false;
                                     if(this.range){                                    
