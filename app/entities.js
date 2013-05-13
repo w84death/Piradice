@@ -375,10 +375,10 @@ Unit.prototype = {
                 if(world.map.items[j].x == this.x && world.map.items[j].y == this.y){                        
                     if(world.map.items[j].open(this.pirate)){ 
                         if(this.pirate){
-                            game.teams[game.turn.team].wallet += 20;
+                            game.teams[game.turn.team].wallet.gold += 20;
                             this.message = '+20';
                         }else{
-                            game.teams[game.turn.team].wallet += 50;
+                            game.teams[game.turn.team].wallet.gold += 50;
                             this.message = '+50';
                         }
 
@@ -649,6 +649,7 @@ Unit.prototype = {
                if(world.map.items[j].cut()){
                    this.moves = 0;
                    this.message = '+1';
+                   this.important = false;
                    game.teams[this.team].wallet.trees += 1;
                }
             }

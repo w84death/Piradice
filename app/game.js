@@ -26,8 +26,8 @@ var game = {
             pirates: true,
             ai: false,
             wallet: {
-                gold:999, //400,
-                trees:999, //22
+                gold:400, //400,
+                trees:22, //22
             },
             income: 10,            
             bought: false,
@@ -36,8 +36,8 @@ var game = {
             skeletons: true,
             ai: false,
             wallet: {
-                gold:999, //400,
-                trees:999,// 12
+                gold:400, //400,
+                trees:12,// 12
             },
             income: 10,
             bought: false,
@@ -355,6 +355,8 @@ var game = {
     bonuses: function(){
         var bonus = [];
 
+        // generate database of bonuse surces
+
         for (var i = 0; i < world.map.items.length; i++) {
             if(world.map.items[i].give_bonus.attack || world.map.items[i].give_bonus.fear){
                 bonus.push({
@@ -366,7 +368,7 @@ var game = {
             }
         };
 
-        for (var i = 0; i < world.map.entities.length; i++) {
+        for (i = 0; i < world.map.entities.length; i++) {
             if(world.map.entities[i].give_bonus.attack || world.map.entities[i].give_bonus.fear){
                 bonus.push({
                     attack: world.map.entities[i].give_bonus.attack,
@@ -377,11 +379,25 @@ var game = {
             }
         };
 
-        for (var i = 0; i < world.map.entities.length; i++) {
-            for (var i = 0; i < bonus.length; i++) {
-                if(world.map.entities[i].x === bonus[i].x && world.map.entities[i].y === bonus[i].y ){
-                    world.map.entities[i].bonus.attack = bonus[i].attack;
-                    world.map.entities[i].bonus.fear = bonus[i].fear;
+        function distance(x1,y1,x2,y2,max){
+            var dx = x1 - x2,
+                dy = y2 - y2;
+
+            var distance = Math.sqrt(dx*dx+ dy*dy)<<0
+            console.log(distance);
+            if(distance<=max){
+                return true;
+            }else{
+                return false;
+            }
+        }
+
+        // give bonuses
+        for (i = 0; i < world.map.entities.length; i++) {
+            for (var j = 0; j < bonus.length; j++) {
+                if(distance(world.map.entities[i].x, world.map.entities[i].y, bonus[j].x,bonus[j].y,2)){
+                    world.map.entities[i].bonus.attack = bonus[j].attack;
+                    world.map.entities[i].bonus.fear = bonus[j].fear;
                 }
             };
         };

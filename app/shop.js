@@ -27,7 +27,7 @@ var shop = {
         this.price_list['cementary'] = {gold:200, trees:10};
         this.price_list['octopus'] = {gold:110, trees:0};
         this.price_list['daemon'] = {gold:15, trees:0};
-        this.price_list['bonfire'] = {gold:0, trees:10};
+        this.price_list['bonfire'] = {gold:0, trees:5};
     },
 
     buy: function(args){
