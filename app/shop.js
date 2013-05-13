@@ -1,3 +1,16 @@
+/* 
+    ----------------------------------------------------------------------------
+    
+        KRZYSZTOF JANKOWSKI
+        PIRADICE
+    
+        abstract: HTML5 Canvas 2D Turn-based Game Engine    
+        created: 06-03-2013
+        licence: do what you want and dont bother me
+        
+    ----------------------------------------------------------------------------
+*/
+
 var shop = {
     price_list: [],
 
@@ -78,7 +91,7 @@ var shop = {
 
             for (var i = 0; i < world.map.entities.length; i++) {
                 if(world.map.entities[i].x == newX && world.map.entities[i].y == newY){
-                    world.map.entities[i].die();
+                    world.map.entities[i].die(false);
                 }
             };
             
@@ -118,13 +131,13 @@ var shop = {
 
             if(args.unit == 'bonfire'){
                 world.map.entities.push(new Bonfire({x:newX,y:newY,team:team, ai:ai}));
-                world.map.entities[game.unit_selected].die();
+                world.map.entities[game.unit_selected].die(false);
                 world.map.entities[game.unit_selected].unselect();
             }
 
             if(args.unit == 'fort'){
                 world.map.entities.push(new Fort({x:newX,y:newY,team:team, ai:ai}));
-                world.map.entities[game.unit_selected].die();
+                world.map.entities[game.unit_selected].die(false);
                 world.map.entities[game.unit_selected].unselect();
             }
             

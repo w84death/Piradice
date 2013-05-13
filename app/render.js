@@ -1,3 +1,16 @@
+/* 
+    ----------------------------------------------------------------------------
+    
+        KRZYSZTOF JANKOWSKI
+        PIRADICE
+    
+        abstract: HTML5 Canvas 2D Turn-based Game Engine    
+        created: 06-03-2013
+        licence: do what you want and dont bother me
+        
+    ----------------------------------------------------------------------------
+*/
+
 var render = {        
     map: {
         canvas: null,
@@ -79,6 +92,8 @@ var render = {
                 render.sprites[37] = render.makeSprite(7,3, false); // buy area
                 render.sprites[38] = render.makeSprite(6,3, false); // cut forest
                 render.sprites[69] = render.makeSprite(7,4, false); // burn forest
+                render.sprites[72] = render.makeSprite(9,4, false); // rip
+                render.sprites[73] = render.makeSprite(8,0, false); // bonus                
                 render.sprites[48] = [render.makeSprite(9,4, false),render.makeSprite(9,4, true)]; // cross / die
 
                 // entities
@@ -108,7 +123,7 @@ var render = {
 				render.sprites[59] = [render.makeSprite(7,5, false),render.makeSprite(7,5, true)]; // cannon
 				render.sprites[68] = [render.makeSprite(9,5, false),render.makeSprite(9,5, true)]; // daemon
 				render.sprites[70] = [render.makeSprite(8,4, false),render.makeSprite(8,4, false)]; // bonfire
-                render.sprites[71] = [render.makeSprite(8,1, false),render.makeSprite(8,1, false)]; // fort
+                render.sprites[71] = [render.makeSprite(8,1, false),render.makeSprite(8,1, false)]; // fort                
 
                 // hints
                 render.sprites[40] = render.makeSprite(2,10, false); // hint top
@@ -572,6 +587,10 @@ var render = {
                         if(world.map.entities[i].message && world.map.entities[i].alive){                        
                             render.drawMessage(world.map.entities[i].message,world.map.entities[i].x, world.map.entities[i].y, world.map.entities[i].important);                            
                         }
+                    }
+
+                    if(world.map.entities[i].bonus.attack && world.map.entities[i].alive){                        
+                        this.gui.ctx.drawImage(render.sprites[73], world.map.entities[i].x*render.box, world.map.entities[i].y*render.box);                        
                     }                    
                 }
             }

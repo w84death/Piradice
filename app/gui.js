@@ -1,3 +1,16 @@
+/* 
+    ----------------------------------------------------------------------------
+    
+        KRZYSZTOF JANKOWSKI
+        PIRADICE
+    
+        abstract: HTML5 Canvas 2D Turn-based Game Engine    
+        created: 06-03-2013
+        licence: do what you want and dont bother me
+        
+    ----------------------------------------------------------------------------
+*/
+
 var GUI = {
 	ctx: null,
 	conf: {
@@ -251,7 +264,7 @@ var GUI = {
 				height: 2,
 				position: {
 					x: render.viewport.width-3,
-					y: 7
+					y: 5
 				},
 				action: 'basket',
 				value: 'lumberjack'
@@ -275,7 +288,7 @@ var GUI = {
 			height: 2,			
 			position: {
 				x: render.viewport.width-3,
-				y: 5
+				y: 3
 			},
 			action: 'basket',
 			value: 'fort'
@@ -323,7 +336,7 @@ var GUI = {
 			height: 2,			
 			position: {
 				x: render.viewport.width-3,
-				y: 7
+				y: 5
 			},
 			action: 'basket',
 			value: 'daemon'
@@ -335,7 +348,7 @@ var GUI = {
 			height: 2,			
 			position: {
 				x: render.viewport.width-3,
-				y: 9
+				y: 7
 			},
 			action: 'basket',
 			value: 'dust'

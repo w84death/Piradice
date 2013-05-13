@@ -16,25 +16,17 @@ var Item = function Item(){
     this.can_open = false;
     this.forest = false;
     this.chest = false;
+    this.give_bonus = {
+        attack: false,
+        fear: false
+    }
 };
 
 Item.prototype = {        
     open: function(pirate){    
         if(pirate && this.can_open && this.close){            
             this.sprite = this.sprite_open;
-            this.close = false; 
-                    
-            /*var win = true;
-            for (i = 0; i < world.map.items.length; i++) {
-                if(world.map.items[i].can_open && world.map.items[i].close){
-                    win = false;
-                }
-            }
-
-            if(win){
-                game.win();            
-            }*/
-            
+            this.close = false;                            
             return true;
         }else
         if(!pirate && this.can_open && !this.close){
@@ -46,7 +38,7 @@ Item.prototype = {
         }
         
     },
-    
+
     grow: function(){
         if(this.forest && this.palms == 1){
             this.palms = 2;
@@ -93,4 +85,15 @@ var Chest = function Chest(args){
 };
 
 Chest.prototype = new Item();
+
+var Rip = function Rip(args){
+    this.name = 'Rip';
+    this.rip = true;
+    this.x = args.x;
+    this.y = args.y;
+    this.sprite = 72;
+    this.give_bonus.attack = true;  
+};
+
+Rip.prototype = new Item();
 

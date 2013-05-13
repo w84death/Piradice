@@ -1,3 +1,16 @@
+/* 
+    ----------------------------------------------------------------------------
+    
+        KRZYSZTOF JANKOWSKI
+        PIRADICE
+    
+        abstract: HTML5 Canvas 2D Turn-based Game Engine    
+        created: 06-03-2013
+        licence: do what you want and dont bother me
+        
+    ----------------------------------------------------------------------------
+*/
+
 var ai = {
     loop_id: 0,
     

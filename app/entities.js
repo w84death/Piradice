@@ -22,7 +22,7 @@ var Unit = function Unit(){
     this.unit = true;
     this.structure = false;
     this.squad = 1;
-    this.bonus = false;
+    this.dice_bonus = false;
     this.max = 6;
     this.range = false;
     this.attack_range = false;  
@@ -45,6 +45,14 @@ var Unit = function Unit(){
     this.merging = true;
     this.die_after_attack = false;
     this.shop = [];
+    this.bonus = {
+        attack: false,
+        fear: false
+    };
+    this.give_bonus = {
+        attack: false,
+        fear: false
+    }
 };
 
 Unit.prototype = {
@@ -74,7 +82,7 @@ Unit.prototype = {
                                 }
                             };
                             if(empty){                                
-                                this.move_area.push({x:x,y:y, buy:true});        
+                                this.move_area.push({x:x,y:y, buy:true, distance:1, analize:true});        
                             }
                         }
                     }
@@ -291,7 +299,7 @@ Unit.prototype = {
                         }
 
                         // structure
-                        if(world.map.entities[j].structure){                            
+                        if(world.map.entities[j].structure && world.map.entities[j].team !== this.team){                            
                             if(this.can_destroy_structure){
                                 this.move_area[i].attack = true;
                             }
@@ -350,7 +358,7 @@ Unit.prototype = {
                     other.squad--;
                 }           
                 this.shout();            
-                other.die();
+                other.die(false);
                 this.moves = 0;
                 return true;
             }else{
@@ -436,8 +444,8 @@ Unit.prototype = {
             while(turn <= this_army.squad && this.squad > 0 && other.squad > 0){
 
                 // bonuses    
-                if(this.bonus){
-                    this_army.bonus = this.bonus;
+                if(this.dice_bonus){
+                    this_army.bonus = this.dice_bonus;
                 }else{
                     // squad bonus (50%)            
                     this_army.bonus = 1+(this.squad*0.5)<<0;
@@ -450,8 +458,8 @@ Unit.prototype = {
                 this_army.total += this_army.dice;
 
                 // bonuses
-                if(this.bonus){
-                    this_army.bonus = this.bonus;
+                if(this.dice_bonus){
+                    this_army.bonus = this.dice_bonus;
                 }else{ 
                     // squad bonus (50%)
                     other_army.bonus = 1+(other.squad*0.5)<<0;
@@ -506,26 +514,26 @@ Unit.prototype = {
 
             // attack_range units must reload their weapons
             if(this.range){
-                this.reloading = 3;
+                this.reloading = 2;
             }
             if(other.range){
-                other.reloading = 3;
+                other.reloading = 2;
             }            
 
             // units that die after attack must die
             if(this.die_after_attack){
-                this.die();
+                this.die(true);
             }
 
             // fight end
 
             if(this.squad < 1 ){
-                this.die();
+                this.die(true);
                 fight_result = false;
                 war_log.header = this.name + ' lose the fight..';
             }
             if(other.squad < 1 ){
-                other.die();
+                other.die(true);
                 if(this.range){
                     fight_result = false;
                 }else{
@@ -603,14 +611,32 @@ Unit.prototype = {
         }
     },
     
-    die: function(){             
+    die: function(rip){
+        if(rip){ 
+            this.rip();
+        }
         this.sprite = 48;
         this.alive = false;
         this.moves = 0;
         this.squad = 0;
-        game.killZombies();
+        game.killZombies();        
     },
     
+    rip: function(){
+        var clear = true;
+        if(this.pirate){
+            for (var i = 0; i < world.map.items.length; i++) {
+                if(world.map.items[i].rip && world.map.items[i].x == this.x && world.map.items[i].y == this.y ){
+                    clear = false;
+                }
+            };
+            if(clear){
+                world.map.items.push(new Rip({x:this.x,y:this.y}));
+                render.render({items:true});
+            }
+        }
+    },
+
     shout: function(){
         var r = (Math.random()*this.messages.length)<<0;
         this.message = this.messages[r];
@@ -739,7 +765,7 @@ var Dust = function Dust(args){
     this.move_range = 3;
     this.fow = 4;
     this.merging = false;
-    this.bonus = 6;
+    this.dice_bonus = 6;
     this.die_after_attack = true;
     this.can_cut_tree = true;
     this.can_build_structure = true;
@@ -764,7 +790,7 @@ var Ship = function Ship(args){
     this.move_range = 5;
     this.fow = 6;
     this.merging = false;
-    this.shop = ['pirate','gunner','lumberjack'];
+    this.shop = ['pirate','lumberjack'];
 };
 
 Ship.prototype = new Unit();
@@ -788,7 +814,7 @@ var Cementary = function Cementary(args){
     this.fow = 7;
     this.hasCementary = args.hasCementary || false;
     this.merging = false;
-    this.shop = ['skeleton','dust','daemon'];
+    this.shop = ['skeleton','dust'];
 };
 
 Cementary.prototype = new Unit();
@@ -810,7 +836,7 @@ var Octopus = function Octopus(args){
     this.range = true;
     this.move_range = 4;
     this.fow = 5;
-    this.bonus = 6;
+    this.dice_bonus = 6;
 };
 
 Octopus.prototype = new Unit();
@@ -829,6 +855,7 @@ var Daemon = function Daemon(args){
     this.attack_range = 4;
     this.move_range = 3;
     this.fow = 6;
+    this.give_bonus.fear = true;
 };
 
 Daemon.prototype = new Unit();
@@ -847,10 +874,12 @@ var Bonfire = function Bonfire(args){
     this.sprite = 70;
     this.messages = ['Hoo', 'Boosh', 'Poof'];
     this.fow = 7;
+    this.can_create_unit = true;
     this.merging = false;
     this.range = true;
     this.move_range = 0;
     this.attack_range = 6;
+    this.shop = ['daemon'];
 };
 
 Bonfire.prototype = new Unit();
@@ -874,7 +903,7 @@ var Fort = function Fort(args){
     this.fow = 6;
     this.merging = false;
     this.can_create_unit = true;
-    this.shop = ['cannon'];
+    this.shop = ['cannon', 'gunner'];
 };
 
 Fort.prototype = new Unit();

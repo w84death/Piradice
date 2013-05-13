@@ -72,7 +72,7 @@ var game = {
         });        
         shop.init();    
         render.init();        
-        audio.play({sound:'music1'});
+        //audio.play({sound:'music1'});
     },
 
     menu: function(){
@@ -95,7 +95,7 @@ var game = {
     },    
 
     restart: function(){
-        audio.changeVolume({sound:'music1', volume:0.9});
+        //audio.changeVolume({sound:'music1', volume:0.9});
     	this.teams = [{
             pirates: true,
             ai: false,
@@ -304,6 +304,7 @@ var game = {
                 this.teams[this.turn.team].bought = false;
                 fogOfWar.update();                                
                 this.payDay();
+                this.bonuses();
                 shop.show();
                 GUI.show.push('map');
                 GUI.show.push('inventory');
@@ -349,6 +350,41 @@ var game = {
         
         game.teams[game.turn.team].wallet.gold += salary;
         game.updateWallet();        
+    },
+
+    bonuses: function(){
+        var bonus = [];
+
+        for (var i = 0; i < world.map.items.length; i++) {
+            if(world.map.items[i].give_bonus.attack || world.map.items[i].give_bonus.fear){
+                bonus.push({
+                    attack: world.map.items[i].give_bonus.attack,
+                    fear: world.map.items[i].give_bonus.fear,
+                    x:world.map.items[i].x,
+                    y:world.map.items[i].y
+                });
+            }
+        };
+
+        for (var i = 0; i < world.map.entities.length; i++) {
+            if(world.map.entities[i].give_bonus.attack || world.map.entities[i].give_bonus.fear){
+                bonus.push({
+                    attack: world.map.entities[i].give_bonus.attack,
+                    fear: world.map.entities[i].give_bonus.fear,
+                    x:world.map.entities[i].x,
+                    y:world.map.entities[i].y
+                });
+            }
+        };
+
+        for (var i = 0; i < world.map.entities.length; i++) {
+            for (var i = 0; i < bonus.length; i++) {
+                if(world.map.entities[i].x === bonus[i].x && world.map.entities[i].y === bonus[i].y ){
+                    world.map.entities[i].bonus.attack = bonus[i].attack;
+                    world.map.entities[i].bonus.fear = bonus[i].fear;
+                }
+            };
+        };
     },
 
     income: function(){
