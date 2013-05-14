@@ -72,12 +72,24 @@ var GUI = {
 			width: 4,
 			height: 2,
 			position: {
-				x: 2,
+				x: 4,
 				y: render.viewport.height-3
 			},
 			action: 'game',
 			value: 'share',
 		};
+
+		this.buttons['audio'] = {				
+				sprite: this.makeButton({x:4, y:6, width:2, height:2, text:'AUDIO'}),
+				width: 2,
+				height: 2,
+				position: {
+					x: 1,
+					y: render.viewport.height-3
+				},
+				action: 'audio',
+				value: 'mute',
+			};
 
 		this.labels['copyright'] = {
 			text: 'Krzysztof Jankowski && Przemyslaw Sikorski',
@@ -395,6 +407,7 @@ var GUI = {
 			action: 'buy',
 			value: 'unit'
 		};		
+		
 
 	// HUD
 		this.hud['inventory'] = {
@@ -488,6 +501,13 @@ var GUI = {
 	},
 
 	action: function(key){
+
+		if(this.buttons[key].action == 'audio'){
+			if(this.buttons[key].value == 'mute'){
+				audio.stop({sound:'music1'});
+				game.audio = false;				
+			}
+		}
 		if(this.buttons[key].action == 'game'){
 			if(this.buttons[key].value == 'start'){
 				game.start();
@@ -862,7 +882,7 @@ var GUI = {
 					if(this.show[i] == key){
 						this.ctx.drawImage(this.buttons[key].sprite, this.buttons[key].position.x*render.box, this.buttons[key].position.y*render.box);
 					}
-				}
+				}				
 			}			
 
 			for (key in this.labels) {

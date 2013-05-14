@@ -75,11 +75,11 @@ var game = {
         });        
         shop.init();    
         render.init();        
-        //audio.play({sound:'music1'});
+        audio.play({sound:'music1'});
     },
 
     menu: function(){
-        GUI.show = ['logo', 'copyright', 'map','play','random', 'map_size1', 'map_size2', 'map_size3', 'share'];
+        GUI.show = ['logo', 'copyright', 'map','play','random', 'map_size1', 'map_size2', 'map_size3', 'share', 'audio'];
         GUI.hud['map'].position = {
             x:((render.viewport.width*0.5)<<0)-4,
             y:render.viewport.height-5
@@ -98,13 +98,13 @@ var game = {
     },    
 
     restart: function(){
-        //audio.changeVolume({sound:'music1', volume:0.9});
+        audio.changeVolume({sound:'music1', volume:0.9});
     	this.teams = [{
             pirates: true,
             ai: false,
             wallet: {
                 gold:400,
-                trees:12
+                trees:22
             },
             income: 10,
             bought: false,
@@ -517,7 +517,7 @@ var game = {
             
             ajax.onreadystatechange=function(){
                 if (ajax.readyState==4 && ajax.status==200){                
-                    window.open('http://magazyn.krzysztofjankowski.com/share/'+uuid+'.png', '_blank');
+                    window.open('http://piradice.krzysztofjankowski.com/share/'+uuid+'.png', '_blank');
                     game.sharing = false;
                 }
             };

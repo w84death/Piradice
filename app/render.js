@@ -494,8 +494,8 @@ var render = {
     viewportResize: function(){            
         render.viewport.width = (window.innerWidth/render.box)<<0;
         render.viewport.height = (window.innerHeight/render.box)<<0;
-        render.viewport.canvas.width = render.viewport.width*render.box;
-        render.viewport.canvas.height = render.viewport.height*render.box;
+        render.menu.canvas.width = render.viewport.canvas.width = render.viewport.width*render.box;
+        render.menu.canvas.height = render.viewport.canvas.height = render.viewport.height*render.box;                
         GUI.init();
         render.render({menu:true})
         //render.post_render();
