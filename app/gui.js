@@ -1,12 +1,15 @@
 /* 
     ----------------------------------------------------------------------------
     
-        KRZYSZTOF JANKOWSKI
+        KRZYSZTOF JANKOWSKI && PRZEMYSLAW SIKORSKI
         PIRADICE
     
         abstract: HTML5 Canvas 2D Turn-based Game Engine    
         created: 06-03-2013
         licence: do what you want and dont bother me
+        
+        webpage: http://piradice.krzysztofjankowski.com
+        twitter: @w84death, @rezoner
         
     ----------------------------------------------------------------------------
 */
@@ -185,16 +188,18 @@ var GUI = {
 			};
 
 		this.buttons['surrender_ok'] = {				
-				sprite: this.makeButton({x:4, y:8, width:4, height:2, text:'OK'}),
-				width: 4,
-				height: 2,
-				position: {
-					x: render.viewport.width-5,
-					y: 1
-				},
-				action: 'game',
-				value: 'surrender_ok',
-			};
+			sprite: this.makeButton({x:4, y:8, width:4, height:2, text:'OK'}),
+			width: 4,
+			height: 2,
+			position: {
+				x: render.viewport.width-5,
+				y: 1
+			},
+			action: 'game',
+			value: 'menu',
+		};
+
+		this.buttons['ok'] = this.buttons['surrender_ok']
 
 		this.buttons['surrender_cancel'] = {				
 				sprite: this.makeButton({x:4, y:8, width:4, height:2, text:'CANCEL'}),
@@ -247,16 +252,28 @@ var GUI = {
 			};
 
 		this.buttons['gunner'] = {
-				sprite: this.makeButton({x:4, y:6, sprite_over: 29, width:2, height:2}),
-				width: 2,
-				height: 2,
-				position: {
-					x: render.viewport.width-3,
-					y: 5
-				},
-				action: 'basket',
-				value: 'gunner'
-			};
+			sprite: this.makeButton({x:4, y:6, sprite_over: 29, width:2, height:2}),
+			width: 2,
+			height: 2,
+			position: {
+				x: render.viewport.width-3,
+				y: 5
+			},
+			action: 'basket',
+			value: 'gunner'
+		};
+
+		this.buttons['chieftain'] = {
+			sprite: this.makeButton({x:4, y:6, sprite_over: 74, width:2, height:2}),
+			width: 2,
+			height: 2,
+			position: {
+				x: render.viewport.width-3,
+				y: 7
+			},
+			action: 'basket',
+			value: 'chieftain'
+		};
 
 		this.buttons['lumberjack'] = {
 				sprite: this.makeButton({x:4, y:6, sprite_over: 53, width:2, height:2}),
@@ -293,6 +310,7 @@ var GUI = {
 			action: 'basket',
 			value: 'fort'
 		};
+
 
 		this.buttons['cementary'] = {
 			sprite: this.makeButton({x:4, y:6, sprite_over: 39, width:2, height:2}),
@@ -483,7 +501,7 @@ var GUI = {
 			if(this.buttons[key].value == 'surrender_cancel'){				
 				this.render({ready:true});
 			}
-			if(this.buttons[key].value == 'surrender_ok'){
+			if(this.buttons[key].value == 'menu'){
 				game.restart();
 			}
 			if(this.buttons[key].value == 'random'){

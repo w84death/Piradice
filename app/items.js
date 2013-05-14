@@ -1,12 +1,15 @@
 /* 
     ----------------------------------------------------------------------------
     
-        KRZYSZTOF JANKOWSKI
+        KRZYSZTOF JANKOWSKI && PRZEMYSLAW SIKORSKI
         PIRADICE
     
         abstract: HTML5 Canvas 2D Turn-based Game Engine    
         created: 06-03-2013
         licence: do what you want and dont bother me
+        
+        webpage: http://piradice.krzysztofjankowski.com
+        twitter: @w84death, @rezoner
         
     ----------------------------------------------------------------------------
 */
@@ -92,7 +95,8 @@ var Rip = function Rip(args){
     this.x = args.x;
     this.y = args.y;
     this.sprite = 72;
-    this.give_bonus.attack = true;  
+    this.give_bonus.attack = true; 
+    this.team = 1;
 };
 
 Rip.prototype = new Item();

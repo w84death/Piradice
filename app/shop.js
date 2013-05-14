@@ -1,12 +1,15 @@
 /* 
     ----------------------------------------------------------------------------
     
-        KRZYSZTOF JANKOWSKI
+        KRZYSZTOF JANKOWSKI && PRZEMYSLAW SIKORSKI
         PIRADICE
     
         abstract: HTML5 Canvas 2D Turn-based Game Engine    
         created: 06-03-2013
         licence: do what you want and dont bother me
+        
+        webpage: http://piradice.krzysztofjankowski.com
+        twitter: @w84death, @rezoner
         
     ----------------------------------------------------------------------------
 */
@@ -21,6 +24,7 @@ var shop = {
         this.price_list['ship'] = {gold:200, trees:10};
         this.price_list['cannon'] = {gold:10, trees:5};
         this.price_list['fort'] = {gold:100, trees:10};
+        this.price_list['chieftain'] = {gold:80, trees:1};
         
         this.price_list['skeleton'] = {gold:10, trees:0};
         this.price_list['dust'] = {gold:30, trees:0};        
@@ -110,6 +114,10 @@ var shop = {
             if(args.unit == 'cannon'){
                 world.map.entities.push(new Cannon({x:newX,y:newY,team:team, ai:ai}));
             }
+
+            if(args.unit == 'chieftain'){
+                world.map.entities.push(new Chieftain({x:newX,y:newY,team:team, ai:ai}));
+            }
             
             if(args.unit == 'ship'){
                 world.map.entities.push(new Ship({x:newX,y:newY,team:team, ai:ai}));
@@ -127,7 +135,7 @@ var shop = {
             
             if(args.unit == 'daemon'){
                 world.map.entities.push(new Daemon({x:newX,y:newY,team:team, ai:ai}));
-            }
+            }            
 
             if(args.unit == 'bonfire'){
                 world.map.entities.push(new Bonfire({x:newX,y:newY,team:team, ai:ai}));

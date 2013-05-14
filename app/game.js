@@ -1,13 +1,16 @@
-/*
+/* 
     ----------------------------------------------------------------------------
-
-        KRZYSZTOF JANKOWSKI && PRZEMYSŁAW SIKORSKI
+    
+        KRZYSZTOF JANKOWSKI && PRZEMYSLAW SIKORSKI
         PIRADICE
-
-        abstract: HTML5 Canvas 2D Turn-based Game Engine
+    
+        abstract: HTML5 Canvas 2D Turn-based Game Engine    
         created: 06-03-2013
-        licence: do what you want and dont bother us
-
+        licence: do what you want and dont bother me
+        
+        webpage: http://piradice.krzysztofjankowski.com
+        twitter: @w84death, @rezoner
+        
     ----------------------------------------------------------------------------
 */
 
@@ -26,8 +29,8 @@ var game = {
             pirates: true,
             ai: false,
             wallet: {
-                gold:400, //400,
-                trees:22, //22
+                gold:800, //400,
+                trees:100, //22
             },
             income: 10,            
             bought: false,
@@ -36,8 +39,8 @@ var game = {
             skeletons: true,
             ai: false,
             wallet: {
-                gold:400, //400,
-                trees:12,// 12
+                gold:800, //400,
+                trees:100,// 12
             },
             income: 10,
             bought: false,
@@ -103,11 +106,13 @@ var game = {
                 gold:400,
                 trees:12
             },
+            income: 10,
             bought: false,
             offset: {x:0,y:0}            
         },{
             skeletons: true,
             ai: false,
+            income: 10,
             wallet: {
                 gold:400,
                 trees:12
@@ -279,7 +284,8 @@ var game = {
                     if(world.map.entities[i].range){
                         world.map.entities[i].reloading--;
                     }
-                    
+                    world.map.entities[i].bonus.attack = false;
+                    world.map.entities[i].bonus.fear = false;                    
                     world.map.entities[i].moves = 1;                
                     world.map.entities[i].selected = false;
                 }
@@ -363,7 +369,8 @@ var game = {
                     attack: world.map.items[i].give_bonus.attack,
                     fear: world.map.items[i].give_bonus.fear,
                     x:world.map.items[i].x,
-                    y:world.map.items[i].y
+                    y:world.map.items[i].y,
+                    team: world.map.items[i].team
                 });
             }
         };
@@ -374,33 +381,41 @@ var game = {
                     attack: world.map.entities[i].give_bonus.attack,
                     fear: world.map.entities[i].give_bonus.fear,
                     x:world.map.entities[i].x,
-                    y:world.map.entities[i].y
+                    y:world.map.entities[i].y,
+                    team: world.map.entities[i].team
                 });
             }
         };
 
-        function distance(x1,y1,x2,y2,max){
-            var dx = x1 - x2,
-                dy = y2 - y2;
+        console.log(bonus);
 
-            var distance = Math.sqrt(dx*dx+ dy*dy)<<0
-            console.log(distance);
-            if(distance<=max){
+        function distance(x1,y1,x2,y2,max){
+            var dx = x2 - x1,
+                dy = y2 - y1;
+
+            var distance = Math.sqrt(dx*dx + dy*dy);
+            //console.log(distance);
+            if(distance<max){
                 return true;
             }else{
                 return false;
             }
-        }
+        }        
 
         // give bonuses
         for (i = 0; i < world.map.entities.length; i++) {
             for (var j = 0; j < bonus.length; j++) {
-                if(distance(world.map.entities[i].x, world.map.entities[i].y, bonus[j].x,bonus[j].y,2)){
-                    world.map.entities[i].bonus.attack = bonus[j].attack;
-                    world.map.entities[i].bonus.fear = bonus[j].fear;
-                }
-            };
-        };
+            //console.log(bonus[j].team,world.map.entities[i].team );                          
+                if(distance(world.map.entities[i].x, world.map.entities[i].y, bonus[j].x,bonus[j].y,2) && bonus[j].team === world.map.entities[i].team){
+                    if(bonus[j].attack){                            
+                        world.map.entities[i].bonus.attack = true;
+                    }
+                    if(bonus[j].fear){
+                        world.map.entities[i].bonus.fear = true;
+                    }
+                }   
+            }
+        }
     },
 
     income: function(){
@@ -435,19 +450,13 @@ var game = {
     },
             
     win: function(){        
-        GUI.render({end:true,message:'You win!'})
-        /*this.ready = false;
-        this.play = false;
-        this.map = true;
-        this.restart();*/
+        GUI.show = ['ok'];
+        GUI.render({end:true,message:'You win!'})        
     },
 
     lose: function(){        
-        GUI.render({end:true,message:'You lose :('})
-        /*this.ready = false;
-        this.play = false;
-        this.map = true;
-        this.restart();*/
+        GUI.show = ['ok'];
+        GUI.render({end:true,message:'You lose :('})        
     },
 
 

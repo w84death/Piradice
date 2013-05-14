@@ -1,12 +1,15 @@
 /* 
     ----------------------------------------------------------------------------
     
-        KRZYSZTOF JANKOWSKI
+        KRZYSZTOF JANKOWSKI && PRZEMYSLAW SIKORSKI
         PIRADICE
     
         abstract: HTML5 Canvas 2D Turn-based Game Engine    
         created: 06-03-2013
         licence: do what you want and dont bother me
+        
+        webpage: http://piradice.krzysztofjankowski.com
+        twitter: @w84death, @rezoner
         
     ----------------------------------------------------------------------------
 */
@@ -445,15 +448,24 @@ Unit.prototype = {
 
                 // bonuses    
                 if(this.dice_bonus){
-                    this_army.bonus = this.dice_bonus;
+                    this_army.bonus += this.dice_bonus;
                 }else{
                     // squad bonus (50%)            
-                    this_army.bonus = 1+(this.squad*0.5)<<0;
+                    this_army.bonus += 1+(this.squad*0.5)<<0;
+                }
+
+                if(this.bonus.attack){
+                    this_army.bonus += 1;
+                }
+
+                if(this.bonus.fear){
+                    this_army.bonus -= 1;
                 }
                 
                 //throwing the dice + saveing warlog
                 this_army.dice = ((Math.random()*5)<<0)+this_army.bonus;                
                 if(this_army.dice>6){this_army.dice=6;}
+                if(this_army.dice<1){this_army.dice=1;}
                 this_army.utf8_dices += utilities.toDice(this_army.dice);
                 this_army.total += this_army.dice;
 
@@ -674,6 +686,10 @@ var Pirate = function Pirate(args){
     this.messages = ['Arr..', 'Yes?', '..y', 'Go!', 'ye!'];
     this.move_range = 4;
     this.fow = 5;
+    this.bonus = {
+        attack: false,
+        fear: false
+    };
 };
 
 Pirate.prototype = new Unit();
@@ -691,6 +707,10 @@ var Gunner = function Gunner(args){
     this.attack_range = 4;
     this.move_range = 3;
     this.fow = 5;
+    this.bonus = {
+        attack: false,
+        fear: false
+    };
 };
 
 Gunner.prototype = new Unit();
@@ -710,6 +730,10 @@ var Cannon = function Cannon(args){
     this.move_range = 2;
     this.can_destroy_structure = true;
     this.fow = 7;
+    this.bonus = {
+        attack: false,
+        fear: false
+    };
 };
 
 Cannon.prototype = new Unit();
@@ -731,6 +755,10 @@ var Lumberjack = function Lumberjack(args){
     this.merging = false;
     this.can_build_structure = true;
     this.shop = ['fort'];
+    this.bonus = {
+        attack: false,
+        fear: false
+    };
 };
 
 Lumberjack.prototype = new Unit();
@@ -746,7 +774,11 @@ var Skeleton = function Skeleton(args){
     this.sprite = 23;
     this.messages = ['...', '..', '.'];
     this.move_range = 3;
-    this.fow = 4;    
+    this.fow = 4;  
+    this.bonus = {
+        attack: false,
+        fear: false
+    };  
 };
 
 Skeleton.prototype = new Unit();
@@ -771,6 +803,10 @@ var Dust = function Dust(args){
     this.can_cut_tree = true;
     this.can_build_structure = true;
     this.shop = ['bonfire'];
+    this.bonus = {
+        attack: false,
+        fear: false
+    };
 };
 
 Dust.prototype = new Unit();
@@ -792,6 +828,10 @@ var Ship = function Ship(args){
     this.fow = 6;
     this.merging = false;
     this.shop = ['pirate','lumberjack'];
+    this.bonus = {
+        attack: false,
+        fear: false
+    };
 };
 
 Ship.prototype = new Unit();
@@ -816,6 +856,10 @@ var Cementary = function Cementary(args){
     this.hasCementary = args.hasCementary || false;
     this.merging = false;
     this.shop = ['skeleton','dust'];
+    this.bonus = {
+        attack: false,
+        fear: false
+    };   
 };
 
 Cementary.prototype = new Unit();
@@ -838,6 +882,10 @@ var Octopus = function Octopus(args){
     this.move_range = 4;
     this.fow = 5;
     this.dice_bonus = 6;
+    this.bonus = {
+        attack: false,
+        fear: false
+    };
 };
 
 Octopus.prototype = new Unit();
@@ -857,6 +905,10 @@ var Daemon = function Daemon(args){
     this.move_range = 3;
     this.fow = 6;
     this.give_bonus.fear = true;
+    this.bonus = {
+        attack: false,
+        fear: false
+    };
 };
 
 Daemon.prototype = new Unit();
@@ -881,6 +933,10 @@ var Bonfire = function Bonfire(args){
     this.move_range = 0;
     this.attack_range = 6;
     this.shop = ['daemon'];
+    this.bonus = {
+        attack: false,
+        fear: false
+    };
 };
 
 Bonfire.prototype = new Unit();
@@ -904,8 +960,33 @@ var Fort = function Fort(args){
     this.fow = 6;
     this.merging = false;
     this.can_create_unit = true;
-    this.shop = ['cannon', 'gunner'];
+    this.shop = ['cannon', 'gunner', 'chieftain'];
+    this.bonus = {
+        attack: false,
+        fear: false
+    };
 };
 
 Fort.prototype = new Unit();
+
+var Chieftain = function Chieftain(args){
+    this.name = 'Chieftain';
+    this.pirate = true;
+    this.x = args.x;
+    this.y = args.y;
+    this.team = 0;
+    this.squad = 1;
+    this.sprite = 74;
+    this.messages = ['Arr..', 'Do it', 'Go!', 'ye!'];
+    this.move_range = 4;
+    this.fow = 5;
+    this.bonus = {
+        attack: false,
+        fear: false
+    };    
+    this.give_bonus.attack = true; 
+};
+
+Chieftain.prototype = new Unit();
+
 
