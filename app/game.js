@@ -1,16 +1,13 @@
-/* 
+/*
     ----------------------------------------------------------------------------
-    
-        KRZYSZTOF JANKOWSKI && PRZEMYSLAW SIKORSKI
+
+        KRZYSZTOF JANKOWSKI && PRZEMYSŁAW SIKORSKI
         PIRADICE
-    
-        abstract: HTML5 Canvas 2D Turn-based Game Engine    
+
+        abstract: HTML5 Canvas 2D Turn-based Game Engine
         created: 06-03-2013
-        licence: do what you want and dont bother me
-        
-        webpage: http://piradice.krzysztofjankowski.com
-        twitter: @w84death, @rezoner
-        
+        licence: do what you want and dont bother us
+
     ----------------------------------------------------------------------------
 */
 
@@ -29,8 +26,8 @@ var game = {
             pirates: true,
             ai: false,
             wallet: {
-                gold:800, //400,
-                trees:100, //22
+                gold:400, //400,
+                trees:20, //22
             },
             income: 10,            
             bought: false,
@@ -39,8 +36,8 @@ var game = {
             skeletons: true,
             ai: false,
             wallet: {
-                gold:800, //400,
-                trees:100,// 12
+                gold:400, //400,
+                trees:10,// 12
             },
             income: 10,
             bought: false,
@@ -75,11 +72,11 @@ var game = {
         });        
         shop.init();    
         render.init();        
-        audio.play({sound:'music1'});
+        //audio.play({sound:'music1'});
     },
 
     menu: function(){
-        GUI.show = ['logo', 'copyright', 'map','play','random', 'map_size1', 'map_size2', 'map_size3', 'share', 'audio'];
+        GUI.show = ['logo', 'copyright', 'map','play','random', 'map_size1', 'map_size2', 'map_size3', 'share'];
         GUI.hud['map'].position = {
             x:((render.viewport.width*0.5)<<0)-4,
             y:render.viewport.height-5
@@ -98,13 +95,13 @@ var game = {
     },    
 
     restart: function(){
-        audio.changeVolume({sound:'music1', volume:0.9});
+        //audio.changeVolume({sound:'music1', volume:0.9});
     	this.teams = [{
             pirates: true,
             ai: false,
             wallet: {
                 gold:400,
-                trees:22
+                trees:12
             },
             income: 10,
             bought: false,
@@ -485,7 +482,7 @@ var game = {
     shareMap: function(){
 
         if(!this.sharing){
-            alert('This could take a moment..');
+            alert('This could take a moment.. image will be open in new window when ready.');
             this.sharing = true;
 
             var m_canvas = document.createElement('canvas');
@@ -495,6 +492,8 @@ var game = {
             
             // map
             m_context.drawImage(render.map.canvas, 0, 0);
+			// flora&fauna
+            m_context.drawImage(render.front.canvas, 0, 0);
 
             // logo
             m_context.drawImage(GUI.hud['logo'].sprite, ((m_canvas.width*0.5)-(GUI.hud['logo'].sprite.width*0.5))<<0, 16);
@@ -517,7 +516,7 @@ var game = {
             
             ajax.onreadystatechange=function(){
                 if (ajax.readyState==4 && ajax.status==200){                
-                    window.open('http://piradice.krzysztofjankowski.com/share/'+uuid+'.png', '_blank');
+                    window.open('http://magazyn.krzysztofjankowski.com/share/'+uuid+'.png', '_blank');
                     game.sharing = false;
                 }
             };

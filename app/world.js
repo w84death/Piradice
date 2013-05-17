@@ -25,9 +25,10 @@ var world = {
         islands_size: 5 + (Math.random()*70)<<0,      
         grass: 0 + (Math.random()*80)<<0,
         palms: 0 + (Math.random()*80)<<0,
+        weeds: 5 + (Math.random()*30)<<0,
         chests: 2 + (Math.random()*4)<<0,
     },
-    generator_version: 1,
+    generator_version: 2,
 
     init: function(args){                
 
@@ -47,11 +48,17 @@ var world = {
         this.conf.seed = (Math.random()*1024)<<0;        
         this.conf.grass = 0 + (Math.random()*80)<<0;
         this.conf.palms = 0 + (Math.random()*80)<<0;
+        this.conf.weeds = 5 + (Math.random()*30)<<0;
 
-        this.conf.islands = 2 + (Math.random()*6)<<0;
-        this.conf.islands_size = 10 + (Math.random()*70)<<0;
-        this.conf.chests = 2 + (Math.random()*4)<<0;           
-        
+		if(this.conf.width<20 || this.conf.height<18){
+			this.conf.islands = 1 + (Math.random()*4)<<0;
+        	this.conf.islands_size = 2 + (Math.random()*15)<<0;
+        	this.conf.chests = 1 + (Math.random()*3)<<0;
+		}else{
+        	this.conf.islands = 2 + (Math.random()*6)<<0;
+        	this.conf.islands_size = 10 + (Math.random()*70)<<0;
+        	this.conf.chests = 2 + (Math.random()*4)<<0;           
+        }
         this.generate();             
     },
 
@@ -73,6 +80,7 @@ var world = {
             this.conf.islands_size + separator +
             this.conf.grass + separator +
             this.conf.palms + separator +
+            this.conf.weeds + separator +
             this.conf.chests + separator +
             this.generator_version;
 
@@ -85,7 +93,7 @@ var world = {
             block = [];
 
         block = hash.split(separator);
-        if(block.length == 9){
+        if(block.length == 10){
             this.conf.width = block[0];
             this.conf.height = block[1];
             this.conf.seed = block[2];
@@ -93,8 +101,9 @@ var world = {
             this.conf.islands_size = block[4];
             this.conf.grass = block[5];
             this.conf.palms = block[6];
-            this.conf.chests = block[7];
-            this.generator_version = block[8];            
+            this.conf.weeds = block[7];
+            this.conf.chests = block[8];
+            this.generator_version = block[9];            
         }else{
             alert('ERROR: WRONG HASH!');            
             this.randomMap();
@@ -123,6 +132,7 @@ var world = {
             islands_size: 30 || localStorage.getItem("islands_size"),      
             grass: 40 || localStorage.getItem("grass"),
             palms: 15 || localStorage.getItem("palms"),
+            weeds: 15 || localStorage.getItem("weeds"),
             chests: 4 || localStorage.getItem("chests"),
             wallet: 500 || localStorage.getItem("wallet"),
         },
@@ -135,6 +145,7 @@ var world = {
         localStorage.setItem("islands_size",this.conf.islands_size);
         localStorage.setItem("grass",this.conf.grass);
         localStorage.setItem("palms",this.conf.palms);
+        localStorage.setItem("weeds",this.conf.weeds);
         localStorage.setItem("chests",this.conf.chests);        
         localStorage.setItem("wallet",this.conf.wallet);   
     },

@@ -420,12 +420,12 @@ var GUI = {
 				height:4,
 				icons:				
 					[{	
-						sprite: render.sprites[14],
+						sprite: render.sprites[13][0],
 						label: '999',
 						position: {x:16,y:16}
 					},
 					{
-						sprite: render.sprites[55],
+						sprite: render.sprites[55][0],
 						label: '99',
 						position: {x:16,y:68}
 					}]
@@ -463,12 +463,12 @@ var GUI = {
 				height:2,
 				icons:				
 					[{	
-						sprite: render.sprites[14],
+						sprite: render.sprites[13][0],
 						label: '999',
 						position: {x:16,y:16}
 					},
 					{
-						sprite: render.sprites[55],
+						sprite: render.sprites[55][0],
 						label: '99',
 						position: {x:80,y:16}
 					}]
@@ -546,13 +546,13 @@ var GUI = {
 		}
 		if(this.buttons[key].action == 'mapSize'){
 			if(this.buttons[key].value == 'small'){
-				game.mapSize({w:18,h:12});
+				game.mapSize({w:18,h:16});
 			}
 			if(this.buttons[key].value == 'normal'){
 				game.mapSize({w:24,h:18});
 			}
 			if(this.buttons[key].value == 'big'){
-				game.mapSize({w:48,h:32});
+				game.mapSize({w:48,h:40});
 			}
 		}
 		

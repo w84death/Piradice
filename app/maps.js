@@ -188,11 +188,25 @@ var maps = {
                             }
                         }
                         if(place_palm){                            
-                            procMap.items.push(new Palm({x:x, y:y, palms:1}));
-                        }
+                            // place a palm
+                            procMap.items.push(new Palm({x:x, y:y, palms:0}));
+
+                        }                                           
                     }
                 }
-                
+
+                if((Math.random()*args.stop_generator)<<0 < args.weeds ){
+                    // place some weed :D
+                    if(procMapData[x][y] === 0 || procMapData[x][y] == 1){
+                        procMap.items.push(new Weed({x:x, y:y, biome:'water'}));
+                    }
+                    if(procMapData[x][y] === 2 || procMapData[x][y] == 3){
+                        procMap.items.push(new Weed({x:x, y:y, biome:'sand'}));
+                    }
+                    if(( procMapData[x][y] == 4 || procMapData[x][y] == 5 )){
+                        procMap.items.push(new Weed({x:x, y:y, biome:'grass'}));
+                    }
+                }                                       
                
                 // bridge
                 if(procMapData[x][y] !== 0 && procMapData[x-1][y] !== 0  && procMapData[x+1][y] !== 0 && procMapData[x][y-1] === 0  && procMapData[x][y+1] === 0){
@@ -207,6 +221,10 @@ var maps = {
         
         
         for (i = 0; i < procMap.items.length; i++) {
+
+            // initial grow (randomize) sprite
+            procMap.items[i].grow();
+
             if(procMap.items[i].forest){
                 var neighbors = 0;
                 for (var j = 0; j < procMap.items.length; j++) {
@@ -221,12 +239,12 @@ var maps = {
                         if(procMap.items[j].x - 1 == procMap.items[i].x && procMap.items[j].y + 1 == procMap.items[i].y) { neighbors++; }
                         if(procMap.items[j].x + 1 == procMap.items[i].x && procMap.items[j].y + 1 == procMap.items[i].y) { neighbors++; }
                     }
-                }
+                }                
 
                 if(neighbors > 4){
                     procMap.items[i].grow();
                 }
-            }            
+            }                
         }
                 
         for (i = 0; i < start.length; i++) {

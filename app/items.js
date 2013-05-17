@@ -18,7 +18,11 @@
 var Item = function Item(){        
     this.can_open = false;
     this.forest = false;
+    this.weed = false;
     this.chest = false;
+    this.flora = false;
+    this.flip = 0;
+    this.render_front = false;
     this.give_bonus = {
         attack: false,
         fear: false
@@ -28,12 +32,12 @@ var Item = function Item(){
 Item.prototype = {        
     open: function(pirate){    
         if(pirate && this.can_open && this.close){            
-            this.sprite = this.sprite_open;
+            this.flip = 1;
             this.close = false;                            
             return true;
         }else
         if(!pirate && this.can_open && !this.close){
-            this.sprite = this.sprite_open-1;
+            this.flip = 0;
             this.close = true;
             return true;
         }else{
@@ -43,9 +47,28 @@ Item.prototype = {
     },
 
     grow: function(){
-        if(this.forest && this.palms == 1){
-            this.palms = 2;
-            this.sprite++;
+        if(this.forest){
+            if( this.palms == 0){
+                this.palms++;
+                this.flip = (Math.random()*2)<<0;
+                this.sprite = this.sprites.palm[(Math.random()*this.sprites.palm.length)<<0];
+            }else
+            if( this.palms == 1){
+                this.palms++;
+                this.flip = (Math.random()*2)<<0;
+                this.sprite = this.sprites.forest[(Math.random()*this.sprites.forest.length)<<0];
+            }
+        }
+        if(this.weed){
+            this.flip = (Math.random()*2)<<0;
+            this.sprite = this.sprites[this.biome][(Math.random()*this.sprites[this.biome].length)<<0];
+        	for (var i = 0; i < this.push_back.length; i++) {
+        		if (this.push_back[i] === this.sprite) {
+        		
+        		    this.render_front = false;
+        		   			
+        		}
+        	}
         }
     },
     
@@ -53,8 +76,11 @@ Item.prototype = {
         if(this.forest){                        
             if(this.palms > 0){                
                 this.palms--;
-                this.sprite--;                                      
+                this.flip = (Math.random()*2)<<0;
+                this.sprite = this.sprites.palm[(Math.random()*this.sprites.palm.length)<<0];                                      
                 if(this.palms === 0){
+                    this.flip = (Math.random()*2)<<0;
+                    this.sprite = this.sprites.cutted[(Math.random()*this.sprites.cutted.length)<<0];
                     world.map.moves[(this.x)+((this.y)*world.map.width)] = 1;
                 }
                 return true;
@@ -71,10 +97,37 @@ var Palm = function Palm(args){
     this.x = args.x;
     this.y = args.y;
     this.palms = args.palms;
-    this.sprite = 54 + args.palms;  
+    this.flora = true;
+    this.biome = 'grass';
+    this.sprite = 55;
+    this.sprites = {
+        'cutted':[54],
+        'palm':[55,75],
+        'forest':[56,76],
+    }
 };
 
 Palm.prototype = new Item();
+
+var Weed = function Weed(args){
+    this.name = 'Weed';
+    this.weed = true;
+    this.x = args.x;
+    this.y = args.y;
+    this.flora = true;
+    this.biome = args.biome;
+    this.render_front = true;
+    this.sprite = 79;
+    this.sprites = {
+        'normal':[77,78,79,80,81,82,83,84],
+        'grass':[77,78,79,80,81,82,83,84],
+        'sand':[85,86,87,92],
+        'water':[88,89,90,91],
+    };
+    this.push_back = [88];
+};
+
+Weed.prototype = new Item();
 
 var Chest = function Chest(args){
     this.name = 'Chest';
@@ -82,7 +135,7 @@ var Chest = function Chest(args){
     this.x = args.x;
     this.y = args.y;
     this.sprite = 13;
-    this.sprite_open = 14;
+    this.flip = 0;
     this.can_open = true;
     this.close = true;
 };

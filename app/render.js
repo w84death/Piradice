@@ -23,6 +23,10 @@ var render = {
         canvas: null,
         ctx: null,
     },
+    front: {
+        canvas: null,
+        ctx: null,
+    },
     gui: {
         canvas: null,
         ctx: null,
@@ -87,17 +91,17 @@ var render = {
                 render.sprites[9] = render.makeSprite(4,0, false); // move
                 render.sprites[10] = render.makeSprite(5,0, false); // select
                 render.sprites[11] = render.makeSprite(5,1, false); // done
-                render.sprites[12] = render.makeSprite(6,0, false); // attack
-                render.sprites[13] = render.makeSprite(0,2, false); // treasure
-                render.sprites[14] = render.makeSprite(1,2, false); // treasure open
+                render.sprites[12] = render.makeSprite(6,0, false); // attack                
+                render.sprites[13] = [render.makeSprite(0,2, false),render.makeSprite(1,2, false)]; // treasure
+                //render.sprites[14] = ; // treasure open                
                 render.sprites[15] = render.makeSprite(5,2, false); // reloading
                 render.sprites[16] = render.makeSprite(2,1, false); // pirate flag
                 render.sprites[37] = render.makeSprite(7,3, false); // buy area
                 render.sprites[38] = render.makeSprite(6,3, false); // cut forest
                 render.sprites[69] = render.makeSprite(7,4, false); // burn forest
-                render.sprites[72] = render.makeSprite(9,4, false); // rip
+                render.sprites[72] = [render.makeSprite(9,4, false),render.makeSprite(9,4, false)];
                 render.sprites[73] = render.makeSprite(8,0, false); // bonus                
-                render.sprites[48] = [render.makeSprite(9,4, false),render.makeSprite(9,4, true)]; // cross / die
+                render.sprites[48] = [render.makeSprite(9,4, false),render.makeSprite(9,4, false)]; // cross / die
 
                 // entities
                 render.sprites[17] = [render.makeSprite(0,3, false),render.makeSprite(0,3, true)]; // pirate 1
@@ -125,9 +129,9 @@ var render = {
                 render.sprites[53] = [render.makeSprite(6,4, false),render.makeSprite(6,4, true)]; // lumberjack
 				render.sprites[59] = [render.makeSprite(7,5, false),render.makeSprite(7,5, true)]; // cannon
 				render.sprites[68] = [render.makeSprite(9,5, false),render.makeSprite(9,5, true)]; // daemon
-				render.sprites[70] = [render.makeSprite(8,4, false),render.makeSprite(8,4, false)]; // bonfire
-                render.sprites[71] = [render.makeSprite(8,1, false),render.makeSprite(8,1, false)]; // fort
-                render.sprites[74] = [render.makeSprite(8,5, false),render.makeSprite(8,5, false)]; // chieftan                
+				render.sprites[70] = [render.makeSprite(8,4, false),render.makeSprite(8,4, true)]; // bonfire
+                render.sprites[71] = [render.makeSprite(8,1, false),render.makeSprite(8,1, true)]; // fort
+                render.sprites[74] = [render.makeSprite(8,5, false),render.makeSprite(8,5, true)]; // chieftan                
 
                 // hints
                 render.sprites[40] = render.makeSprite(2,10, false); // hint top
@@ -158,9 +162,30 @@ var render = {
                 render.sprites[52] = render.makeSprite(7,2, false); // cloud right
                                 
                 
-                render.sprites[54] = render.makeSprite(3,6, false); // cutted palm
-                render.sprites[55] = render.makeSprite(1,6, false); // palm
-                render.sprites[56] = render.makeSprite(2,6, false); // forest            
+                render.sprites[54] = [render.makeSprite(3,6, false),render.makeSprite(3,6, true)]; // cutted palm
+                render.sprites[55] = [render.makeSprite(1,6, false),render.makeSprite(1,6, true)]; // palm
+                render.sprites[56] = [render.makeSprite(2,6, false),render.makeSprite(2,6, true)]; // forest
+                render.sprites[75] = [render.makeSprite(9,1, false),render.makeSprite(9,1, true)]; // palm2
+                render.sprites[76] = [render.makeSprite(10,1, false),render.makeSprite(10,1, true)]; // forest2
+
+                render.sprites[77] = [render.makeSprite(9,0, false),render.makeSprite(9,0, true)]; // grass
+                render.sprites[78] = [render.makeSprite(10,0, false),render.makeSprite(10,0, true)]; // grass2
+                render.sprites[79] = [render.makeSprite(11,0, false),render.makeSprite(11,0, true)]; // grass3
+                render.sprites[80] = [render.makeSprite(12,0, false),render.makeSprite(12,0, true)]; // flower red 1
+                render.sprites[81] = [render.makeSprite(13,0, false),render.makeSprite(13,0, true)]; // flower red 2
+                render.sprites[82] = [render.makeSprite(12,1, false),render.makeSprite(12,1, true)]; // flower blue 1
+                render.sprites[83] = [render.makeSprite(13,1, false),render.makeSprite(13,1, true)]; // flower blue 1
+                render.sprites[84] = [render.makeSprite(11,1, false),render.makeSprite(11,1, true)]; // shrooms
+
+                render.sprites[85] = [render.makeSprite(15,1, false),render.makeSprite(15,1, true)]; // rock
+                render.sprites[86] = [render.makeSprite(16,1, false),render.makeSprite(16,1, true)]; // rock big
+                render.sprites[87] = [render.makeSprite(14,1, false),render.makeSprite(14,1, true)]; // star
+
+                render.sprites[88] = [render.makeSprite(14,0, false),render.makeSprite(14,0, true)]; // fishes
+                render.sprites[89] = [render.makeSprite(15,0, false),render.makeSprite(15,0, true)]; // shark
+                render.sprites[90] = [render.makeSprite(16,0, false),render.makeSprite(16,0, true)]; // seagul w52
+    			render.sprites[91] = [render.makeSprite(17,0, false),render.makeSprite(17,0, true)]; // seagul 3
+    			render.sprites[92] = [render.makeSprite(17,1, false),render.makeSprite(17,1, true)]; // seaweed
     
                 render.sprites[57] = render.makeSprite(6,2, false); // shout
                 render.sprites[58] = render.makeSprite(4,2, false); // message
@@ -221,6 +246,11 @@ var render = {
         this.entities.canvas.width = world.map.width*this.box;
         this.entities.canvas.height = world.map.height*this.box;
         this.entities.ctx = this.entities.canvas.getContext('2d');
+
+        this.front.canvas = document.createElement('canvas');
+        this.front.canvas.width = world.map.width*this.box;
+        this.front.canvas.height = world.map.height*this.box;
+        this.front.ctx = this.front.canvas.getContext('2d');
 
         this.gui.canvas = document.createElement('canvas');
         this.gui.canvas.width = world.map.width*this.box;
@@ -526,8 +556,13 @@ var render = {
         }
 
         if(args.items){
+            this.front.ctx.clearRect(0, 0, world.map.width*this.box, world.map.height*this.box);
             for(i=0; i<world.map.items.length; i++){
-                this.map.ctx.drawImage(this.sprites[ world.map.items[i].sprite ], world.map.items[i].x*this.box, world.map.items[i].y*this.box);            
+                if(world.map.items[i].render_front){
+                    this.front.ctx.drawImage(this.sprites[ world.map.items[i].sprite ][ world.map.items[i].flip ], world.map.items[i].x*this.box, world.map.items[i].y*this.box);
+                }else{
+                    this.map.ctx.drawImage(this.sprites[ world.map.items[i].sprite ][ world.map.items[i].flip ], world.map.items[i].x*this.box, world.map.items[i].y*this.box);
+                }
             }
         }
 
@@ -629,6 +664,7 @@ var render = {
 
         layers.push(this.map.canvas);
         if(!game.map){ layers.push(this.entities.canvas); }
+        layers.push(this.front.canvas);
         layers.push(this.gui.canvas);
         if(!game.map){ layers.push(this.sky.canvas); }                         
 
