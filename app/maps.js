@@ -34,7 +34,7 @@ var maps = {
         }
     
         for (var k = 0; k < this.map.items.length; k++) {
-            if(this.map.items[k].forest){
+            if(this.map.items[k].forest || this.map.items[k].rock){
                 this.map.moves[this.map.items[k].x + this.map.items[k].y*this.map.width] = 2;
             }
         }
@@ -195,16 +195,23 @@ var maps = {
                     }
                 }
 
-                if((Math.random()*args.stop_generator)<<0 < args.weeds ){
-                    // place some weed :D
+                if((Math.random()*args.stop_generator)<<0 < args.environment ){
+                    // place some Environment :D
                     if(procMapData[x][y] === 0 || procMapData[x][y] == 1){
-                        procMap.items.push(new Weed({x:x, y:y, biome:'water'}));
+                        procMap.items.push(new Environment({x:x, y:y, biome:'water'}));
                     }
                     if(procMapData[x][y] === 2 || procMapData[x][y] == 3){
-                        procMap.items.push(new Weed({x:x, y:y, biome:'sand'}));
+                        procMap.items.push(new Environment({x:x, y:y, biome:'sand'}));
                     }
                     if(( procMapData[x][y] == 4 || procMapData[x][y] == 5 )){
-                        procMap.items.push(new Weed({x:x, y:y, biome:'grass'}));
+                        procMap.items.push(new Environment({x:x, y:y, biome:'grass'}));
+                    }
+                }
+
+                if((Math.random()*args.stop_generator)<<0 < args.rocks ){
+                    // place rocks
+                    if(procMapData[x][y] === 0 || procMapData[x][y] == 1){
+                        procMap.items.push(new Rock({x:x, y:y}));
                     }
                 }                                       
                

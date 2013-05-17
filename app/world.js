@@ -25,7 +25,8 @@ var world = {
         islands_size: 5 + (Math.random()*70)<<0,      
         grass: 0 + (Math.random()*80)<<0,
         palms: 0 + (Math.random()*80)<<0,
-        weeds: 5 + (Math.random()*30)<<0,
+        environment: 5 + (Math.random()*30)<<0,
+        rocks: 5 + (Math.random()*10)<<0,
         chests: 2 + (Math.random()*4)<<0,
     },
     generator_version: 2,
@@ -48,15 +49,17 @@ var world = {
         this.conf.seed = (Math.random()*1024)<<0;        
         this.conf.grass = 0 + (Math.random()*80)<<0;
         this.conf.palms = 0 + (Math.random()*80)<<0;
-        this.conf.weeds = 5 + (Math.random()*30)<<0;
+        this.conf.environment = 5 + (Math.random()*30)<<0;
 
 		if(this.conf.width<20 || this.conf.height<18){
 			this.conf.islands = 1 + (Math.random()*4)<<0;
         	this.conf.islands_size = 2 + (Math.random()*15)<<0;
+            this.conf.rocks = 0 + (Math.random()*8)<<0,
         	this.conf.chests = 1 + (Math.random()*3)<<0;
 		}else{
         	this.conf.islands = 2 + (Math.random()*6)<<0;
         	this.conf.islands_size = 10 + (Math.random()*70)<<0;
+            this.conf.rocks = 0 + (Math.random()*10)<<0,
         	this.conf.chests = 2 + (Math.random()*4)<<0;           
         }
         this.generate();             
@@ -73,17 +76,18 @@ var world = {
         var hash = '#',
             separator = '|';
 
-        hash += this.conf.width + separator +
+        hash += this.generator_version + separator +
+            this.conf.width + separator +
             this.conf.height + separator +
             this.conf.seed + separator +
             this.conf.islands + separator +
             this.conf.islands_size + separator +
             this.conf.grass + separator +
             this.conf.palms + separator +
-            this.conf.weeds + separator +
             this.conf.chests + separator +
-            this.generator_version;
-
+            this.conf.environment + separator +
+            this.conf.rocks;
+            
         window.location.hash = hash;
     },
 
@@ -93,22 +97,23 @@ var world = {
             block = [];
 
         block = hash.split(separator);
-        if(block.length == 10){
-            this.conf.width = block[0];
-            this.conf.height = block[1];
-            this.conf.seed = block[2];
-            this.conf.islands = block[3];
-            this.conf.islands_size = block[4];
-            this.conf.grass = block[5];
-            this.conf.palms = block[6];
-            this.conf.weeds = block[7];
-            this.conf.chests = block[8];
-            this.generator_version = block[9];            
-        }else{
-            alert('ERROR: WRONG HASH!');            
-            this.randomMap();
-            this.encodeHash();
+
+        this.generator_version = block[0];
+        this.conf.width = block[1];
+        this.conf.height = block[2];
+        this.conf.seed = block[3];
+        this.conf.islands = block[4];
+        this.conf.islands_size = block[5];
+        this.conf.grass = block[6];
+        this.conf.palms = block[7];
+        this.conf.chests = block[8];
+        if(this.generator_version>1){
+            this.conf.environment = block[9];
         }
+        if(this.generator_version>2){
+            this.conf.rocks = block[10];
+        }
+
     },
     
     mapSize: function(args){
@@ -132,7 +137,7 @@ var world = {
             islands_size: 30 || localStorage.getItem("islands_size"),      
             grass: 40 || localStorage.getItem("grass"),
             palms: 15 || localStorage.getItem("palms"),
-            weeds: 15 || localStorage.getItem("weeds"),
+            environment: 15 || localStorage.getItem("environment"),
             chests: 4 || localStorage.getItem("chests"),
             wallet: 500 || localStorage.getItem("wallet"),
         },
@@ -145,7 +150,7 @@ var world = {
         localStorage.setItem("islands_size",this.conf.islands_size);
         localStorage.setItem("grass",this.conf.grass);
         localStorage.setItem("palms",this.conf.palms);
-        localStorage.setItem("weeds",this.conf.weeds);
+        localStorage.setItem("environment",this.conf.environment);
         localStorage.setItem("chests",this.conf.chests);        
         localStorage.setItem("wallet",this.conf.wallet);   
     },

@@ -388,7 +388,7 @@ Unit.prototype = {
                         audio.play({sound:'gold'});
 
                         this.important = false;
-                        render.render({map:true, gui:true});
+                        render.render({items:true, gui:true});
                         this.moves--;                            
                         
                         game.updateWallet();
@@ -666,7 +666,7 @@ Unit.prototype = {
                }
             }
         }
-        render.render({map:true, gui:true});
+        render.render({items:true, gui:true});
     },
     
     levelUp: function(){

@@ -18,7 +18,7 @@
 var Item = function Item(){        
     this.can_open = false;
     this.forest = false;
-    this.weed = false;
+    this.environment = false;
     this.chest = false;
     this.flora = false;
     this.flip = 0;
@@ -47,28 +47,27 @@ Item.prototype = {
     },
 
     grow: function(){
+        this.flip = (Math.random()*2)<<0;
         if(this.forest){
             if( this.palms == 0){
                 this.palms++;
-                this.flip = (Math.random()*2)<<0;
                 this.sprite = this.sprites.palm[(Math.random()*this.sprites.palm.length)<<0];
             }else
             if( this.palms == 1){
                 this.palms++;
-                this.flip = (Math.random()*2)<<0;
                 this.sprite = this.sprites.forest[(Math.random()*this.sprites.forest.length)<<0];
             }
         }
-        if(this.weed){
-            this.flip = (Math.random()*2)<<0;
+        if(this.environment){            
             this.sprite = this.sprites[this.biome][(Math.random()*this.sprites[this.biome].length)<<0];
         	for (var i = 0; i < this.push_back.length; i++) {
-        		if (this.push_back[i] === this.sprite) {
-        		
-        		    this.render_front = false;
-        		   			
+        		if (this.push_back[i] === this.sprite) {        		
+        		    this.render_front = false;        		   			
         		}
         	}
+        }
+        if(this.rock){
+            this.sprite = this.sprites[this.biome][(Math.random()*this.sprites[this.biome].length)<<0];
         }
     },
     
@@ -109,9 +108,23 @@ var Palm = function Palm(args){
 
 Palm.prototype = new Item();
 
-var Weed = function Weed(args){
-    this.name = 'Weed';
-    this.weed = true;
+var Rock = function Rock(args){
+    this.name = 'Rock';
+    this.rock = true;
+    this.x = args.x;
+    this.y = args.y;
+    this.biome = 'water';
+    this.sprite = 93;
+    this.sprites = {
+        'water':[93,94,95,96]
+    }
+};
+
+Rock.prototype = new Item();
+
+var Environment = function Environment(args){
+    this.name = 'Environment';
+    this.environment = true;
     this.x = args.x;
     this.y = args.y;
     this.flora = true;
@@ -127,7 +140,7 @@ var Weed = function Weed(args){
     this.push_back = [88];
 };
 
-Weed.prototype = new Item();
+Environment.prototype = new Item();
 
 var Chest = function Chest(args){
     this.name = 'Chest';

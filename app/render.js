@@ -186,11 +186,18 @@ var render = {
                 render.sprites[90] = [render.makeSprite(16,0, false),render.makeSprite(16,0, true)]; // seagul w52
     			render.sprites[91] = [render.makeSprite(17,0, false),render.makeSprite(17,0, true)]; // seagul 3
     			render.sprites[92] = [render.makeSprite(17,1, false),render.makeSprite(17,1, true)]; // seaweed
-    
+                
+                render.sprites[93] = [render.makeSprite(19,0, false),render.makeSprite(19,0, true)]; // rock 1
+                render.sprites[94] = [render.makeSprite(19,1, false),render.makeSprite(19,1, true)]; // rock 2
+                render.sprites[95] = [render.makeSprite(18,0, false),render.makeSprite(18,0, true)]; // rock 3
+                render.sprites[96] = [render.makeSprite(18,1, false),render.makeSprite(18,1, true)]; // rock 4
+                
                 render.sprites[57] = render.makeSprite(6,2, false); // shout
                 render.sprites[58] = render.makeSprite(4,2, false); // message
                 
-                
+                render.sprites[97] = render.makeSprite(18,2, false); // water
+                render.sprites[98] = render.makeSprite(19,2, false); // sand
+                render.sprites[99] = render.makeSprite(19,3, false); // grass
 
                 render.big_sprites[0] = render.resize(render.sprites[35][0], 8);
                 render.big_sprites[1] = render.resize(render.sprites[36][0], 8);                
@@ -544,6 +551,69 @@ var render = {
         }
 
         if(args.map){
+            this.map.ctx.clearRect(0, 0, world.map.width*this.box, world.map.height*this.box);
+            var spr = 0;
+
+            function random_dist(){
+                return 4 + (Math.random()*8)<<0;
+            };
+
+            for(var y=0; y<world.map.height; y++){
+                for(var x=0; x<world.map.width; x++){
+                    if(world.map.data[x+(y*world.map.width)] == 0 || world.map.data[x+(y*world.map.width)] == 1 || world.map.data[x+(y*world.map.width)] == 6 || world.map.data[x+(y*world.map.width)] == 7){
+                        spr = 0;                                                
+                        this.map.ctx.drawImage(this.sprites[spr], (x*this.box), (y*this.box));
+                    }
+                
+                    
+                }
+            }
+
+            for(var y=0; y<world.map.height; y++){
+                for(var x=0; x<world.map.width; x++){
+                    if(world.map.data[x+(y*world.map.width)] == 1){
+                        spr = 97;                        
+                        this.map.ctx.drawImage(this.sprites[spr], (x*this.box)-random_dist(), (y*this.box)-random_dist());
+                        this.map.ctx.drawImage(this.sprites[spr], (x*this.box)-random_dist(), (y*this.box)+random_dist());
+                        this.map.ctx.drawImage(this.sprites[spr], (x*this.box)+random_dist(), (y*this.box)-random_dist());
+                        this.map.ctx.drawImage(this.sprites[spr], (x*this.box)+random_dist(), (y*this.box)+random_dist());
+                    }
+                
+                    
+                }
+            }
+
+            for(var y=0; y<world.map.height; y++){
+                for(var x=0; x<world.map.width; x++){
+                    if(world.map.data[x+(y*world.map.width)] == 2 || world.map.data[x+(y*world.map.width)] == 3){
+                        spr = 98;
+                        this.map.ctx.drawImage(this.sprites[spr], (x*this.box)-random_dist(), (y*this.box)-random_dist());
+                        this.map.ctx.drawImage(this.sprites[spr], (x*this.box)-random_dist(), (y*this.box)+random_dist());
+                        this.map.ctx.drawImage(this.sprites[spr], (x*this.box)+random_dist(), (y*this.box)-random_dist());
+                        this.map.ctx.drawImage(this.sprites[spr], (x*this.box)+random_dist(), (y*this.box)+random_dist());
+                    }
+                
+                    
+                }
+            }
+
+            for(var y=0; y<world.map.height; y++){
+                for(var x=0; x<world.map.width; x++){
+                    if(world.map.data[x+(y*world.map.width)] == 4 || world.map.data[x+(y*world.map.width)] == 5){
+                        spr = 99;
+                        
+                        this.map.ctx.drawImage(this.sprites[spr], (x*this.box)-random_dist(), (y*this.box)-random_dist());
+                        this.map.ctx.drawImage(this.sprites[spr], (x*this.box)-random_dist(), (y*this.box)+random_dist());
+                        this.map.ctx.drawImage(this.sprites[spr], (x*this.box)+random_dist(), (y*this.box)-random_dist());
+                        this.map.ctx.drawImage(this.sprites[spr], (x*this.box)+random_dist(), (y*this.box)+random_dist());
+                    }
+                }
+            }
+            args.items = true;
+            this.map.ctx.drawImage(this.noise_img, 0, 0);            
+        }
+
+        if(args.mapOld){
             this.map.ctx.clearRect(0, 0, world.map.width*this.box, world.map.height*this.box);
             
             for(var y=0; y<world.map.height; y++){
