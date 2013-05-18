@@ -492,7 +492,7 @@ var game = {
             
             // map
             m_context.drawImage(render.map.canvas, 0, 0);
-			// flora&fauna
+            m_context.drawImage(render.items.canvas, 0, 0);
             m_context.drawImage(render.front.canvas, 0, 0);
 
             // logo

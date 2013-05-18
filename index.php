@@ -19,6 +19,7 @@
   <link rel="apple-touch-startup-image" href="/media/startup.png"/>
   <link rel="shortcut icon" href="/media/favicon.ico"/>
   <link href='http://fonts.googleapis.com/css?family=VT323' rel='stylesheet' type='text/css'/>
+  <link rel="stylesheet" href="/app/animations.css"/> 
   <link rel="stylesheet" href="/app/app.css"/>        
 </head>
 <body>

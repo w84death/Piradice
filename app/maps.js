@@ -172,6 +172,20 @@ var maps = {
                 }
             }
         }
+
+
+        // generate beach water
+        for (var y = 1; y < procMap.height-1; y++) {
+            for (var x = 1; x < procMap.width-1; x++) {
+                if(procMapData[x][y] == 0 && ( (
+                    procMapData[x-1][y] == 2 || procMapData[x][y-1] == 2  || procMapData[x+1][y] == 2 || procMapData[x][y+1] == 2 || procMapData[x-1][y-1] == 2 || procMapData[x-1][y+1] == 2  || procMapData[x+1][y+1] == 2 || procMapData[x+1][y-1] == 2 ) || (
+                    procMapData[x-1][y] == 4 || procMapData[x][y-1] == 4  || procMapData[x+1][y] == 4 || procMapData[x][y+1] == 4 || procMapData[x-1][y-1] == 4 || procMapData[x-1][y+1] == 4  || procMapData[x+1][y+1] == 4 || procMapData[x+1][y-1] == 4 )
+                    ) ){
+                        procMapData[x][y] = 1;                        
+                }
+            }
+        }
+
         
         // generate item
         console.log(':: GENERATING ITEMS..');
@@ -179,8 +193,9 @@ var maps = {
         for (var y = 2; y < procMap.height-2; y++) {
             for (var x = 2; x < procMap.width-2; x++) {
                 // palm
-                if(procMapData[x][y] != 0 && (Math.random()*args.stop_generator)<<0 < args.palms){
-                    if(procMapData[x-2][y] != 0 && procMapData[x][y-2] != 0  && procMapData[x+2][y] != 0 &&  procMapData[x][y+2] != 0 ) { 
+                if(procMapData[x][y] != 0 && procMapData[x][y] != 1 && (Math.random()*args.stop_generator)<<0 < args.palms){
+                    if(procMapData[x-2][y] != 0 && procMapData[x][y-2] != 0  && procMapData[x+2][y] != 0 &&  procMapData[x][y+2] != 0 &&
+                    procMapData[x-2][y] != 1 && procMapData[x][y-2] != 1  && procMapData[x+2][y] != 1 &&  procMapData[x][y+2] != 1 ) { 
                         var place_palm = true;
                         for (var i = 0; i < start.length; i++) {
                             if(x == start[i].x && y == start[i].y){
@@ -216,11 +231,11 @@ var maps = {
                 }                                       
                
                 // bridge
-                if(procMapData[x][y] !== 0 && procMapData[x-1][y] !== 0  && procMapData[x+1][y] !== 0 && procMapData[x][y-1] === 0  && procMapData[x][y+1] === 0){
+                if(procMapData[x][y] !== 1 && procMapData[x-1][y] !== 1  && procMapData[x+1][y] !== 1 && procMapData[x][y-1] === 1  && procMapData[x][y+1] === 1){
                     procMapData[x][y] = 6;
                 }
                 
-                if(procMapData[x][y] !== 0 && procMapData[x-1][y] === 0  && procMapData[x+1][y] === 0 && procMapData[x][y-1] !== 0  && procMapData[x][y+1] !== 0){
+                if(procMapData[x][y] !== 1 && procMapData[x-1][y] === 1  && procMapData[x+1][y] === 1 && procMapData[x][y-1] !== 1  && procMapData[x][y+1] !== 1){
                     procMapData[x][y] = 7;
                 }
             }
@@ -290,10 +305,10 @@ var maps = {
         }            
         */
 
-        
-        // HARD LINE            
-        
-        
+              
+        // HARD LINE
+                    
+          /*  
         // generate shadows
         for (var y = 1; y < procMap.height-1; y++) {
             for (var x = 1; x < procMap.width-1; x++) {
@@ -310,6 +325,7 @@ var maps = {
                 }
             }
         }
+        */
         
         // generate water
         

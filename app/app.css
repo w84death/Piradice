@@ -63,6 +63,13 @@ button.big {padding: 1em 2em;font-size: 2em;}
 .blog article ul li {padding-left:1em; border-left:1em solid #eee;}
 .blog article ul li ul li {font-size:1em; border-left: 3em solid #eee;}
 
+.slideshow {width:576px; height:415px; position:relative; overflow:hidden;}
+.slideshow ul {position:absolute; top:0; left:0; 
+    -webkit-animation: slide 30s infinite;
+     -moz-animation: slide 30s infinite;
+       -o-animation: slide 30s infinite;
+          animation: slide 30s infinite;}
+
 header {padding:1em;text-align:center;
 	background:#58bdcd url('../media/background.jpg') no-repeat center center fixed; background-size:cover;}
 footer {padding:1em;text-align:center;background-color:#58bdcd;}
