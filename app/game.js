@@ -19,7 +19,7 @@
 */
 
 var game = {
-    version: 'VERSION 7',
+    version: 'VERSION 7.5',
     mobile: false || navigator.userAgent.match(/(iPhone)|(iPod)|(iPad)|(android)|(webOS)/i),
     tablet: false || navigator.userAgent.match(/(iPad)/i),
     teams: [{
