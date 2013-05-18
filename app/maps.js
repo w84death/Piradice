@@ -210,7 +210,7 @@ var maps = {
 
                 if((Math.random()*args.stop_generator)<<0 < args.rocks ){
                     // place rocks
-                    if(procMapData[x][y] === 0 || procMapData[x][y] == 1){
+                    if(procMapData[x][y] === 0){
                         procMap.items.push(new Rock({x:x, y:y}));
                     }
                 }                                       
@@ -291,19 +291,7 @@ var maps = {
         */
 
         
-        // HARD LINE
-        
-        // generate beach water
-        for (var y = 1; y < procMap.height-1; y++) {
-            for (var x = 1; x < procMap.width-1; x++) {
-                if(procMapData[x][y] == 0 && ( (
-                    procMapData[x-1][y] == 2 || procMapData[x][y-1] == 2  || procMapData[x+1][y] == 2 || procMapData[x][y+1] == 2 || procMapData[x-1][y-1] == 2 || procMapData[x-1][y+1] == 2  || procMapData[x+1][y+1] == 2 || procMapData[x+1][y-1] == 2 ) || (
-                    procMapData[x-1][y] == 4 || procMapData[x][y-1] == 4  || procMapData[x+1][y] == 4 || procMapData[x][y+1] == 4 || procMapData[x-1][y-1] == 4 || procMapData[x-1][y+1] == 4  || procMapData[x+1][y+1] == 4 || procMapData[x+1][y-1] == 4 )
-                    ) ){
-                    procMapData[x][y] = 1;
-                }
-            }
-        }
+        // HARD LINE            
         
         
         // generate shadows

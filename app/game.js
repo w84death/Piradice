@@ -516,7 +516,7 @@ var game = {
             
             ajax.onreadystatechange=function(){
                 if (ajax.readyState==4 && ajax.status==200){                
-                    window.open('http://magazyn.krzysztofjankowski.com/share/'+uuid+'.png', '_blank');
+                    window.open('http://piradice.krzysztofjankowski.com/share/'+uuid+'.png', '_blank');
                     game.sharing = false;
                 }
             };

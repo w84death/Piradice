@@ -549,7 +549,7 @@ var GUI = {
 				game.mapSize({w:18,h:16});
 			}
 			if(this.buttons[key].value == 'normal'){
-				game.mapSize({w:24,h:18});
+				game.mapSize({w:28,h:20});
 			}
 			if(this.buttons[key].value == 'big'){
 				game.mapSize({w:48,h:40});

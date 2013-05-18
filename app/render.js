@@ -19,6 +19,10 @@ var render = {
         canvas: null,
         ctx: null,
     },
+    items: {
+        canvas: null,
+        ctx: null,
+    },
     entities: {
         canvas: null,
         ctx: null,
@@ -248,6 +252,11 @@ var render = {
         this.map.canvas.width = world.map.width*this.box;
         this.map.canvas.height = world.map.height*this.box;
         this.map.ctx = this.map.canvas.getContext('2d');
+
+        this.items.canvas = document.createElement('canvas');
+        this.items.canvas.width = world.map.width*this.box;
+        this.items.canvas.height = world.map.height*this.box;
+        this.items.ctx = this.items.canvas.getContext('2d');
 
         this.entities.canvas = document.createElement('canvas');
         this.entities.canvas.width = world.map.width*this.box;
@@ -626,12 +635,13 @@ var render = {
         }
 
         if(args.items){
+            this.items.ctx.clearRect(0, 0, world.map.width*this.box, world.map.height*this.box);
             this.front.ctx.clearRect(0, 0, world.map.width*this.box, world.map.height*this.box);
             for(i=0; i<world.map.items.length; i++){
                 if(world.map.items[i].render_front){
                     this.front.ctx.drawImage(this.sprites[ world.map.items[i].sprite ][ world.map.items[i].flip ], world.map.items[i].x*this.box, world.map.items[i].y*this.box);
                 }else{
-                    this.map.ctx.drawImage(this.sprites[ world.map.items[i].sprite ][ world.map.items[i].flip ], world.map.items[i].x*this.box, world.map.items[i].y*this.box);
+                    this.items.ctx.drawImage(this.sprites[ world.map.items[i].sprite ][ world.map.items[i].flip ], world.map.items[i].x*this.box, world.map.items[i].y*this.box);
                 }
             }
         }
@@ -733,6 +743,7 @@ var render = {
             draw = {x:0,y:0};
 
         layers.push(this.map.canvas);
+        layers.push(this.items.canvas);
         if(!game.map){ layers.push(this.entities.canvas); }
         layers.push(this.front.canvas);
         layers.push(this.gui.canvas);
