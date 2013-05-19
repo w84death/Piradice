@@ -137,7 +137,7 @@ var Environment = function Environment(args){
         'sand':[85,86,87,92],
         'water':[88,89,90,91],
     };
-    this.push_back = [88];
+    this.push_back = [80,81,82,83,84,88];
 };
 
 Environment.prototype = new Item();

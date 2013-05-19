@@ -34,7 +34,6 @@ var shop = {
     buy: function(args){
         var newX = 0,
             newY = 0;
-            ai = game.teams[game.turn.team].ai,
             team = game.turn.team,
             hasCementary = 0;            
         
@@ -97,64 +96,64 @@ var shop = {
             };
             
             if(args.unit == 'pirate'){            
-                world.map.entities.push(new Pirate({x:newX,y:newY,team:team, ai:ai}));                                             
+                world.map.entities.push(new Pirate({x:newX,y:newY,team:team}));                                             
             }
             
             if(args.unit == 'gunner'){            
-                world.map.entities.push(new Gunner({x:newX,y:newY,team:team, ai:ai}));
+                world.map.entities.push(new Gunner({x:newX,y:newY,team:team}));
             }
             
             if(args.unit == 'lumberjack'){
-                world.map.entities.push(new Lumberjack({x:newX,y:newY,team:team, ai:ai}));
+                world.map.entities.push(new Lumberjack({x:newX,y:newY,team:team}));
             }
             
             if(args.unit == 'cannon'){
-                world.map.entities.push(new Cannon({x:newX,y:newY,team:team, ai:ai}));
+                world.map.entities.push(new Cannon({x:newX,y:newY,team:team}));
             }
 
             if(args.unit == 'chieftain'){
-                world.map.entities.push(new Chieftain({x:newX,y:newY,team:team, ai:ai}));
+                world.map.entities.push(new Chieftain({x:newX,y:newY,team:team}));
             }
             
             if(args.unit == 'ship'){
-                world.map.entities.push(new Ship({x:newX,y:newY,team:team, ai:ai}));
+                world.map.entities.push(new Ship({x:newX,y:newY,team:team}));
                 use_moves = false;
                 game.teams[game.turn.team].bought = true;
             }
 
             if(args.unit == 'skeleton'){
-                world.map.entities.push(new Skeleton({x:newX,y:newY,team:team, ai:ai}));
+                world.map.entities.push(new Skeleton({x:newX,y:newY,team:team}));
             }
             
             if(args.unit == 'dust'){
-                world.map.entities.push(new Dust({x:newX,y:newY,team:team, ai:ai}));
+                world.map.entities.push(new Dust({x:newX,y:newY,team:team}));
             }
             
             if(args.unit == 'daemon'){
-                world.map.entities.push(new Daemon({x:newX,y:newY,team:team, ai:ai}));
+                world.map.entities.push(new Daemon({x:newX,y:newY,team:team}));
             }            
 
             if(args.unit == 'bonfire'){
-                world.map.entities.push(new Bonfire({x:newX,y:newY,team:team, ai:ai}));
+                world.map.entities.push(new Bonfire({x:newX,y:newY,team:team}));
                 world.map.entities[game.unit_selected].die(false);
                 world.map.entities[game.unit_selected].unselect();
             }
 
             if(args.unit == 'fort'){
-                world.map.entities.push(new Fort({x:newX,y:newY,team:team, ai:ai}));
+                world.map.entities.push(new Fort({x:newX,y:newY,team:team}));
                 world.map.entities[game.unit_selected].die(false);
                 world.map.entities[game.unit_selected].unselect();
             }
             
             if(args.unit == 'octopus'){
-                world.map.entities.push(new Octopus({x:newX,y:newY,team:team, ai:ai}));                
+                world.map.entities.push(new Octopus({x:newX,y:newY,team:team}));                
                 use_moves = false;
                 game.teams[game.turn.team].bought = true;
             }
             
             if(args.unit == 'cementary'){
                 world.clearTerrain({x:newX, y:newY, size:1});
-                world.map.entities.push(new Cementary({x:newX,y:newY,team:team, ai:ai}));
+                world.map.entities.push(new Cementary({x:newX,y:newY,team:team}));
                 use_moves = false;
                 game.teams[game.turn.team].bought = true;
             }

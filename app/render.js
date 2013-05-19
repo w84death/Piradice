@@ -14,7 +14,8 @@
     ----------------------------------------------------------------------------
 */
 
-var render = {        
+var render = {
+    stop: false,        
     map: {
         canvas: null,
         ctx: null,
@@ -49,6 +50,8 @@ var render = {
         ctx: null,
         draw: [],
     },
+    frames: [],
+    last_frame: 0,
     viewport: {
         canvas: null,
         ctx: null,
@@ -65,6 +68,9 @@ var render = {
     sprites: [],
     big_sprites: [],
     render_initialized: false,
+    max_frames: 6,
+    frame: 0,
+    map_rendered: false,
 
     init: function(){
         if(!this.render_initialized){
@@ -186,8 +192,8 @@ var render = {
                 render.sprites[87] = [render.makeSprite(14,1, false),render.makeSprite(14,1, true)]; // star
 
                 render.sprites[88] = [render.makeSprite(14,0, false),render.makeSprite(14,0, true)]; // fishes
-                render.sprites[89] = [render.makeSprite(15,0, false),render.makeSprite(15,0, true)]; // shark
-                render.sprites[90] = [render.makeSprite(16,0, false),render.makeSprite(16,0, true)]; // seagul w52
+                render.sprites[89] = [render.makeSprite(15,0, false),render.makeSprite(15,0, true)]; // seagul
+                render.sprites[90] = [render.makeSprite(16,0, false),render.makeSprite(16,0, true)]; // seagul 2
     			render.sprites[91] = [render.makeSprite(17,0, false),render.makeSprite(17,0, true)]; // seagul 3
     			render.sprites[92] = [render.makeSprite(17,1, false),render.makeSprite(17,1, true)]; // seaweed
                 
@@ -209,7 +215,8 @@ var render = {
                 GUI.init();
                 fogOfWar.init();
                 game.centerMap();
-                render.render({all:true});
+                render.render({all:true});                               
+                render.loop();
             };
             
             /*
@@ -252,6 +259,15 @@ var render = {
         this.map.canvas.width = world.map.width*this.box;
         this.map.canvas.height = world.map.height*this.box;
         this.map.ctx = this.map.canvas.getContext('2d');
+
+        for (var i = 0; i < this.max_frames; i++) {
+            this.frames[i] = {};
+            this.frames[i].canvas = document.createElement('canvas');
+            this.frames[i].canvas.width = world.map.width*this.box;
+            this.frames[i].canvas.height = world.map.height*this.box;
+            this.frames[i].ctx = this.frames[i].canvas.getContext('2d');    
+        };
+        
 
         this.items.canvas = document.createElement('canvas');
         this.items.canvas.width = world.map.width*this.box;
@@ -559,7 +575,11 @@ var render = {
             args.hints = true;
         }
 
-        if(args.map){
+        if(args.map){            
+            if(this.map_rendered){
+                this.map_rendered = false;
+                this.last_frame = 0;
+            }            
             this.map.ctx.clearRect(0, 0, world.map.width*this.box, world.map.height*this.box);
             var spr = 0;
 
@@ -620,6 +640,13 @@ var render = {
             }
             args.items = true;
             this.map.ctx.drawImage(this.noise_img, 0, 0);            
+            this.frames[this.last_frame].ctx.drawImage(this.map.canvas, 0,0);
+            if(this.last_frame + 1 >= this.max_frames){
+                this.map_rendered = true;
+            }else{
+                this.noise_img = this.fastNoise(world.conf.width*this.box, world.conf.height*this.box, 8 );
+                this.last_frame++;
+            }                         
         }
 
         if(args.mapOld){
@@ -742,12 +769,17 @@ var render = {
         var layers = [],
             draw = {x:0,y:0};
 
-        layers.push(this.map.canvas);
+        this.frame++;        
+        if(this.frame >= this.last_frame){
+            this.frame = 0;
+        }
+
+        layers.push(this.frames[this.frame].canvas);
         layers.push(this.items.canvas);
         if(!game.map){ layers.push(this.entities.canvas); }
         layers.push(this.front.canvas);
         layers.push(this.gui.canvas);
-        if(!game.map){ layers.push(this.sky.canvas); }                         
+        if(!game.map && game.fow){ layers.push(this.sky.canvas); }                         
 
         draw.x = this.viewport.offset.x;
         draw.y = this.viewport.offset.y;
@@ -760,5 +792,18 @@ var render = {
         this.viewport.ctx.drawImage( this.menu.canvas, 0,0);
         
     },
+
+    loop: function(){
+        if(!this.map_rendered){
+            render.render({map:true});
+        }else{
+            render.post_render();
+        }
+        setTimeout(function () {                                    
+            if(!render.stop){
+                render.loop(); 
+            }           
+        }, 1000/game.fps);
+    }
 
 };

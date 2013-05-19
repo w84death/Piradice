@@ -48,13 +48,15 @@ var game = {
         start: true,
         team: 0
     },    
-    ai_speed: 100,
+    ai_speed: 1000,
     game_speed: 500,
     play: false,
    	ready: false,
     map: true, 
     audio: true,
     unit_selected: false,
+    fow: false,
+    fps: 7,
 
     init: function(args){                    
         console.log(this.version);  
@@ -70,6 +72,7 @@ var game = {
             width: 48 || args.w,
             height: 32 || args.h
         });        
+        //fogOfWar.init();
         shop.init();    
         render.init();        
         //audio.play({sound:'music1'});
@@ -151,8 +154,7 @@ var game = {
         fogOfWar.init();
         GUI.ctx = render.menu.ctx;
         GUI.refreshMap();
-        this.centerMap();
-        //render.render({all:true}); 
+        this.centerMap(); 
     },
 
     centerMap: function(args){
@@ -167,7 +169,7 @@ var game = {
             x:render.viewport.offset.x,
             y:render.viewport.offset.y
         };
-        render.render({all:true});
+        render.post_render();
     },
 
     select: function(cX,cY){
@@ -298,11 +300,7 @@ var game = {
                 }
                 
                 this.killZombies();        
-                this.shoutTeam();                                        
-
-                if(this.teams[this.turn.team].ai){
-                     ai.loop();
-                }        
+                this.shoutTeam();                                                            
             
                 this.teams[this.turn.team].bought = false;
                 fogOfWar.update();                                
@@ -322,16 +320,19 @@ var game = {
             if(this.turn.id == 1){
                 shop.buyStarter();
                 game.shoutTeam();   
-                render.render({all:true});
+                render.render({gui:true, menu:true, entities:true, sky:true});
             }
 
-            if(!game.ready){
+            if(!game.ready && !this.teams[this.turn.team].ai){
                 multi.show();
                 render.viewport.offset = {
                     x:this.teams[this.turn.team].offset.x, 
                     y:this.teams[this.turn.team].offset.y};
             }
             
+            if(this.teams[this.turn.team].ai){
+                 computer.init();
+            }
             bank.save();
     },
 
@@ -616,44 +617,44 @@ var fogOfWar = {
     },
     
     update: function(){
-        
-        for (var i = 0; i < world.map.data.length; i++) {
-            for (var t = 0; t < game.teams.length; t++) {
-                this.data[t][i] = 50;
-            }
-        }                
-        
-        for (var i = 0; i < world.map.entities.length; i++) {                                
+        if(game.fow){
+            for (var i = 0; i < world.map.data.length; i++) {
+                for (var t = 0; t < game.teams.length; t++) {
+                    this.data[t][i] = 50;
+                }
+            }                
             
-            if(world.map.entities[i].alive){
-                var size = world.map.entities[i].fow;
-                for (var y = world.map.entities[i].y+1 - size; y <= world.map.entities[i].y + size; y++) {
-                    for (var x = world.map.entities[i].x - size; x <= world.map.entities[i].x + size; x++) {
-                        if(x>=0 && x<world.map.width && y>=0 && y < world.map.height){
-                            this.data[world.map.entities[i].team][x + (y*world.map.width)] = false;                
+            for (var i = 0; i < world.map.entities.length; i++) {                                
+                
+                if(world.map.entities[i].alive){
+                    var size = world.map.entities[i].fow;
+                    for (var y = world.map.entities[i].y+1 - size; y <= world.map.entities[i].y + size; y++) {
+                        for (var x = world.map.entities[i].x - size; x <= world.map.entities[i].x + size; x++) {
+                            if(x>=0 && x<world.map.width && y>=0 && y < world.map.height){
+                                this.data[world.map.entities[i].team][x + (y*world.map.width)] = false;                
+                            }
                         }
                     }
-                }
-                
-            }                    
-        } 
+                    
+                }                    
+            } 
+            
+            
         
-        
-    
-        for (var y = 0; y < world.map.height; y++) {
-            for (var x = 0; x < world.map.width; x++) {
-                for (var t = 0; t < game.teams.length; t++) {
-                    if(this.data[t][x + (y*world.map.width)] == 50 && this.data[t][x + ((y+1)*world.map.width)] == false && this.data[t][x + ((y-1)*world.map.width)] == false ){
-                        this.data[t][x + (y*world.map.width)] = false; // clear artefacts
-                    }else
-                    if(this.data[t][x + (y*world.map.width)] == 50 && this.data[t][x + ((y+1)*world.map.width)] == false ){
-                        this.data[t][x + (y*world.map.width)] = 51; // bottom shadow
-                    }    
+            for (var y = 0; y < world.map.height; y++) {
+                for (var x = 0; x < world.map.width; x++) {
+                    for (var t = 0; t < game.teams.length; t++) {
+                        if(this.data[t][x + (y*world.map.width)] == 50 && this.data[t][x + ((y+1)*world.map.width)] == false && this.data[t][x + ((y-1)*world.map.width)] == false ){
+                            this.data[t][x + (y*world.map.width)] = false; // clear artefacts
+                        }else
+                        if(this.data[t][x + (y*world.map.width)] == 50 && this.data[t][x + ((y+1)*world.map.width)] == false ){
+                            this.data[t][x + (y*world.map.width)] = 51; // bottom shadow
+                        }    
+                    }
                 }
             }
-        }
 
-        render.render({sky:true});
-    },
-    
+            render.render({sky:true});
+        }
+    },    
 };

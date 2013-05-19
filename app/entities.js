@@ -16,7 +16,6 @@
 
 var Unit = function Unit(){    
     this.alive = true;
-    this.ai = false;
     this.selected = false;
     this.can_select = true;
     this.move_area = [];
@@ -313,7 +312,7 @@ Unit.prototype = {
                     }
                 }
             }
-        }
+        }        
     },
   
     unselect: function(){
@@ -765,7 +764,6 @@ Lumberjack.prototype = new Unit();
 
 var Skeleton = function Skeleton(args){
     this.name = 'Skeleton';
-    this.ai = args.ai || false;
     this.skeleton = true;
     this.x = args.x;
     this.y = args.y;
@@ -785,7 +783,6 @@ Skeleton.prototype = new Unit();
 
 var Dust = function Dust(args){
     this.name = 'Dust';    
-    this.ai = args.ai || false;
     this.dust = true;
     this.skeleton = true;
     this.x = args.x;
@@ -838,7 +835,6 @@ Ship.prototype = new Unit();
 
 var Cementary = function Cementary(args){
     this.name = 'Cementary';
-    this.ai = args.ai || false;
     this.cementary = true;
     this.structure = true;
     this.unit = false;
@@ -868,7 +864,6 @@ var Octopus = function Octopus(args){
     this.name = 'Octopus';
     this.octopus = true;
     this.skeleton = true;
-    this.ai = args.ai || false;
     this.x = args.x;
     this.y = args.y;
     this.sprite = 36;
@@ -915,7 +910,6 @@ Daemon.prototype = new Unit();
 
 var Bonfire = function Bonfire(args){
     this.name = 'Bonfire';
-    this.ai = args.ai || false;
     this.bonfire = true;
     this.unit = true;
     this.skeleton = true;
@@ -944,7 +938,6 @@ Bonfire.prototype = new Unit();
 
 var Fort = function Fort(args){
     this.name = 'Fort';
-    this.ai = args.ai || false;
     this.fort = true;
     this.structure = true;
     this.unit = false;

@@ -541,7 +541,7 @@ var GUI = {
 				GUI.show.push('gold');
         		GUI.show.push('trees');
 				GUI.show.push('end');
-				render.render({all:true});
+				render.render({gui:true, menu:true});
 			}
 		}
 		if(this.buttons[key].action == 'mapSize'){
