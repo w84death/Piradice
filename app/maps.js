@@ -34,8 +34,11 @@ var maps = {
         }
     
         for (var k = 0; k < this.map.items.length; k++) {
-            if(this.map.items[k].forest || this.map.items[k].rock){
+            if(this.map.items[k].forest){
                 this.map.moves[this.map.items[k].x + this.map.items[k].y*this.map.width] = 2;
+            }
+            if(this.map.items[k].rock){
+                this.map.moves[this.map.items[k].x + this.map.items[k].y*this.map.width] = 3;   
             }
         }
             

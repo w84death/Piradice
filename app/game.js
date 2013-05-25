@@ -19,7 +19,7 @@
 */
 
 var game = {
-    version: 'VERSION 7.5',
+    version: 'VERSION 8',
     mobile: false || navigator.userAgent.match(/(iPhone)|(iPod)|(iPad)|(android)|(webOS)/i),
     tablet: false || navigator.userAgent.match(/(iPad)/i),
     teams: [{
@@ -29,7 +29,10 @@ var game = {
                 gold:400, //400,
                 trees:20, //22
             },
-            income: 10,            
+            income: {
+                gold: 10,            
+                trees: 1
+            },
             bought: false,
             offset: {x:0,y:0}            
         },{
@@ -39,7 +42,10 @@ var game = {
                 gold:400, //400,
                 trees:10,// 12
             },
-            income: 10,
+            income: {
+                gold: 10,            
+                trees: 1
+            },
             bought: false,
             offset: {x:0,y:0}
         }],
@@ -133,6 +139,8 @@ var game = {
     },
 
     randomMap: function(){
+        render.map_rendered = true;
+        render.frame = 0;
         world.randomMap();
         GUI.refreshMap();
         render.render({all:true});
@@ -155,6 +163,9 @@ var game = {
         GUI.ctx = render.menu.ctx;
         GUI.refreshMap();
         this.centerMap(); 
+        render.map_rendered = true;
+        render.frame = 0;
+        render.render({all:true});
     },
 
     centerMap: function(args){
@@ -299,11 +310,14 @@ var game = {
                     game.turn.team = 1;
                 }
                 
-                this.killZombies();        
-                this.shoutTeam();                                                            
-            
+                this.killZombies();                        
+                this.shoutTeam();          
+                this.makeNewLife({
+                    trees: 2,
+                    grow: 1
+                });
                 this.teams[this.turn.team].bought = false;
-                fogOfWar.update();                                
+                fogOfWar.update();                                                
                 this.payDay();
                 this.bonuses();
                 shop.show();
@@ -312,7 +326,7 @@ var game = {
                 GUI.show.push('gold');
                 GUI.show.push('trees');
                 GUI.show.push('end');
-                render.render({gui:true, menu:true, entities:true, sky:true});                                   
+                render.render({items:true, gui:true, menu:true, entities:true, sky:true});                                   
             }else{
             	return true;
             }
@@ -337,22 +351,20 @@ var game = {
     },
 
     payDay: function(){
-        var salary = 5;            
+        var salary = {
+                gold: 5,
+                trees: 1
+            };
     
         for (var i = 0; i < world.map.entities.length; i++) {
-            if(game.teams[game.turn.team].skeletons){
-                if(world.map.entities[i].cementary){
-                    salary += game.teams[game.turn.team].income;
-                }
-            }
-            if(game.teams[game.turn.team].pirates){
-                if(world.map.entities[i].ship){
-                    salary += game.teams[game.turn.team].income;
-                }
+            if(world.map.entities[i].income.gold>0 || world.map.entities[i].income.trees>0){
+                salary.gold += game.teams[game.turn.team].income.gold;
+                salary.trees += game.teams[game.turn.team].income.trees;
             }
         };
         
-        game.teams[game.turn.team].wallet.gold += salary;
+        game.teams[game.turn.team].wallet.gold += salary.gold;
+        game.teams[game.turn.team].wallet.trees += salary.trees;
         game.updateWallet();        
     },
 
@@ -385,14 +397,11 @@ var game = {
             }
         };
 
-        console.log(bonus);
-
         function distance(x1,y1,x2,y2,max){
             var dx = x2 - x1,
                 dy = y2 - y1;
 
             var distance = Math.sqrt(dx*dx + dy*dy);
-            //console.log(distance);
             if(distance<max){
                 return true;
             }else{
@@ -402,8 +411,7 @@ var game = {
 
         // give bonuses
         for (i = 0; i < world.map.entities.length; i++) {
-            for (var j = 0; j < bonus.length; j++) {
-            //console.log(bonus[j].team,world.map.entities[i].team );                          
+            for (var j = 0; j < bonus.length; j++) {                        
                 if(distance(world.map.entities[i].x, world.map.entities[i].y, bonus[j].x,bonus[j].y,2) && bonus[j].team === world.map.entities[i].team){
                     if(bonus[j].attack){                            
                         world.map.entities[i].bonus.attack = true;
@@ -414,6 +422,54 @@ var game = {
                 }   
             }
         }
+    },
+
+    makeNewLife: function(args){
+        var seeds = [],
+            grow = [];
+
+        for (var y = 0; y < world.map.height; y++) {
+            for (var x = 0; x < world.map.width; x++) {
+                if(world.map.moves[x+(world.map.width*y)] == 1){
+                    if(world.map.moves[(x+1)+(world.map.width*y)] == 2 || 
+                        world.map.moves[(x+1)+(world.map.width*(y-1))] == 2 || 
+                        world.map.moves[(x+1)+(world.map.width*(y+1))] == 2 || 
+                        world.map.moves[x+(world.map.width*(y+1))] == 2 || 
+                        world.map.moves[x+(world.map.width*(y-1))] == 2 || 
+                        world.map.moves[(x-1)+(world.map.width*(y+1))] == 2 || 
+                        world.map.moves[(x-1)+(world.map.width*(y-1))] == 2){
+                            seeds.push({x:x,y:y});
+                    }
+                }                
+            }            
+        }
+
+        for (var i = 0; i < world.map.items.length; i++) {
+            if(world.map.items[i].forest && world.map.items[i].palms == 1){
+                grow.push(world.map.items[i]);
+            }
+        };
+
+        var randomizer = new Date();
+        Math.seedrandom(randomizer);
+
+        if(seeds.length>0){
+            for (var i = 0; i < args.trees; i++) {
+                var rnd = (Math.random()*seeds.length-1)<<0; 
+                if(world.map.moves[seeds[rnd].x+(world.map.width*seeds[rnd].y)] == 1){
+                    world.map.items.push(new Palm({x:seeds[rnd].x, y:seeds[rnd].y, palms:1}));
+                    world.map.moves[seeds[rnd].x+(world.map.width*seeds[rnd].y)] = 2;
+                }
+                seeds.splice(rnd,1);
+            }
+        }
+        if(grow.length>0){
+            for (var i = 0; i < args.grow; i++) {
+                var rnd = (Math.random()*grow.length-1)<<0;
+                grow[rnd].grow();
+            }        
+        }
+
     },
 
     income: function(){

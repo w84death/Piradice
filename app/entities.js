@@ -54,7 +54,11 @@ var Unit = function Unit(){
     this.give_bonus = {
         attack: false,
         fear: false
-    }
+    };
+    this.income = {
+        gold:0,
+        trees:0
+    };
 };
 
 Unit.prototype = {
@@ -829,6 +833,8 @@ var Ship = function Ship(args){
         attack: false,
         fear: false
     };
+    this.income.gold = 10,
+    this.income.trees = 0
 };
 
 Ship.prototype = new Unit();
@@ -855,7 +861,9 @@ var Cementary = function Cementary(args){
     this.bonus = {
         attack: false,
         fear: false
-    };   
+    };
+    this.income.gold = 10,
+    this.income.trees = 0   
 };
 
 Cementary.prototype = new Unit();
@@ -931,6 +939,8 @@ var Bonfire = function Bonfire(args){
         attack: false,
         fear: false
     };
+    this.income.gold = 15,
+    this.income.trees = 0
 };
 
 Bonfire.prototype = new Unit();
@@ -958,6 +968,8 @@ var Fort = function Fort(args){
         attack: false,
         fear: false
     };
+    this.income.gold = 10,
+    this.income.trees = 1
 };
 
 Fort.prototype = new Unit();

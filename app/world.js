@@ -37,7 +37,7 @@ var world = {
         this.conf.height = args.height;
         
         if(window.location.hash === ''){
-            this.randomMap();                             
+            this.randomMap();
         }else{
             this.decodeHash();
             this.generate();
@@ -61,15 +61,15 @@ var world = {
         	this.conf.islands_size = 10 + (Math.random()*70)<<0;
             this.conf.rocks = 0 + (Math.random()*8)<<0,
         	this.conf.chests = 2 + (Math.random()*4)<<0;           
-        }
+        }        
         this.generate();             
     },
 
-    generate: function(){
-        this.encodeHash();
+    generate: function(){        
         this.map = [];
         this.map = maps.load(this.conf);
         this.saved_map = utilities.clone(this.map);
+        this.encodeHash();
     },
 
     encodeHash: function(){

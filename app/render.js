@@ -15,7 +15,9 @@
 */
 
 var render = {
-    stop: false,        
+    stop: false,  
+    animation: true,
+    animated_noise: false,      
     map: {
         canvas: null,
         ctx: null,
@@ -68,7 +70,7 @@ var render = {
     sprites: [],
     big_sprites: [],
     render_initialized: false,
-    max_frames: 6,
+    max_frames: 3,
     frame: 0,
     map_rendered: false,
 
@@ -216,7 +218,9 @@ var render = {
                 fogOfWar.init();
                 game.centerMap();
                 render.render({all:true});                               
-                render.loop();
+                if(render.animation){
+                    render.loop();
+                }
             };
             
             /*
@@ -644,7 +648,9 @@ var render = {
             if(this.last_frame + 1 >= this.max_frames){
                 this.map_rendered = true;
             }else{
-                this.noise_img = this.fastNoise(world.conf.width*this.box, world.conf.height*this.box, 8 );
+                if(this.animated_noise){
+                    this.noise_img = this.fastNoise(world.conf.width*this.box, world.conf.height*this.box, 8 );
+                }
                 this.last_frame++;
             }                         
         }
