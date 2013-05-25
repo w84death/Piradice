@@ -18,33 +18,33 @@ var audio = {
 
     pool: [],
     channels: [],
-    max_channels: 20,
+    max_channels: 8,
 
     init: function(){
         if(game.audio){
             this.pool['music1'] = {
-                audio: this.createChannel('http://rezoner.net/dontshare/piradice/loop.mp3'),            
+                audio: this.createChannel('../media/audio/loop.mp3'),            
                 volume: 0.7,
                 loop: true,
             };
             
             this.pool['button'] = {
-                audio: this.createChannel('http://rezoner.net/dontshare/piradice/click-ack-hi.mp3'),
+                audio: this.createChannel('../media/audio/click-ack-hi.mp3'),
                 volume: 0.9,
             };
 
             this.pool['select_unit'] = {
-                audio: this.createChannel('http://rezoner.net/dontshare/piradice/click-ack-low.mp3'),
+                audio: this.createChannel('../media/audio/click-ack-low.mp3'),
                 volume: 0.9,
             };
             
             this.pool['click'] = {
-                audio: this.createChannel('http://rezoner.net/dontshare/piradice/general-click.mp3'),
+                audio: this.createChannel('../media/audio/general-click.mp3'),
                 volume: 0.9,
             };
 
             this.pool['gold'] = {
-                audio: this.createChannel('http://rezoner.net/dontshare/piradice/jrpg-style-ack.mp3'),
+                audio: this.createChannel('../media/audio/jrpg-style-ack.mp3'),
                 volume: 0.9,
             };      
         }

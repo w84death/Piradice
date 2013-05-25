@@ -1,0 +1,18 @@
+{
+	"name": "Piradice - beta version",
+	"main": "index.html",
+	"description": "Turn-based strategy game in HTML5",
+	"version": "0.1.0",
+	"keywords": [ "piradice", "turn-based", "turn", "based", "strategy", "pirates", "pixel", "art", "indie" ],
+	"window": {
+		"icon": "media/favicon.png",
+		"width": 1120,
+	  	"height": 672,
+	  	"toolbar": false,
+	  	"frame": true,
+		"position": "center",
+		"min_width": 768,
+		"min_height": 480,
+		"always-on-top": false
+	}
+}

@@ -77,7 +77,7 @@ var GUI = {
 			},
 			action: 'game',
 			value: 'share',
-		};
+		};		
 
 		this.buttons['audio'] = {				
 				sprite: this.makeButton({x:4, y:6, width:2, height:2, text:'AUDIO'}),
@@ -523,6 +523,9 @@ var GUI = {
 			}
 			if(this.buttons[key].value == 'menu'){
 				game.restart();
+			}
+			if(this.buttons[key].value == 'close'){
+				game.close();
 			}
 			if(this.buttons[key].value == 'random'){
 				game.randomMap();

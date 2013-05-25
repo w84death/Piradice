@@ -19,7 +19,8 @@
 */
 
 var game = {
-    version: 'VERSION 8',
+    version: 'Beta v8',
+    runs: localStorage.runs,
     mobile: false || navigator.userAgent.match(/(iPhone)|(iPod)|(iPad)|(android)|(webOS)/i),
     tablet: false || navigator.userAgent.match(/(iPad)/i),
     teams: [{
@@ -65,8 +66,9 @@ var game = {
     fps: 7,
 
     init: function(args){                    
-        console.log(this.version);  
-      
+        localStorage.runs = ++this.runs;
+        alert('Version ' + this.version + '. Opened ' + this.runs + ' times.');  
+
         if(this.mobile){
             this.audio = false;
             args.w = 24;
@@ -81,11 +83,11 @@ var game = {
         //fogOfWar.init();
         shop.init();    
         render.init();        
-        //audio.play({sound:'music1'});
+        audio.play({sound:'music1'});
     },
 
     menu: function(){
-        GUI.show = ['logo', 'copyright', 'map','play','random', 'map_size1', 'map_size2', 'map_size3', 'share'];
+        GUI.show = ['logo', 'copyright', 'map','play','random', 'map_size1', 'map_size2', 'map_size3'];
         GUI.hud['map'].position = {
             x:((render.viewport.width*0.5)<<0)-4,
             y:render.viewport.height-5
@@ -104,7 +106,7 @@ var game = {
     },    
 
     restart: function(){
-        //audio.changeVolume({sound:'music1', volume:0.9});
+        audio.changeVolume({sound:'music1', volume:0.9});
     	this.teams = [{
             pirates: true,
             ai: false,

@@ -70,7 +70,7 @@ var render = {
     sprites: [],
     big_sprites: [],
     render_initialized: false,
-    max_frames: 3,
+    max_frames: 4,
     frame: 0,
     map_rendered: false,
 
@@ -85,7 +85,7 @@ var render = {
 
             this.noise_img = this.fastNoise(world.map.width*this.box, world.map.height*this.box, 8 );
 
-            this.sprites_img.src = "/media/sprites.png";
+            this.sprites_img.src = "media/sprites.png";
             this.sprites_img.onload = function(){                
 
                 render.sprites_img = render.resize(render.sprites_img, render.scale);
@@ -211,6 +211,21 @@ var render = {
                 render.sprites[98] = render.makeSprite(19,2, false); // sand
                 render.sprites[99] = render.makeSprite(19,3, false); // grass
 
+                // border
+                render.sprites[100] = render.makeSprite(19,6, false); // top
+                render.sprites[101] = render.makeSprite(20,7, false); // right
+                render.sprites[102] = render.makeSprite(19,8, false); // bottom
+                render.sprites[103] = render.makeSprite(18,7, false); // left
+                render.sprites[104] = render.makeSprite(18,6, false); // top-left
+                render.sprites[105] = render.makeSprite(20,6, false); // top-right
+                render.sprites[106] = render.makeSprite(20,8, false); // bottom-right
+                render.sprites[107] = render.makeSprite(18,8, false); // bottom-left
+                render.sprites[108] = render.makeSprite(18,4, false); // 75
+                render.sprites[109] = render.makeSprite(19,4, false); // 50
+                render.sprites[110] = render.makeSprite(18,5, false); // 25
+                render.sprites[111] = render.makeSprite(19,5, false); // 10
+
+
                 render.big_sprites[0] = render.resize(render.sprites[35][0], 8);
                 render.big_sprites[1] = render.resize(render.sprites[36][0], 8);                
 
@@ -249,10 +264,7 @@ var render = {
 
         gameDiv.appendChild(viewportDiv);
         gameDiv.style.width = (this.viewport.width*this.box)+'px';
-        gameDiv.style.height = (this.viewport.height*this.box)+'px';
-        
-        document.getElementById('play').style.width = gameDiv.style.width;
-        document.getElementById('play').style.height = gameDiv.style.height;
+        gameDiv.style.height = (this.viewport.height*this.box)+'px';    
 
         this.viewport.canvas = document.getElementById('viewport');
         this.viewport.canvas.width = this.viewport.width*this.box;
@@ -610,9 +622,7 @@ var render = {
                         this.map.ctx.drawImage(this.sprites[spr], (x*this.box)-random_dist(), (y*this.box)+random_dist());
                         this.map.ctx.drawImage(this.sprites[spr], (x*this.box)+random_dist(), (y*this.box)-random_dist());
                         this.map.ctx.drawImage(this.sprites[spr], (x*this.box)+random_dist(), (y*this.box)+random_dist());
-                    }
-                
-                    
+                    }                                    
                 }
             }
 
@@ -620,6 +630,7 @@ var render = {
                 for(var x=0; x<world.map.width; x++){
                     if(world.map.data[x+(y*world.map.width)] == 2 || world.map.data[x+(y*world.map.width)] == 3){
                         spr = 98;
+                        this.map.ctx.drawImage(this.sprites[2], x*this.box, y*this.box);                        
                         this.map.ctx.drawImage(this.sprites[spr], (x*this.box)-random_dist(), (y*this.box)-random_dist());
                         this.map.ctx.drawImage(this.sprites[spr], (x*this.box)-random_dist(), (y*this.box)+random_dist());
                         this.map.ctx.drawImage(this.sprites[spr], (x*this.box)+random_dist(), (y*this.box)-random_dist());
@@ -634,7 +645,7 @@ var render = {
                 for(var x=0; x<world.map.width; x++){
                     if(world.map.data[x+(y*world.map.width)] == 4 || world.map.data[x+(y*world.map.width)] == 5){
                         spr = 99;
-                        
+                        this.map.ctx.drawImage(this.sprites[4], x*this.box, y*this.box);                        
                         this.map.ctx.drawImage(this.sprites[spr], (x*this.box)-random_dist(), (y*this.box)-random_dist());
                         this.map.ctx.drawImage(this.sprites[spr], (x*this.box)-random_dist(), (y*this.box)+random_dist());
                         this.map.ctx.drawImage(this.sprites[spr], (x*this.box)+random_dist(), (y*this.box)-random_dist());
@@ -642,6 +653,44 @@ var render = {
                     }
                 }
             }
+
+
+            // render bounds
+
+            for(var y=0; y<world.map.height; y++){
+                for(var x=0; x<world.map.width; x++){
+                    if(y=== 0 && x === 0){
+                        this.map.ctx.drawImage(this.sprites[104], x*this.box, y*this.box);
+                    }else
+                    if(y=== 0 && x === world.map.width-1){
+                        this.map.ctx.drawImage(this.sprites[105], x*this.box, y*this.box);
+                    }else
+                    if(x=== 0 && y === world.map.height-1){
+                        this.map.ctx.drawImage(this.sprites[107], x*this.box, y*this.box);
+                    }else
+                    if(x === world.map.width-1 && y === world.map.height-1){
+                        this.map.ctx.drawImage(this.sprites[106], x*this.box, y*this.box);
+                    }else
+                    if(y === 0){
+                        this.map.ctx.drawImage(this.sprites[100], x*this.box, y*this.box);                        
+                    }else
+                    if(x === world.map.width-1){
+                        this.map.ctx.drawImage(this.sprites[101], x*this.box, y*this.box);                        
+                    }else
+                    if(y === world.map.height-1){
+                        this.map.ctx.drawImage(this.sprites[102], x*this.box, y*this.box);                        
+                    }else
+                    if(x === 0){
+                        this.map.ctx.drawImage(this.sprites[103], x*this.box, y*this.box);                        
+                    }else{
+                        // random block 108-111
+                        var rnd = 108 + (Math.random()*4)<<0;
+                        this.map.ctx.drawImage(this.sprites[rnd], x*this.box, y*this.box);                        
+                    }
+                }
+            }
+
+
             args.items = true;
             this.map.ctx.drawImage(this.noise_img, 0, 0);            
             this.frames[this.last_frame].ctx.drawImage(this.map.canvas, 0,0);
