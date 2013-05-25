@@ -659,6 +659,9 @@ var render = {
 
             for(var y=0; y<world.map.height; y++){
                 for(var x=0; x<world.map.width; x++){
+                    var rnd = 108 + (Math.random()*4)<<0;
+                    this.map.ctx.drawImage(this.sprites[rnd], x*this.box, y*this.box);                        
+
                     if(y=== 0 && x === 0){
                         this.map.ctx.drawImage(this.sprites[104], x*this.box, y*this.box);
                     }else
@@ -682,10 +685,6 @@ var render = {
                     }else
                     if(x === 0){
                         this.map.ctx.drawImage(this.sprites[103], x*this.box, y*this.box);                        
-                    }else{
-                        // random block 108-111
-                        var rnd = 108 + (Math.random()*4)<<0;
-                        this.map.ctx.drawImage(this.sprites[rnd], x*this.box, y*this.box);                        
                     }
                 }
             }

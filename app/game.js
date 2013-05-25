@@ -71,19 +71,20 @@ var game = {
 
         if(this.mobile){
             this.audio = false;
-            args.w = 24;
-            args.h = 18;
+            args.w = 18;
+            args.h = 16;
         }
 
         audio.init();
         world.init({
-            width: 48 || args.w,
-            height: 32 || args.h
+            width: 24 || args.w,
+            height: 18 || args.h
         });        
         //fogOfWar.init();
         shop.init();    
         render.init();        
         audio.play({sound:'music1'});
+        //this.saveMap();
     },
 
     menu: function(){

@@ -23,28 +23,28 @@ var audio = {
     init: function(){
         if(game.audio){
             this.pool['music1'] = {
-                audio: this.createChannel('../media/audio/loop.mp3'),            
+                audio: this.createChannel('http://rezoner.net/dontshare/piradice/piradice-menu-moodier.mp3'),            
                 volume: 0.7,
                 loop: true,
             };
             
             this.pool['button'] = {
-                audio: this.createChannel('../media/audio/click-ack-hi.mp3'),
+                audio: this.createChannel('media/audio/click-ack-hi.mp3'),
                 volume: 0.9,
             };
 
             this.pool['select_unit'] = {
-                audio: this.createChannel('../media/audio/click-ack-low.mp3'),
+                audio: this.createChannel('media/audio/click-ack-low.mp3'),
                 volume: 0.9,
             };
             
             this.pool['click'] = {
-                audio: this.createChannel('../media/audio/general-click.mp3'),
+                audio: this.createChannel('media/audio/general-click.mp3'),
                 volume: 0.9,
             };
 
             this.pool['gold'] = {
-                audio: this.createChannel('../media/audio/jrpg-style-ack.mp3'),
+                audio: this.createChannel('media/audio/jrpg-style-ack.mp3'),
                 volume: 0.9,
             };      
         }
@@ -55,9 +55,8 @@ var audio = {
         //document.body.appendChild(audio);
         
         // loading
-        // this.channels[i].addEventLitener('canplaythrough',channelLoaded, false);
-        
-        audio.setAttribute('src', src);
+        // this.channels[i].addEventLitener('canplaythrough',channelLoaded, false);        
+        audio.setAttribute('src', src);        
         return audio;
     },
 
@@ -69,7 +68,7 @@ var audio = {
                 for (var i = 0; i < this.channels.length; i++) {
                     if(this.channels[i].sound == args.sound && this.channels[i].audio.ended){
                        this.channels[i].audio.volume = this.pool[args.sound].volume;
-                       this.channels[i].audio.play();
+                       this.channels[i].audio.play();                       
                        create_channel = false; 
                        return true;
                     }
@@ -80,7 +79,7 @@ var audio = {
                         var temp_channel = document.createElement('audio'),
                             loop = this.pool[args.sound].loop;
                         temp_channel.setAttribute('src', this.pool[args.sound].audio.src);
-                        temp_channel.volume = this.pool[args.sound].volume;
+                        temp_channel.volume = this.pool[args.sound].volume;                        
                         temp_channel.play();
                         this.channels.push({
                             audio: temp_channel,
