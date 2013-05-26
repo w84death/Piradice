@@ -38,7 +38,7 @@ var game = {
             offset: {x:0,y:0}            
         },{
             skeletons: true,
-            ai: true,
+            ai: false,
             wallet: {
                 gold:400, //400,
                 trees:10,// 12
@@ -91,14 +91,17 @@ var game = {
     },
 
     menu: function(){
-        GUI.show = ['logo', 'copyright', 'map','play','random', 'map_size1', 'map_size2', 'map_size3', 'audio'];
+        GUI.show = ['logo', 'copyright', 'map','play','play_ai','random', 'map_size1', 'map_size2', 'map_size3', 'audio'];
         GUI.hud['map'].position = {
             x:((render.viewport.width*0.5)<<0)-4,
             y:render.viewport.height-5
         };            
     },
 
-    start: function(){
+    start: function(args){
+        if(args.ai){
+            game.teams[1].ai = true;
+        }
         audio.changeVolume({sound:'music1', volume:0.4});
     	this.map = false;             
         GUI.show = ['map','inventory','gold','trees','end'];
@@ -118,13 +121,19 @@ var game = {
                 gold:400,
                 trees:12
             },
-            income: 10,
+            income: {
+                gold: 10,            
+                trees: 1
+            },
             bought: false,
             offset: {x:0,y:0}            
         },{
             skeletons: true,
             ai: false,
-            income: 10,
+            income: {
+                gold: 10,            
+                trees: 1
+            },
             wallet: {
                 gold:400,
                 trees:12
@@ -358,14 +367,14 @@ var game = {
 
     payDay: function(){
         var salary = {
-                gold: 5,
-                trees: 1
+                gold: game.teams[game.turn.team].income.gold,
+                trees: game.teams[game.turn.team].income.trees
             };
-    
+
         for (var i = 0; i < world.map.entities.length; i++) {
             if(world.map.entities[i].income.gold>0 || world.map.entities[i].income.trees>0){
-                salary.gold += game.teams[game.turn.team].income.gold;
-                salary.trees += game.teams[game.turn.team].income.trees;
+                salary.gold += world.map.entities[i].income.gold;
+                salary.trees += world.map.entities[i].income.trees;
             }
         };
         

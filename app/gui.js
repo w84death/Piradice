@@ -56,7 +56,7 @@ var GUI = {
 		};
 		
 		this.buttons['play'] = {				
-			sprite: this.makeButton({x:4, y:8, width:4, height:2, text:'PLAY'}),
+			sprite: this.makeButton({x:4, y:8, width:4, height:2, text:'PLAY VS HUMAN'}),
 			width: 4,
 			height: 2,
 			position: {
@@ -65,6 +65,20 @@ var GUI = {
 			},
 			action: 'game',
 			value: 'start',
+			ai: false
+		};
+
+		this.buttons['play_ai'] = {				
+			sprite: this.makeButton({x:4, y:8, width:4, height:2, text:'PLAY VS AI'}),
+			width: 4,
+			height: 2,
+			position: {
+				x: ((render.viewport.width*0.5)<<0)+4,
+				y: render.viewport.height-3
+			},
+			action: 'game',
+			value: 'start',
+			ai: true
 		};
 
 		this.buttons['share'] = {				
@@ -510,7 +524,7 @@ var GUI = {
 		}
 		if(this.buttons[key].action == 'game'){
 			if(this.buttons[key].value == 'start'){
-				game.start();
+				game.start({ai:this.buttons[key].ai});
 			}
 			if(this.buttons[key].value == 'share'){				
 				game.shareMap();
