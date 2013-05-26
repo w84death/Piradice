@@ -80,7 +80,7 @@ var GUI = {
 		};		
 
 		this.buttons['audio'] = {				
-				sprite: this.makeButton({x:4, y:6, width:2, height:2, text:'AUDIO'}),
+				sprite: this.makeButton({x:4, y:6, width:2, height:2, text:'MUTE'}),
 				width: 2,
 				height: 2,
 				position: {
@@ -211,7 +211,7 @@ var GUI = {
 			value: 'menu',
 		};
 
-		this.buttons['ok'] = this.buttons['surrender_ok']
+		this.buttons['ok'] = this.buttons['surrender_ok'];
 
 		this.buttons['surrender_cancel'] = {				
 				sprite: this.makeButton({x:4, y:8, width:4, height:2, text:'CANCEL'}),
@@ -680,7 +680,7 @@ var GUI = {
 		this.ctx.font = '24px VT323, cursive';
 		this.ctx.fillText(args.message, (render.viewport.width*render.box)*0.5<<0, (render.viewport.height-2)*render.box);		
 		
-		this.show = [];
+		this.show = ['ok'];
 		this.show.push('new_game');
 	},
 	

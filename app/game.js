@@ -20,7 +20,7 @@
 
 var game = {
     version: 'Beta v8',
-    runs: localStorage.runs,
+    runs: 0 || localStorage.runs,
     mobile: false || navigator.userAgent.match(/(iPhone)|(iPod)|(iPad)|(android)|(webOS)/i),
     tablet: false || navigator.userAgent.match(/(iPad)/i),
     teams: [{
@@ -65,7 +65,10 @@ var game = {
     fow: false,
     fps: 7,
 
-    init: function(args){                    
+    init: function(args){
+        if(isNaN(localStorage.runs)){
+            localStorage.runs = 0;
+        }               
         localStorage.runs = ++this.runs;
         alert('Version ' + this.version + '. Opened ' + this.runs + ' times.');  
 
@@ -88,7 +91,7 @@ var game = {
     },
 
     menu: function(){
-        GUI.show = ['logo', 'copyright', 'map','play','random', 'map_size1', 'map_size2', 'map_size3'];
+        GUI.show = ['logo', 'copyright', 'map','play','random', 'map_size1', 'map_size2', 'map_size3', 'audio'];
         GUI.hud['map'].position = {
             x:((render.viewport.width*0.5)<<0)-4,
             y:render.viewport.height-5
@@ -453,6 +456,14 @@ var game = {
             }
         };
 
+        for (var i = 0; i < world.map.entities.length; i++) {
+            for (var j = 0; j < seeds.length; j++) {
+                if(world.map.entities[i].x === seeds[j].x && world.map.entities[i].y === seeds[j].y){
+                    seeds.splice(j,1);
+                }
+            }      
+        };        
+        
         var randomizer = new Date();
         Math.seedrandom(randomizer);
 
@@ -507,12 +518,10 @@ var game = {
     },
             
     win: function(){        
-        GUI.show = ['ok'];
         GUI.render({end:true,message:'You win!'})        
     },
 
     lose: function(){        
-        GUI.show = ['ok'];
         GUI.render({end:true,message:'You lose :('})        
     },
 
