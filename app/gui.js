@@ -868,30 +868,32 @@ var GUI = {
 				this.drawEnd({message: args.message});
 			}
 
-			if(this.popUp.show){
-				this.ctx.drawImage(this.popUp.canvas, this.popUp.position.x*render.box,this.popUp.position.y*render.box);
-			}
-			
-			for (key in this.hud) {
-				for (var i = 0; i < this.show.length; i++) {
-					if(this.show[i] == key){
-						this.ctx.drawImage(this.hud[key].sprite, this.hud[key].position.x*render.box, this.hud[key].position.y*render.box);
+			if(!game.teams[game.turn.team].ai){
+				if(this.popUp.show){
+					this.ctx.drawImage(this.popUp.canvas, this.popUp.position.x*render.box,this.popUp.position.y*render.box);
+				}
+				
+				for (key in this.hud) {
+					for (var i = 0; i < this.show.length; i++) {
+						if(this.show[i] == key){
+							this.ctx.drawImage(this.hud[key].sprite, this.hud[key].position.x*render.box, this.hud[key].position.y*render.box);
+						}
 					}
 				}
-			}
 
-			for (key in this.buttons) {
-				for (var i = 0; i < this.show.length; i++) {
-					if(this.show[i] == key){
-						this.ctx.drawImage(this.buttons[key].sprite, this.buttons[key].position.x*render.box, this.buttons[key].position.y*render.box);
-					}
-				}				
-			}			
+				for (key in this.buttons) {
+					for (var i = 0; i < this.show.length; i++) {
+						if(this.show[i] == key){
+							this.ctx.drawImage(this.buttons[key].sprite, this.buttons[key].position.x*render.box, this.buttons[key].position.y*render.box);
+						}
+					}				
+				}			
 
-			for (key in this.labels) {
-				for (var i = 0; i < this.show.length; i++) {
-					if(this.show[i] == key){
-						this.drawLabel(this.labels[key]);
+				for (key in this.labels) {
+					for (var i = 0; i < this.show.length; i++) {
+						if(this.show[i] == key){
+							this.drawLabel(this.labels[key]);
+						}
 					}
 				}
 			}

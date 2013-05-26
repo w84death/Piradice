@@ -16,48 +16,50 @@
 
 var computer = {
     loop_id: 0,
-    orders: [],
-    units: [],
-    resources: [],
+    ai_units: [],
     targets: [],
-    
-    init: function(){
-        this.units = [];
-
-        for (var i = 0; i < world.map.entities.length; i++) {
-            if(world.map.entities[i].team === game.turn.team && world.map.entities[i].alive && world.map.entities[i].moves > 0){                
-                //game.unit_selected = i;                 
-                this.units.push(i);                                
-            }
-            if(world.map.entities[i].team !== game.turn.team && world.map.entities[i].alive){
-                this.targets.push(i);
-            }
-        }
-        for (var i = 0; i < world.map.items.length; i++) {
-            if(world.map.items[i].forest){
-                this.resources.push(i);
-            }
-            if(world.map.items[i].chest){
-                if(game.teams[game.turn.team].skeletons && !world.map.items[i].close){
-                    this.resources.push(i);
-                }
-                if(game.teams[game.turn.team].pirates && world.map.items[i].close){
-                    this.resources.push(i);
-                }
-            }
-        };
-        this.giveOrders();
-        this.loop();
+    build: [],
+    units: {
+        'Dust':         0,
+        'Lumberjack':   0,
+        'Pirate':       0,
+        'Skeleton':     0,
+        'Octopus':      0,
+        'Ship':         0,
+        'Bonfire':      0,
+        'Fort':         0,
     },
     
-    giveOrders: function(){
-        function other(a){
-            if(a === 0){
-                return 1;
-            }else{
-                return 0;
-            }
-        }        
+    init: function(){
+        computer.ai_units = [];
+        computer.loop_id = 0;
+        computer.units = {
+            'Dust':         0,
+            'Lumberjack':   0,
+            'Pirate':       0,
+            'Skeleton':     0,
+            'Octopus':      0,
+            'Ship':         0,
+            'Bonfire':      0,
+            'Fort':         0,
+        };
+        game.play = false;
+
+        for (var i = 0; i < world.map.entities.length; i++) {
+            if (world.map.entities[i].team === game.turn.team && world.map.entities[i].alive) {
+                computer.ai_units.push(i);
+            };            
+            for (key in computer.units) {                
+                if(world.map.entities[i].name == key && world.map.entities[i].alive){
+                    computer.units[key]++;
+                }                
+            }            
+        }
+        computer.loop();
+    },    
+
+    executeOrders: function(){
+        
         function distance(x1,y1,x2,y2,max){
             var dx = x2 - x1,
                 dy = y2 - y1;
@@ -69,206 +71,114 @@ var computer = {
                 return false;
             }
         }
-        
-        if(game.teams[game.turn.team].wallet.trees <= game.teams[other(game.turn.team)].wallet.trees){
-            this.orders.push({
-                resources:true,
-                trees: true
-            });
-        }
-        if(game.teams[game.turn.team].wallet.gold <= game.teams[other(game.turn.team)].wallet.gold){
-            this.orders.push({
-                resources:true,
-                gold: true
-            });
-        }
 
-        if(this.targets.length >= this.units.length){
-            var unit = null;
-            if(game.teams[game.turn.team].skeletons){
-                unit = 'dust';
-            }
-            if(game.teams[game.turn.team].pirates){
-                unit = 'lumberjack';
-            }
-            this.orders.push({
-                buy:true,
-                unit:unit
-            });
-        }
+        // analize ALL THE THINGS!        
 
-        for (var i = 0; i < this.targets.length; i++) {
-            for (var j = 0; j < this.units.length; j++) {
-                if(distance(world.map.entities[this.targets[i]].x,world.map.entities[this.targets[i]].y,world.map.entities[this.units[j]].x,world.map.entities[this.units[j]].y,5)){
-                    this.orders.push({
-                    attack:true,
-                    target: i
-                });
-                }
-            };
+        if(computer.loop_id < computer.ai_units.length){
+
+            // reset attack factor to normal
             
-        };
+            attack =    [];
+            move =      [];
+            merge =     [];
+            cut =       [];
+            target =    false;
+            mma = true; // merge - move - attack
+            
 
-        
-    },
+            // select unit            
+            game.unit_selected = computer.ai_units[computer.loop_id];            
+            world.map.entities[computer.ai_units[computer.loop_id]].select();
+            render.render({gui:true});
+            // build if can            
 
-    executeOrders: function(){
-        console.log(computer.orders);
-        var order = computer.orders.pop();
-        console.log(order);
-        if(computer.units.length>0){                        
-            if(order.resources){
-                console.log('resources');
-                computer.units.pop();
-            }
-
-            if(order.buy){
-                console.log('buy');
-                for (var i = 0; i < computer.units.length; i++) {                    
-                    if(world.map.entities[computer.units[i]].can_create_unit){
-                        for (var j = 0; j < world.map.entities[computer.units[i]].shop.length; j++) {
-                            if(world.map.entities[computer.units[i]].shop[j] == order.unit){
-                                game.select(world.map.entities[computer.units[i]].x,world.map.entities[computer.units[i]].y);
-                                if(!shop.buy({unit:order.unit})){
-                                    world.map.entities[computer.units[i]].unselect();
-                                }else{                                    
-                                    computer.units.push(world.map.entities.length-1);
-                                    render.render({entities:true});
-                                }
-                                computer.units.splice(i,1);
-                                return true;
-                            }
-                        };
+            if(world.map.entities[computer.ai_units[computer.loop_id]].can_create_unit){
+                console.log(computer.ai_units[computer.loop_id],world.map.entities[computer.ai_units[computer.loop_id]]);
+                if(computer.units['Pirate'] > computer.units['Skeleton']){
+                    if(shop.buy({unit:'skeleton'})){
+                        mma = false;
+                        render.render({entities:true});
+                        //computer.ai_units.push(world.map.entities.length-1);
                     }
-                };                
+                }else
+                if(computer.units['Lumberjack']+2 >= computer.units['Dust']){
+                    if(shop.buy({unit:'dust'})){
+                        mma = false;
+                        render.render({entities:true});
+                        //computer.ai_units.push(world.map.entities.length-1);
+                    }
+                }
             }
 
-            if(order.attack){
-                console.log('attack');
-                var next_unit = computer.units.pop();
-                var attack = [];
-                if(next_unit){
-                    game.select(world.map.entities[next_unit].x,world.map.entities[next_unit].y);
-                    for (var i = 0; i < world.map.entities[next_unit].move_area.length; i++) {
-                    
-                    if(world.map.entities[next_unit].move_area[i].attack){
-                            attack.push(i);
+            if(computer.units['Ship'] > computer.units['Octopus'] && game.teams[game.turn.team].wallet.gold >= shop.price_list['octopus'].gold){                    
+                if(shop.buy({unit:'octopus'})){
+                    mma = false;
+                    render.render({entities:true});
+                    //computer.ai_units.push(world.map.entities.length-1);
+                }
+            }
+
+            if(world.map.entities[computer.ai_units[computer.loop_id]].name == 'Dust'){
+                if(computer.units['Fort']-1 > computer.units['Bonfire'] && game.teams[game.turn.team].wallet.gold >= shop.price_list['Bonfire'].gold && game.teams[game.turn.team].wallet.trees >= shop.price_list['Bonfire'].trees){
+                    if(shop.buy({unit:'bonfire'})){
+                        mma = false;
+                        render.render({entities:true});
+                        //computer.ai_units.push(world.map.entities.length-1);
+                    }
+               }
+            }
+
+            if(mma){
+                if(world.map.entities[computer.ai_units[computer.loop_id]].move_area.length > 0){
+                    for (var j = 0; j < world.map.entities[computer.ai_units[computer.loop_id]].move_area.length; j++) {
+                        if(world.map.entities[computer.ai_units[computer.loop_id]].move_area[j].merge){
+                            merge.push(j);
                         }
+                        if(world.map.entities[computer.ai_units[computer.loop_id]].move_area[j].attack){
+                            attack.push(j);
+                        }
+                        if(world.map.entities[computer.ai_units[computer.loop_id]].move_area[j].move){
+                            move.push(j);
+                        }
+                        if(world.map.entities[computer.ai_units[computer.loop_id]].move_area[j].forest){
+                            cut.push(j);
+                        }                        
                     };
 
-                    if( attack.length > 0 ){
-                        var rand = (Math.random()*attack.length)<<0; 
-                        game.attackOrMove(world.map.entities[next_unit].move_area[rand].x, world.map.entities[next_unit].move_area[rand].y);
+                    if(merge.length>0 && world.map.entities[computer.ai_units[computer.loop_id]].squad < 4){                        
+                        target = merge[(Math.random()*(merge.length-1))<<0];                        
+                    }else
+                    if(attack.length < move.length && attack.length>0){                            
+                        target = attack[(Math.random()*(attack.length-1))<<0];
+                    }else
+                    if(cut.length > 0 && game.teams[game.turn.team].wallet.trees < 10){                            
+                        target = cut[(Math.random()*(cut.length-1))<<0];                        
+                    }else
+                    if(move.length>0){
+                        target = move[(Math.random()*(move.length-1))<<0];                        
                     }
-                    render.render({entities:true});
-                    return true;
+                    if(target !== false){
+                        game.MMA(world.map.entities[computer.ai_units[computer.loop_id]].move_area[target].x, world.map.entities[computer.ai_units[computer.loop_id]].move_area[target].y);
+                        render.render({items:true,entities:true});
+                    }
+                    
                 }
             }
-            
-            console.log('move');
-            var next_unit = computer.units.pop();
-            var moves = [];
-            if(next_unit){
-                game.select(world.map.entities[next_unit].x,world.map.entities[next_unit].y);
-                for (var i = 0; i < world.map.entities[next_unit].move_area.length; i++) {
-                    if(world.map.entities[next_unit].move_area[i].move){
-                        moves.push(i);
-                    }
-                };
-                if( moves.length > 0 ){
-                    var rand = (Math.random()*moves.length)<<0;                
-                    world.map.entities[next_unit].move(world.map.entities[next_unit].move_area[rand].x, world.map.entities[next_unit].move_area[rand].y);
-                }
-                render.render({entities:true});
-            }
-
-            return true;
+            world.map.entities[computer.ai_units[computer.loop_id]].unselect();
+            render.render({gui:true});
+        
         }else{
+            game.play = true;
+            game.ready = false;
             game.nextTurn();
-            return false;
         }
-    },
+    },        
 
-    /*
-    think: function(other){
-        other.select();
-
-            // if can move
-            if(other.move_area.length > 0){
-
-                // check all entities
-                for (var i = 0; i < world.map.entities.length; i++) {
-
-                    // chech if enemy and live
-                    if(world.map.entities[i].team === 0 && world.map.entities[i].alive){
-
-                        // check if in sight
-                        for (var j = 0; j < other.move_area.length; j++) {
-                            if(world.map.entities[i].x == other.move_area[j].x && world.map.entities[i].y == other.move_area[j].y){
-
-                                // check if reloading
-                                if( world.map.entities[i].reloading > 0 ){
-                                    game.attackOrMove(other.move_area[j].x, other.move_area[j].y);
-                                    other.unselect();
-                                    return true;
-                                }else
-
-                                // check if range
-                                if( world.map.entities[i].range ){
-                                    game.attackOrMove(other.move_area[j].x, other.move_area[j].y);
-                                    other.unselect();
-                                    return true;
-                                }else
-
-                                // check if weak
-                                if( world.map.entities[i].squad <= other.squad ){
-                                    game.attackOrMove(other.move_area[j].x, other.move_area[j].y);
-                                    other.unselect();
-                                    return true;
-                                }
-
-                            }
-                        }
-
-                    }
-                }
-
-                // check items
-                for (i = 0; i < world.map.items.length; i++) {
-
-                    // search for chest (not opened)
-                    if(world.map.items[i].can_open && world.map.items[i].close){
-
-                        // if in sight
-                        for (j = 0; j < other.move_area.length; j++) {
-
-                            if(world.map.items[i].x == other.move_area[j].x && world.map.items[i].y == other.move_area[j].y){
-                                game.attackOrMove(other.move_area[j].x, other.move_area[j].y);
-                                other.unselect();
-                                return true;
-                            }
-
-                        }
-                    }
-                }
-
-                // nothing to attack.. move somewhere
-                var r = (Math.random()*other.move_area.length)<<0;
-                game.attackOrMove(other.move_area[r].x, other.move_area[r].y);                
-            }else{
-                other.moves = 0;
-            }
-
-        other.unselect();
-        return true;
-    },
-    */
-
-    loop: function() {            
-        computer.executeOrders();
-        //render.render({items:true, entities:true, gui:true});
+    loop: function() {           
+        computer.executeOrders();        
         setTimeout(function () {            
             if (game.teams[game.turn.team].ai) {
+                computer.loop_id++;
                 computer.loop();
             }
         }, game.ai_speed);

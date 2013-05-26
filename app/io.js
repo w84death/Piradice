@@ -46,7 +46,7 @@ var io = {
                 realY = cY - render.viewport.offset.y;
 
                 if(game.unit_selected !== false){
-                    game.attackOrMove(realX, realY)
+                    game.MMA(realX, realY)
                     render.render({entities:true, gui:true});
                     return false;
                 }else{

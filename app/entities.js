@@ -469,7 +469,7 @@ Unit.prototype = {
                 this_army.dice = ((Math.random()*5)<<0)+this_army.bonus;                
                 if(this_army.dice>6){this_army.dice=6;}
                 if(this_army.dice<1){this_army.dice=1;}
-                this_army.utf8_dices += utilities.toDice(this_army.dice);
+                this_army.utf8_dices += '['+this_army.dice+']';//utilities.toDice(this_army.dice);
                 this_army.total += this_army.dice;
 
                 // bonuses
@@ -489,7 +489,7 @@ Unit.prototype = {
                 }
 
                 if(other_army.dice>6){other_army.dice=6;}
-                other_army.utf8_dices += utilities.toDice(other_army.dice);
+                other_army.utf8_dices += '['+this_army.dice+']';//utilities.toDice(other_army.dice);
                 other_army.total += other_army.dice;
 
                 // attack_range unit
@@ -591,20 +591,21 @@ Unit.prototype = {
             }
 
             // war log
-            GUI.warReport({
-                left: {
-                    sprite: this.sprite,
-                    hit: this_army.utf8_dices
-                },                
-                right: {
-                    sprite: other.sprite,
-                    hit: other_army.utf8_dices
-                },
-                title: war_log.header,
-                message: war_log.message
-            });
-            render.render({menu:true});
-        
+            if(!game.teams[game.turn.team].ai){
+                GUI.warReport({
+                    left: {
+                        sprite: this.sprite,
+                        hit: this_army.utf8_dices
+                    },                
+                    right: {
+                        sprite: other.sprite,
+                        hit: other_army.utf8_dices
+                    },
+                    title: war_log.header,
+                    message: war_log.message
+                });
+                render.render({menu:true});
+            }
             
             // unit has no more moves
             this.moves = 0;
@@ -881,7 +882,7 @@ var Octopus = function Octopus(args){
     this.max = 1;
     this.messages = ['Ooo.', 'oo..', 'o?', ':)', ':o', ':['];
     this.merging = false;
-    this.range = true;
+    this.range = false;
     this.move_range = 4;
     this.fow = 5;
     this.dice_bonus = 6;

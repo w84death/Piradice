@@ -38,7 +38,7 @@ var game = {
             offset: {x:0,y:0}            
         },{
             skeletons: true,
-            ai: false,
+            ai: true,
             wallet: {
                 gold:400, //400,
                 trees:10,// 12
@@ -55,7 +55,7 @@ var game = {
         start: true,
         team: 0
     },    
-    ai_speed: 1000,
+    ai_speed: 300,
     game_speed: 500,
     play: false,
    	ready: false,
@@ -205,7 +205,7 @@ var game = {
         return false;
     },
 
-    attackOrMove: function(cX,cY){
+    MMA: function(cX,cY){
         
         var randomizer = new Date();
         Math.seedrandom(randomizer);
@@ -517,11 +517,13 @@ var game = {
         render.render({entities:true});        
     },
             
-    win: function(){        
+    win: function(){
+        game.teams[game.turn.team].ai = false;       
         GUI.render({end:true,message:'You win!'})        
     },
 
     lose: function(){        
+        game.teams[game.turn.team].ai = false;       
         GUI.render({end:true,message:'You lose :('})        
     },
 
