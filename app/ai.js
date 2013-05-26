@@ -138,7 +138,12 @@ var computer = {
                             attack.push(j);
                         }
                         if(world.map.entities[computer.ai_units[computer.loop_id]].move_area[j].move){
-                            move.push(j);
+                            if(world.map.entities[computer.ai_units[computer.loop_id]].move_area[j].x > -1 &&
+                                world.map.entities[computer.ai_units[computer.loop_id]].move_area[j].x < world.map.width &&
+                                world.map.entities[computer.ai_units[computer.loop_id]].move_area[j].y > -1 &&
+                                world.map.entities[computer.ai_units[computer.loop_id]].move_area[j].y < world.map.height){
+                                move.push(j);
+                            }
                         }
                         if(world.map.entities[computer.ai_units[computer.loop_id]].move_area[j].forest){
                             cut.push(j);
@@ -151,7 +156,7 @@ var computer = {
                     if(attack.length < move.length && attack.length>0){                            
                         target = attack[(Math.random()*(attack.length-1))<<0];
                     }else
-                    if(cut.length > 0 && game.teams[game.turn.team].wallet.trees < 10){                            
+                    if(cut.length > 0){                            
                         target = cut[(Math.random()*(cut.length-1))<<0];                        
                     }else
                     if(move.length>0){
