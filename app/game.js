@@ -344,11 +344,7 @@ var game = {
                 this.payDay();
                 this.bonuses();
                 shop.show();
-                GUI.show.push('map');
-                GUI.show.push('inventory');
-                GUI.show.push('gold');
-                GUI.show.push('trees');
-                GUI.show.push('end');
+                GUI.show = ['map','inventory','gold','trees','end','surrender'];
                 render.render({items:true, gui:true, menu:true, entities:true, sky:true});                                   
             }else{
             	return true;
@@ -360,11 +356,14 @@ var game = {
                 render.render({gui:true, menu:true, entities:true, sky:true});
             }
 
-            if(!game.ready && !this.teams[this.turn.team].ai){
+            
+            if(!game.ready && !this.teams[0].ai && !this.teams[1].ai){
                 multi.show();
                 render.viewport.offset = {
                     x:this.teams[this.turn.team].offset.x, 
                     y:this.teams[this.turn.team].offset.y};
+            }else{
+                game.play = true;
             }
             
             if(this.teams[this.turn.team].ai){

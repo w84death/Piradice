@@ -207,7 +207,7 @@ var GUI = {
 				height: 2,
 				position: {
 					x: 1,
-					y: 1
+					y: render.viewport.height-3
 				},
 				action: 'game',
 				value: 'surrender',
@@ -218,8 +218,8 @@ var GUI = {
 			width: 4,
 			height: 2,
 			position: {
-				x: render.viewport.width-5,
-				y: 1
+				x: 6,
+				y: render.viewport.height-3
 			},
 			action: 'game',
 			value: 'menu',
@@ -233,7 +233,7 @@ var GUI = {
 				height: 2,
 				position: {
 					x: 1,
-					y: 1
+					y: render.viewport.height-3
 				},
 				action: 'game',
 				value: 'surrender_cancel',
@@ -551,13 +551,8 @@ var GUI = {
 			if(this.buttons[key].value == 'ready'){	
 				game.play = true;
 				game.ready = true;
-				this.show = [];
 				shop.show();
-				GUI.show.push('map');
-        		GUI.show.push('inventory');
-				GUI.show.push('gold');
-        		GUI.show.push('trees');
-				GUI.show.push('end');
+				GUI.show = ['map','inventory', 'gold', 'trees','end','surrender'];
 				render.render({gui:true, menu:true});
 			}
 		}
@@ -576,7 +571,7 @@ var GUI = {
 		if(this.buttons[key].action == 'war'){
 			if(this.buttons[key].value == 'close'){
 				this.popUp.show = false;
-				GUI.show = ['map','inventory','gold','trees','end'];
+				GUI.show = ['map','inventory','gold','trees','end','surrender'];
 				game.play = true;
 				render.render({menu:true});
 			}

@@ -245,7 +245,7 @@ var shop = {
     },
 
     show: function(args){    
-        GUI.show = ['map','inventory','gold','trees','end'];
+        GUI.show = ['map','inventory','gold','trees','end','surrender'];
         if(!args){
             args = {more:false};
         }
