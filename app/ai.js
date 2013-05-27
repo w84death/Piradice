@@ -26,40 +26,42 @@ var computer = {
         'Skeleton':     0,
         'Octopus':      0,
         'Ship':         0,
+        'Cementary':    0,
         'Bonfire':      0,
         'Fort':         0,
     },
     
     init: function(){
         computer.ai_units = [];
-        computer.loop_id = 0;
-        computer.units = {
-            'Dust':         0,
-            'Lumberjack':   0,
-            'Pirate':       0,
-            'Skeleton':     0,
-            'Octopus':      0,
-            'Ship':         0,
-            'Bonfire':      0,
-            'Fort':         0,
-        };
+        computer.loop_id = 0;        
         game.play = false;
-
-        for (var i = 0; i < world.map.entities.length; i++) {
-            if (world.map.entities[i].team === game.turn.team && world.map.entities[i].alive) {
-                computer.ai_units.push(i);
-            };            
-            for (key in computer.units) {                
-                if(world.map.entities[i].name == key && world.map.entities[i].alive){
-                    computer.units[key]++;
-                }                
-            }            
-        }
+        computer.calculateForces({init:true});        
         computer.loop();
     },    
 
+    calculateForces: function(args){        
+        for (key in computer.units) {                
+            computer.units[key] = 0;
+        }
+
+        for (var i = 0; i < world.map.entities.length; i++) {
+            if(args.init){
+                if (world.map.entities[i].team === game.turn.team && world.map.entities[i].alive) {
+                    computer.ai_units.push(i);
+                };            
+            }
+            for (key in computer.units) {                
+                if(world.map.entities[i].name == key && world.map.entities[i].alive){
+                    computer.units[key] += world.map.entities[i].squad;
+                }                
+            }            
+        }
+    },
+
     executeOrders: function(){
         
+        var mma = true;
+
         function distance(x1,y1,x2,y2,max){
             var dx = x2 - x1,
                 dy = y2 - y1;
@@ -110,23 +112,29 @@ var computer = {
                 }
             }
 
-            if(computer.units['Ship'] > computer.units['Octopus'] && game.teams[game.turn.team].wallet.gold >= shop.price_list['octopus'].gold){                    
-                if(shop.buy({unit:'octopus'})){
+            if(computer.units['Ship']*0.8 > computer.units['Cementary'] && game.teams[game.turn.team].wallet.gold >= shop.price_list['cementary'].gold && game.teams[game.turn.team].wallet.trees >= shop.price_list['cementary'].trees){                    
+                if(shop.buy({unit:'cementary'})){
                     mma = false;
                     render.render({entities:true});
-                    //computer.ai_units.push(world.map.entities.length-1);
+                }
+            }    
+
+            if(computer.units['Ship'] > computer.units['Octopus'] && game.teams[game.turn.team].wallet.gold >= shop.price_list['octopus'].gold){                    
+                if(shop.buy({unit:'octopus'})){
+                    mma = false;                    
+                    render.render({entities:true});
                 }
             }
 
+            /*
             if(world.map.entities[computer.ai_units[computer.loop_id]].name == 'Dust'){
-                if(computer.units['Fort']-1 > computer.units['Bonfire'] && game.teams[game.turn.team].wallet.gold >= shop.price_list['Bonfire'].gold && game.teams[game.turn.team].wallet.trees >= shop.price_list['Bonfire'].trees){
+                if((computer.units['Pirate']*0.6 > computer.units['Bonfire'] || computer.units['Fort'] > computer.units['Bonfire']) && game.teams[game.turn.team].wallet.gold >= shop.price_list['bonfire'].gold && game.teams[game.turn.team].wallet.trees >= shop.price_list['bonfire'].trees){
                     if(shop.buy({unit:'bonfire'})){
                         mma = false;
                         render.render({entities:true});
-                        //computer.ai_units.push(world.map.entities.length-1);
                     }
                }
-            }
+            }*/
 
             if(mma){
                 if(world.map.entities[computer.ai_units[computer.loop_id]].move_area.length > 0){
@@ -151,27 +159,28 @@ var computer = {
                     };
 
                     if(merge.length>0 && world.map.entities[computer.ai_units[computer.loop_id]].squad < 4){                        
-                        target = merge[(Math.random()*(merge.length-1))<<0];                        
+                        target = merge[(Math.random()*merge.length)<<0];                        
                     }else
                     if(attack.length < move.length && attack.length>0){                            
-                        target = attack[(Math.random()*(attack.length-1))<<0];
+                        target = attack[(Math.random()*attack.length)<<0];
                     }else
                     if(cut.length > 0){                            
-                        target = cut[(Math.random()*(cut.length-1))<<0];                        
+                        target = cut[(Math.random()*cut.length)<<0];                        
                     }else
                     if(move.length>0){
-                        target = move[(Math.random()*(move.length-1))<<0];                        
+                        target = move[(Math.random()*move.length)<<0];                        
                     }
                     if(target !== false){
                         game.MMA(world.map.entities[computer.ai_units[computer.loop_id]].move_area[target].x, world.map.entities[computer.ai_units[computer.loop_id]].move_area[target].y);
                         render.render({items:true,entities:true});
-                    }
-                    
+                    }                                    
                 }
             }
             world.map.entities[computer.ai_units[computer.loop_id]].unselect();
-            render.render({gui:true});
-        
+            render.render({gui:true}); 
+
+            computer.calculateForces({re:true});
+
         }else{
             game.play = true;
             game.ready = false;

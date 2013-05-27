@@ -826,6 +826,7 @@ var Ship = function Ship(args){
     this.can_create_unit = true;
     this.squad = 1;
     this.messages = ['Sail', 'Ahoy'];
+    this.range = true;
     this.move_range = 5;
     this.fow = 6;
     this.merging = false;

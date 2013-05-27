@@ -20,7 +20,7 @@
 
 var game = {
     version: 'Beta v8',
-    runs: 0 || localStorage.runs,
+    runs: 0,
     mobile: false || navigator.userAgent.match(/(iPhone)|(iPod)|(iPad)|(android)|(webOS)/i),
     tablet: false || navigator.userAgent.match(/(iPad)/i),
     teams: [{
@@ -55,7 +55,7 @@ var game = {
         start: true,
         team: 0
     },    
-    ai_speed: 300,
+    ai_speed: 150,
     game_speed: 500,
     play: false,
    	ready: false,
@@ -66,9 +66,11 @@ var game = {
     fps: 7,
 
     init: function(args){
-        if(isNaN(localStorage.runs)){
-            localStorage.runs = 0;
-        }               
+        if(isNaN(localStorage.runs) || !localStorage.runs){
+            this.runs = 0;
+        }else{
+            this.runs = localStorage.runs;
+        }
         localStorage.runs = ++this.runs;
         alert('Version ' + this.version + '. Opened ' + this.runs + ' times.');  
 
@@ -101,6 +103,8 @@ var game = {
     start: function(args){
         if(args.ai){
             game.teams[1].ai = true;
+            game.teams[1].income.gold = 15;
+            game.teams[1].income.trees = 2;
         }
         audio.changeVolume({sound:'music1', volume:0.4});
     	this.map = false;             
@@ -215,10 +219,14 @@ var game = {
     },
 
     MMA: function(cX,cY){
-        
+
+        if(game.unit_selected === false){
+            return false;
+        }        
+
         var randomizer = new Date();
         Math.seedrandom(randomizer);
-
+        
         for (var i = 0; i < world.map.entities[game.unit_selected].move_area.length; i++) {
             if(world.map.entities[game.unit_selected].move_area[i].x == cX && world.map.entities[game.unit_selected].move_area[i].y == cY){
             	audio.play({sound:'click'});
@@ -247,12 +255,12 @@ var game = {
                 
             }    
         }
-      
+  
         world.map.entities[game.unit_selected].unselect();
         this.unit_selected = false;
-        
+    
         fogOfWar.update();
-
+        return true;        
     },    
 
     checkMate: function(){
@@ -478,7 +486,7 @@ var game = {
 
         if(seeds.length>0){
             for (var i = 0; i < args.trees; i++) {
-                var rnd = (Math.random()*seeds.length-1)<<0; 
+                var rnd = (Math.random()*seeds.length)<<0; 
                 if(world.map.moves[seeds[rnd].x+(world.map.width*seeds[rnd].y)] == 1){
                     world.map.items.push(new Palm({x:seeds[rnd].x, y:seeds[rnd].y, palms:1}));
                     world.map.moves[seeds[rnd].x+(world.map.width*seeds[rnd].y)] = 2;
@@ -488,7 +496,7 @@ var game = {
         }
         if(grow.length>0){
             for (var i = 0; i < args.grow; i++) {
-                var rnd = (Math.random()*grow.length-1)<<0;
+                var rnd = (Math.random()*grow.length)<<0;
                 grow[rnd].grow();
             }        
         }
@@ -601,6 +609,13 @@ var game = {
                 }
             };
         }
+    },
+
+    pirate: function(){
+        this.teams[0].wallet.gold = 999;
+        this.teams[0].wallet.trees = 999;
+        this.teams[1].wallet.gold = 999;
+        this.teams[1].wallet.trees = 999;
     },
 
 };

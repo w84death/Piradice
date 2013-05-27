@@ -31,7 +31,8 @@ var shop = {
         this.price_list['bonfire'] = {gold:0, trees:5};
     },
 
-    buy: function(args){
+    buy: function(args){        
+
         var newX = 0,
             newY = 0;
             team = game.turn.team,
@@ -71,7 +72,10 @@ var shop = {
                 newY = world.conf.height-1;
             }
 
-        }else{       
+        }else{
+            if(game.unit_selected === false){
+                return false;
+            }       
             var buy_spot = [];
 
             for (var i = 0; i < world.map.entities[game.unit_selected].move_area.length; i++) {
@@ -79,9 +83,11 @@ var shop = {
                     buy_spot.push(i);
                 }
             };
-            var r = (Math.random()*buy_spot.length)<<0;
-            newX = world.map.entities[game.unit_selected].move_area[buy_spot[r]].x
-            newY = world.map.entities[game.unit_selected].move_area[buy_spot[r]].y;
+            if(buy_spot.length > 0){
+                var r = (Math.random()*buy_spot.length)<<0;
+                newX = world.map.entities[game.unit_selected].move_area[buy_spot[r]].x
+                newY = world.map.entities[game.unit_selected].move_area[buy_spot[r]].y;
+            }
         }
 
 
@@ -170,11 +176,13 @@ var shop = {
                 game.unit_selected = false;  
             }                
             this.show();
-            fogOfWar.update();            
-            game.centerMap({
-                x:newX,
-                y:newY
-            });
+            if(!game.teams[game.turn.team].ai){
+                fogOfWar.update();            
+                game.centerMap({
+                    x:newX,
+                    y:newY
+                });
+            }
             render.render({entities:true, gui:true});
         }else{
             console.log('need more gold!');
