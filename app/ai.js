@@ -23,11 +23,13 @@ var computer = {
         'Dust':         0,
         'Lumberjack':   0,
         'Pirate':       0,
+        'Gunner':       0,
         'Skeleton':     0,
         'Octopus':      0,
         'Ship':         0,
         'Cementary':    0,
         'Bonfire':      0,
+        'Daemon':       0,
         'Fort':         0,
     },
     
@@ -85,8 +87,7 @@ var computer = {
             merge =     [];
             cut =       [];
             target =    false;
-            mma = true; // merge - move - attack
-            
+            mma = true; // merge - move - attack                    
 
             // select unit            
             game.unit_selected = computer.ai_units[computer.loop_id];            
@@ -100,14 +101,14 @@ var computer = {
                     if(shop.buy({unit:'skeleton'})){
                         mma = false;
                         render.render({entities:true});
-                        //computer.ai_units.push(world.map.entities.length-1);
+                        return true;
                     }
                 }else
                 if(computer.units['Lumberjack']+2 >= computer.units['Dust']){
                     if(shop.buy({unit:'dust'})){
                         mma = false;
                         render.render({entities:true});
-                        //computer.ai_units.push(world.map.entities.length-1);
+                        return true;                        
                     }
                 }
             }
@@ -116,6 +117,7 @@ var computer = {
                 if(shop.buy({unit:'cementary'})){
                     mma = false;
                     render.render({entities:true});
+                    return true;
                 }
             }    
 
@@ -123,18 +125,34 @@ var computer = {
                 if(shop.buy({unit:'octopus'})){
                     mma = false;                    
                     render.render({entities:true});
+                    return true;
                 }
             }
 
-            /*
+            
+            if(world.map.entities[computer.ai_units[computer.loop_id]].name == 'Bonfire'){
+                if(computer.units['Gunner']*0.6 > computer.units['Daemon'] && game.teams[game.turn.team].wallet.gold >= shop.price_list['daemon'].gold && game.teams[game.turn.team].wallet.trees >= shop.price_list['daemon'].trees){
+                    if(shop.buy({unit:'daemon'})){
+                        mma = false;
+                        render.render({entities:true});
+                        return true;
+                    }else{
+                        computer.units['Fort'] += computer.units['Bonfire'] + 2;
+                    }
+               }
+            }
+
             if(world.map.entities[computer.ai_units[computer.loop_id]].name == 'Dust'){
                 if((computer.units['Pirate']*0.6 > computer.units['Bonfire'] || computer.units['Fort'] > computer.units['Bonfire']) && game.teams[game.turn.team].wallet.gold >= shop.price_list['bonfire'].gold && game.teams[game.turn.team].wallet.trees >= shop.price_list['bonfire'].trees){
                     if(shop.buy({unit:'bonfire'})){
                         mma = false;
                         render.render({entities:true});
+                        return true;
+                    }else{
+                        computer.units['Lumberjack'] += computer.units['Dust'] + 4;
                     }
                }
-            }*/
+            }            
 
             if(mma){
                 if(world.map.entities[computer.ai_units[computer.loop_id]].move_area.length > 0){

@@ -166,6 +166,7 @@ var world = {
     },
 
     clearTerrain: function(args){
+        var for_cut = [];
 
         for (var i = 0; i < this.map.items.length; i++) {
             if(this.map.items[i].forest){
@@ -173,13 +174,17 @@ var world = {
                     for (var y = args.y-args.size; y <= args.y+args.size; y++) {                       
                         if(this.map.items[i].x === x && this.map.items[i].y === y){
                             this.map.moves[this.map.items[i].x+(this.map.items[i].y*this.map.width)] = 1;                                        
-                            this.map.items.splice(i,1);//for_cut.push(i);        
+                            for_cut.push(i);        
                         }                        
                     }
                 }
             }
         }
 
-        render.render({map:true});
+        for (var i = 0; i < for_cut.length; i++) {
+            this.map.items.splice(for_cut[i],1);
+        };
+
+        render.render({items:true});
     },  
 };

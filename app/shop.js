@@ -15,17 +15,17 @@ var shop = {
     price_list: [],
 
     init: function(){
-        this.price_list['pirate'] = {gold:10, trees:0};
-        this.price_list['gunner'] = {gold:20, trees:0};
+        this.price_list['pirate'] = {gold:20, trees:0};
+        this.price_list['gunner'] = {gold:30, trees:0};
         this.price_list['lumberjack'] = {gold:10, trees:0};
-        this.price_list['ship'] = {gold:200, trees:10};
-        this.price_list['cannon'] = {gold:10, trees:5};
-        this.price_list['fort'] = {gold:100, trees:10};
+        this.price_list['ship'] = {gold:200, trees:30};
+        this.price_list['cannon'] = {gold:10, trees:10};
+        this.price_list['fort'] = {gold:100, trees:20};
         this.price_list['chieftain'] = {gold:80, trees:1};
         
-        this.price_list['skeleton'] = {gold:10, trees:0};
-        this.price_list['dust'] = {gold:30, trees:0};        
-        this.price_list['cementary'] = {gold:200, trees:10};
+        this.price_list['skeleton'] = {gold:20, trees:0};
+        this.price_list['dust'] = {gold:20, trees:0};        
+        this.price_list['cementary'] = {gold:200, trees:20};
         this.price_list['octopus'] = {gold:110, trees:0};
         this.price_list['daemon'] = {gold:15, trees:0};
         this.price_list['bonfire'] = {gold:0, trees:5};

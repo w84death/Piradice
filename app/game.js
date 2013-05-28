@@ -19,7 +19,7 @@
 */
 
 var game = {
-    version: 'Beta v8',
+    version: 'Pre-final Update 8',
     runs: 0,
     mobile: false || navigator.userAgent.match(/(iPhone)|(iPod)|(iPad)|(android)|(webOS)/i),
     tablet: false || navigator.userAgent.match(/(iPad)/i),
@@ -75,7 +75,7 @@ var game = {
         alert('Version ' + this.version + '. Opened ' + this.runs + ' times.');  
 
         if(this.mobile){
-            this.audio = false;
+            //this.audio = false;
             args.w = 18;
             args.h = 16;
         }
@@ -103,8 +103,12 @@ var game = {
     start: function(args){
         if(args.ai){
             game.teams[1].ai = true;
-            game.teams[1].income.gold = 15;
+            game.teams[1].income.gold = 15; // bo głupi ma szczęście
             game.teams[1].income.trees = 2;
+        }else{
+            game.teams[1].ai = false;
+            game.teams[1].income.gold = 10;
+            game.teams[1].income.trees = 1;
         }
         audio.changeVolume({sound:'music1', volume:0.4});
     	this.map = false;             
@@ -615,6 +619,7 @@ var game = {
         this.teams[0].wallet.trees = 999;
         this.teams[1].wallet.gold = 999;
         this.teams[1].wallet.trees = 999;
+        alert('Arr!');
     },
 
 };
