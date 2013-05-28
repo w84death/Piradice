@@ -28,7 +28,7 @@ var game = {
             ai: false,
             wallet: {
                 gold:400, //400,
-                trees:20, //22
+                trees:40, //22
             },
             income: {
                 gold: 10,            
@@ -41,7 +41,7 @@ var game = {
             ai: false,
             wallet: {
                 gold:400, //400,
-                trees:10,// 12
+                trees:30,// 12
             },
             income: {
                 gold: 10,            
@@ -127,7 +127,7 @@ var game = {
             ai: false,
             wallet: {
                 gold:400,
-                trees:12
+                trees:40
             },
             income: {
                 gold: 10,            
@@ -144,7 +144,7 @@ var game = {
             },
             wallet: {
                 gold:400,
-                trees:12
+                trees:30
             },
             bought: false,
             offset: {x:0,y:0}
