@@ -31,7 +31,7 @@ var game = {
                 trees:40, //22
             },
             income: {
-                gold: 10,            
+                gold: 5,            
                 trees: 1
             },
             bought: false,
@@ -44,7 +44,7 @@ var game = {
                 trees:30,// 12
             },
             income: {
-                gold: 10,            
+                gold: 5,            
                 trees: 1
             },
             bought: false,
@@ -78,6 +78,7 @@ var game = {
             //this.audio = false;
             args.w = 18;
             args.h = 16;
+            audio.enableMP3();
         }
 
         audio.init();
@@ -103,11 +104,11 @@ var game = {
     start: function(args){
         if(args.ai){
             game.teams[1].ai = true;
-            game.teams[1].income.gold = 15; // bo głupi ma szczęście
+            game.teams[1].income.gold = 10; // bo głupi ma szczęście
             game.teams[1].income.trees = 2;
         }else{
             game.teams[1].ai = false;
-            game.teams[1].income.gold = 10;
+            game.teams[1].income.gold = 5;
             game.teams[1].income.trees = 1;
         }
         audio.changeVolume({sound:'music1', volume:0.4});

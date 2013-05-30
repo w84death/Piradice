@@ -5,8 +5,6 @@
 </head>
 <body>
 	<section id="game">
-		<h1>LOADING GAME</h1>
-		<p>Please wait a second..</p>
 	</section>
 	
 	<script src="app/seed.js"></script>
@@ -22,7 +20,10 @@
 	<script src="app/audio.js"></script>
 	<script src="app/game.js"></script>
 	        
+
 	<script>
+		game.init({multi:true}); 
+		/*
 	  WebFontConfig = {
 	  
 	    google: { families: [ 'VT323::latin' ] },
@@ -40,7 +41,7 @@
 	    var s = document.getElementsByTagName('script')[0];
 	    s.parentNode.insertBefore(wf, s);
 	  })(); 
-	    
+	    */
 	</script>
 </body>
 </html>

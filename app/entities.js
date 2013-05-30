@@ -59,6 +59,11 @@ var Unit = function Unit(){
         gold:0,
         trees:0
     };
+    this.audio = {
+        'move': false,
+        'attack': false,
+        'die': false,
+    };
 };
 
 Unit.prototype = {
@@ -376,16 +381,18 @@ Unit.prototype = {
     },
     
     open: function(){
+        var gold = 20 + (Math.random()*50)<<0;
         if(this.moves > 0){
             for (var j = 0; j < world.map.items.length; j++) {                    
                 if(world.map.items[j].x == this.x && world.map.items[j].y == this.y){                        
                     if(world.map.items[j].open(this.pirate)){ 
                         if(this.pirate){
-                            game.teams[game.turn.team].wallet.gold += 20;
-                            this.message = '+20';
+                            game.teams[game.turn.team].wallet.gold += gold;
+                            this.message = '+'+gold;
                         }else{
-                            game.teams[game.turn.team].wallet.gold += 50;
-                            this.message = '+50';
+                            gold = (gold * 0.5)<<0
+                            game.teams[game.turn.team].wallet.gold += gold;
+                            this.message = '+'+gold;
                         }
 
                         audio.play({sound:'gold'});
@@ -435,6 +442,9 @@ Unit.prototype = {
 
         // if found lets fight!        
         if(other){
+            if(this.audio.attack){
+               audio.play({sound:this.audio.attack});
+            }
             // save army stats
             this_army.squad = this.squad;
             other_army.squad = other.squad;            
@@ -715,6 +725,9 @@ var Gunner = function Gunner(args){
         attack: false,
         fear: false
     };
+    this.audio = {
+        'attack': 'gun',
+    };
 };
 
 Gunner.prototype = new Unit();
@@ -737,6 +750,9 @@ var Cannon = function Cannon(args){
     this.bonus = {
         attack: false,
         fear: false
+    };
+    this.audio = {
+        'attack': 'cannon',
     };
 };
 
@@ -835,8 +851,11 @@ var Ship = function Ship(args){
         attack: false,
         fear: false
     };
-    this.income.gold = 10,
-    this.income.trees = 0
+    this.income.gold = 4;
+    this.income.trees = 0;
+    this.audio = {
+        'attack': 'cannon',
+    };
 };
 
 Ship.prototype = new Unit();
@@ -864,8 +883,8 @@ var Cementary = function Cementary(args){
         attack: false,
         fear: false
     };
-    this.income.gold = 10,
-    this.income.trees = 0   
+    this.income.gold = 4;
+    this.income.trees = 0;   
 };
 
 Cementary.prototype = new Unit();
@@ -914,6 +933,9 @@ var Daemon = function Daemon(args){
         attack: false,
         fear: false
     };
+    this.audio = {
+        'attack': 'gun',
+    };
 };
 
 Daemon.prototype = new Unit();
@@ -941,8 +963,11 @@ var Bonfire = function Bonfire(args){
         attack: false,
         fear: false
     };
-    this.income.gold = 15,
-    this.income.trees = 0
+    this.income.gold = 5;
+    this.income.trees = 0;
+    this.audio = {
+        'attack': 'cannon',
+    };
 };
 
 Bonfire.prototype = new Unit();
@@ -970,7 +995,7 @@ var Fort = function Fort(args){
         attack: false,
         fear: false
     };
-    this.income.gold = 10,
+    this.income.gold = 2,
     this.income.trees = 1
 };
 

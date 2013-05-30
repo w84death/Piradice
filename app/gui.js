@@ -60,8 +60,8 @@ var GUI = {
 			width: 4,
 			height: 2,
 			position: {
-				x: ((render.viewport.width*0.5)<<0),
-				y: render.viewport.height-3
+				x: render.viewport.width-5,
+				y: render.viewport.height-5
 			},
 			action: 'game',
 			value: 'start',
@@ -73,7 +73,7 @@ var GUI = {
 			width: 4,
 			height: 2,
 			position: {
-				x: ((render.viewport.width*0.5)<<0)+4,
+				x: render.viewport.width-5,
 				y: render.viewport.height-3
 			},
 			action: 'game',
@@ -94,7 +94,7 @@ var GUI = {
 		};		
 
 		this.buttons['audio'] = {				
-				sprite: this.makeButton({x:4, y:6, width:2, height:2, text:'MUTE'}),
+				sprite: this.makeButton({x:4, y:6, width:2, height:2, text:'AUDIO'}),
 				width: 2,
 				height: 2,
 				position: {
@@ -118,7 +118,7 @@ var GUI = {
 				width: 4,
 				height: 2,
 				position: {
-					x: ((render.viewport.width*0.5)<<0)-4,
+					x: ((render.viewport.width*0.5)<<0)-2,
 					y: render.viewport.height-3
 				},
 				action: 'game',
@@ -518,8 +518,13 @@ var GUI = {
 
 		if(this.buttons[key].action == 'audio'){
 			if(this.buttons[key].value == 'mute'){
-				audio.stop({sound:'music1'});
-				game.audio = false;				
+				if(game.audio){
+					audio.stop({sound:'music1'});
+					game.audio = false;				
+				}else{
+					game.audio = true;
+					audio.play({sound:'music1'});					
+				}
 			}
 		}
 		if(this.buttons[key].action == 'game'){
