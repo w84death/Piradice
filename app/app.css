@@ -15,8 +15,10 @@
 */
 
 @font-face {
-    font-family: "VT323";
-    src: url("../font/VT323-Regular.ttf");
+  font-family: 'VT323';
+  font-style: normal;
+  font-weight: 400;
+  src: local('VT323'), local('VT323'), url('../font/font.woff') format('woff');
 }
 
 * {margin: 0; padding: 0;}
