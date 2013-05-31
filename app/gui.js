@@ -817,15 +817,21 @@ var GUI = {
 		m_context.fillStyle = this.conf.labelColor;        	
 		m_context.font = '18px VT323, cursive';
 		m_context.textBaseline = 'middle';
-		m_context.textAlign = 'center';
-		m_context.fillText(args.left.hit, center*render.box, 2*render.box);		
-		m_context.fillText(args.right.hit, center*render.box, 4*render.box);
-		m_context.fillText('vs', center*render.box, 3*render.box);
-		m_context.font = '18px VT323, cursive';
+		m_context.textAlign = 'center';				
+		m_context.fillText('vs', center*render.box, 3*render.box);		
 		m_context.fillText(args.title, center*render.box, 6*render.box);
 		m_context.font = '14px VT323, cursive';
 		m_context.fillText(args.message, center*render.box, 7*render.box);
 		
+
+		//m_context.fillText(args.left.hit, center*render.box, 2*render.box);		
+		//m_context.fillText(args.right.hit, center*render.box, 4*render.box);
+
+		for (var i = 0; i < args.left.hit_log.length; i++) {
+			m_context.drawImage(render.sprites[ 111 + args.left.hit_log[i] ], center*render.box - (( (args.left.hit_log.length*0.5)<<0 )*render.box) + (i*render.box) - 16, 2*render.box-16);
+			m_context.drawImage(render.sprites[ 111 + args.right.hit_log[i] ], center*render.box - (((args.right.hit_log.length*0.5)<<0)*render.box) + (i*render.box) - 16, 4*render.box-16);
+		};
+
 		game.play = false;
 		this.show = ['close'];
 		this.buttons['close'].position.y = y+8;

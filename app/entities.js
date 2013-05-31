@@ -418,14 +418,14 @@ Unit.prototype = {
                 dice: 0,
                 total: 0,
                 bonus: 0,
-                utf8_dices: '',                
+                dices_log: [],                
             },
             other_army = {
                 squad: 0,
                 dice: 0,
                 total: 0,
                 bonus: 0,
-                utf8_dices: '',                
+                dices_log: [],                
             },
             war_log = {
                 title: '',
@@ -479,7 +479,7 @@ Unit.prototype = {
                 this_army.dice = ((Math.random()*5)<<0)+this_army.bonus;                
                 if(this_army.dice>6){this_army.dice=6;}
                 if(this_army.dice<1){this_army.dice=1;}
-                this_army.utf8_dices += '['+this_army.dice+']';//utilities.toDice(this_army.dice);
+                this_army.dices_log.push(this_army.dice);
                 this_army.total += this_army.dice;
 
                 // bonuses
@@ -498,8 +498,8 @@ Unit.prototype = {
                     other_army.dice = ((Math.random()*5)<<0)+other_army.bonus;
                 }
 
-                if(other_army.dice>6){other_army.dice=6;}
-                other_army.utf8_dices += '['+this_army.dice+']';//utilities.toDice(other_army.dice);
+                if(other_army.dice>6){other_army.dice=6;}                
+                other_army.dices_log.push(other_army.dice);
                 other_army.total += other_army.dice;
 
                 // attack_range unit
@@ -605,11 +605,11 @@ Unit.prototype = {
                 GUI.warReport({
                     left: {
                         sprite: this.sprite,
-                        hit: this_army.utf8_dices
+                        hit_log: this_army.dices_log
                     },                
                     right: {
                         sprite: other.sprite,
-                        hit: other_army.utf8_dices
+                        hit_log: other_army.dices_log
                     },
                     title: war_log.header,
                     message: war_log.message
@@ -704,6 +704,9 @@ var Pirate = function Pirate(args){
         attack: false,
         fear: false
     };
+    this.audio = {
+        'attack': 'sword'
+    };
 };
 
 Pirate.prototype = new Unit();
@@ -779,6 +782,9 @@ var Lumberjack = function Lumberjack(args){
         attack: false,
         fear: false
     };
+    this.audio = {
+        'attack': 'sword2'
+    };
 };
 
 Lumberjack.prototype = new Unit();
@@ -797,7 +803,10 @@ var Skeleton = function Skeleton(args){
     this.bonus = {
         attack: false,
         fear: false
-    };  
+    };
+    this.audio = {
+        'attack': 'sword2'
+    };
 };
 
 Skeleton.prototype = new Unit();
@@ -824,6 +833,9 @@ var Dust = function Dust(args){
     this.bonus = {
         attack: false,
         fear: false
+    };
+    this.audio = {
+        'attack': 'attack'
     };
 };
 
@@ -909,6 +921,9 @@ var Octopus = function Octopus(args){
     this.bonus = {
         attack: false,
         fear: false
+    };
+    this.audio = {
+        'attack': 'attack2'
     };
 };
 
@@ -1016,7 +1031,10 @@ var Chieftain = function Chieftain(args){
         attack: false,
         fear: false
     };    
-    this.give_bonus.attack = true; 
+    this.give_bonus.attack = true;
+    this.audio = {
+        'attack': 'sword'
+    }; 
 };
 
 Chieftain.prototype = new Unit();

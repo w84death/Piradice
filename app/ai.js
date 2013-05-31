@@ -179,7 +179,7 @@ var computer = {
                     if(merge.length>0 && world.map.entities[computer.ai_units[computer.loop_id]].squad < 4){                        
                         target = merge[(Math.random()*merge.length)<<0];                        
                     }else
-                    if(attack.length < move.length && attack.length>0){                            
+                    if(attack.length>0 && ( attack.length < move.length || move.length < 1 )){                            
                         target = attack[(Math.random()*attack.length)<<0];
                     }else
                     if(cut.length > 0){                            

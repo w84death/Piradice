@@ -225,6 +225,14 @@ var render = {
                 render.sprites[110] = render.makeSprite(18,5, false); // 25
                 render.sprites[111] = render.makeSprite(19,5, false); // 10
 
+                render.sprites[112] = render.makeSprite(18,9, false); // DICE I
+                render.sprites[113] = render.makeSprite(19,9, false); // DICE II
+                render.sprites[114] = render.makeSprite(20,9, false); // DICE III
+                render.sprites[115] = render.makeSprite(18,10, false); // DICE IV
+                render.sprites[116] = render.makeSprite(19,10, false); // DICE V
+                render.sprites[117] = render.makeSprite(20,10, false); // DICE VI
+
+
 
                 render.big_sprites[0] = render.resize(render.sprites[35][0], 8);
                 render.big_sprites[1] = render.resize(render.sprites[36][0], 8);                

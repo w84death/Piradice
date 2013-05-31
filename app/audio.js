@@ -58,7 +58,27 @@ var audio = {
             this.pool['gun'] = {
                 audio: this.createChannel('media/audio/shot-amiga.'+this.ext),
                 volume: 0.9,
-            };      
+            };
+
+            this.pool['sword'] = {
+                audio: this.createChannel('media/audio/sword-fight1.'+this.ext),
+                volume: 0.9,
+            };
+
+            this.pool['sword2'] = {
+                audio: this.createChannel('media/audio/sword-fight2.'+this.ext),
+                volume: 0.9,
+            };    
+
+            this.pool['attack'] = {
+                audio: this.createChannel('media/audio/punch-fight1.'+this.ext),
+                volume: 0.9,
+            };  
+
+            this.pool['attack2'] = {
+                audio: this.createChannel('media/audio/punch-fight2.'+this.ext),
+                volume: 0.9,
+            };
         }
     },
 
