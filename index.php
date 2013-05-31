@@ -24,7 +24,7 @@
 </head>
 <body>
 
-  <section class="<?php echo pwd(); ?>" id="play">       
+  <section class="<?php echo pwd(); ?>">       
     <?php article(); ?>
   </section>        
   

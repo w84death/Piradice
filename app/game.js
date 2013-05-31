@@ -72,7 +72,7 @@ var game = {
             this.runs = localStorage.runs;
         }
         localStorage.runs = ++this.runs;
-        alert('Version ' + this.version + '. Opened ' + this.runs + ' times.');  
+        //alert('Version ' + this.version + '. Opened ' + this.runs + ' times.');  
 
         if(this.mobile){
             //this.audio = false;

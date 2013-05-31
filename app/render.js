@@ -578,10 +578,14 @@ var render = {
     },
 
     viewportResize: function(){            
+        var gameDiv = document.getElementById('game');
+
         render.viewport.width = (window.innerWidth/render.box)<<0;
         render.viewport.height = (window.innerHeight/render.box)<<0;
         render.menu.canvas.width = render.viewport.canvas.width = render.viewport.width*render.box;
-        render.menu.canvas.height = render.viewport.canvas.height = render.viewport.height*render.box;                
+        render.menu.canvas.height = render.viewport.canvas.height = render.viewport.height*render.box;                        
+        gameDiv.style.width = render.viewport.canvas.width+'px';
+        gameDiv.style.height = render.viewport.canvas.height+'px';    
         GUI.init();
         render.render({menu:true})
         //render.post_render();
