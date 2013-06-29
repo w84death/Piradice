@@ -488,7 +488,7 @@ var GUI = {
 					}]
 				}),											
 			position: {x:0,y:0}				
-		};			
+		};				
 
 		this.labels['basket_gold'] = {
 			text: 'gold',
@@ -508,10 +508,34 @@ var GUI = {
 			parent: 'basket'
 		};		
 
+		// hints aka tutorial
+		this.hud['hint'] = {
+			sprite: this.drawHUD({
+				sprite: {
+					x:10,
+					y:2
+				},
+				width:8,
+				height:2
+			}),									
+			position: {x:0,y:0}				
+		};
+
+		this.labels['hint_text'] = {
+			text: 'this is hint..',
+			lines: ['this is second line'],
+			line_height:16,
+			position: {
+				x:64,
+				y:16
+			},
+			live: 'hint',
+			parent: 'hint'
+		};
+
 		if(!game.play){
 			game.menu();
-		}
-		//this.render({menu:true});
+		}		
 	},
 
 	action: function(key){
@@ -640,6 +664,10 @@ var GUI = {
 				}
 			}
 		}
+	},
+
+	drawHint: function(args){
+
 	},
 
 	drawSurrender: function(){

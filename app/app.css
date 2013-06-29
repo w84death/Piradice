@@ -14,13 +14,6 @@
     ----------------------------------------------------------------------------
 */
 
-@font-face {
-  font-family: 'VT323';
-  font-style: normal;
-  font-weight: 400;
-  src: local('VT323'), local('VT323'), url('../font/font.woff') format('woff');
-}
-
 * {margin: 0; padding: 0;}
 body {background-color:#f8f8f8; color:#444; cursor:url('../media/cur.png'), auto; 
     font:1em 'VT323', cursive;}

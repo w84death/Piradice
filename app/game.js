@@ -189,6 +189,7 @@ var game = {
         this.centerMap(); 
         render.map_rendered = true;
         render.frame = 0;
+        render.noise_img = render.fastNoise(world.conf.width*render.box, world.conf.height*render.box, 8 );
         render.render({all:true});
     },
 
@@ -324,7 +325,7 @@ var game = {
                     }
                     world.map.entities[i].bonus.attack = false;
                     world.map.entities[i].bonus.fear = false;                    
-                    world.map.entities[i].moves = 1;                
+                    world.map.entities[i].moves = 2;                
                     world.map.entities[i].selected = false;
                 }
 
@@ -357,7 +358,7 @@ var game = {
 
             if(this.turn.id == 1){
                 shop.buyStarter();
-                game.shoutTeam();   
+                game.shoutTeam();                   
                 render.render({gui:true, menu:true, entities:true, sky:true});
             }
 
@@ -368,13 +369,14 @@ var game = {
                     x:this.teams[this.turn.team].offset.x, 
                     y:this.teams[this.turn.team].offset.y};
             }else{
-                game.play = true;
+                game.play = true;                
             }
             
             if(this.teams[this.turn.team].ai){
                  computer.init();
             }
-            bank.save();
+            bank.save();   
+            game.tutorial();                 
     },
 
     payDay: function(){
@@ -612,6 +614,44 @@ var game = {
                     game.sharing = false;
                 }
             };
+        }
+    },
+
+    tutorial: function(){
+        var _entitie = null;
+
+        console.log('tutorial start');
+
+        function searchEntitie(entities, name){
+            for (var i = 0; i < entities.length; i++) {
+                if(entities[i].name == name){
+                    return i;
+                }
+            };
+        }
+
+        // check if game is started
+        if(true){
+            // first turn
+
+            // pirates
+            if(game.turn.id === 1 && game.teams[game.turn.team].pirates ){
+                _entitie = world.map.entities[searchEntitie(world.map.entities, 'Ship')];
+                console.log(_entitie);
+                GUI.hud['hint'].position = {
+                    x: _entitie.x + render.viewport.offset.x - 8,
+                    y: _entitie.y + render.viewport.offset.y - 0.5,
+                }
+                GUI.labels['hint_text'].text = 'This is Your ship.';
+                GUI.labels['hint_text'].lines = ['line two..'];
+                GUI.show.push('hint','hint_text')
+                GUI.render({menu:true});
+            }
+
+            // skeletons
+            if(game.turn.id === 1 && game.teams[game.turn.team].skeletons ){
+                
+            }
         }
     },
 

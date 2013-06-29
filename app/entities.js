@@ -27,10 +27,10 @@ var Unit = function Unit(){
     this.dice_bonus = false;
     this.max = 6;
     this.range = false;
-    this.attack_range = false;  
+    this.attack_range = 1;  
     this.move_range = 1; 
     this.team = 0;
-    this.moves = 1;
+    this.moves = 2;
     this.disable_moves = false;
     this.reloading = 0;    
     this.message = null;
@@ -64,6 +64,7 @@ var Unit = function Unit(){
         'attack': false,
         'die': false,
     };
+    this.animate = 0;
 };
 
 Unit.prototype = {
@@ -298,8 +299,9 @@ Unit.prototype = {
 
                     // unit in movable area
                     if(this.move_area[i].x === world.map.entities[j].x && this.move_area[i].y === world.map.entities[j].y ){
-                                          // enemy
-                        if(world.map.entities[j].team != this.team && world.map.entities[j].unit){
+                        // enemy
+
+                        if(world.map.entities[j].team != this.team && world.map.entities[j].unit && this.move_area[i].distance <= this.attack_range){                            
                             this.move_area[i].attack = true;
                         }
 
@@ -324,12 +326,12 @@ Unit.prototype = {
         }        
     },
   
-    unselect: function(){
+    unselect: function(){         
         this.selected = false;
         game.unit_selected = false;
         if(game.play){
             shop.close();
-        }
+        }    
     },
     
     move: function(x,y){
@@ -341,11 +343,11 @@ Unit.prototype = {
         }
         this.x = x;
         this.y = y;
-        this.moves = 0;
-        this.message = false;
-        return true;        
-        
-        return false;
+        this.moves--;
+        if(this.moves < 1){
+            this.message = false;
+        }        
+        return true;            
     },
     
     merge: function(x,y){            
@@ -370,7 +372,7 @@ Unit.prototype = {
                 }           
                 this.shout();            
                 other.die(false);
-                this.moves = 0;
+                this.moves--;
                 return true;
             }else{
                 return false;
@@ -510,7 +512,7 @@ Unit.prototype = {
                     }
                     if(this_army.dice < other_army.dice){
                         // if enemy is near
-                        if(( (Math.abs(this.x - other.x) < 2) && (Math.abs(this.y - other.y) < 2) ) || ( other.attack_range && !other.reloading )){
+                        if(( (Math.abs(this.x - other.x) < 2) && (Math.abs(this.y - other.y) < 2) ) || ( other.range && !other.reloading )){
                             this.hit();
                         }
                         // else = nothing happend
@@ -673,7 +675,7 @@ Unit.prototype = {
         for (var j = 0; j < world.map.items.length; j++) {                    
             if(world.map.items[j].x == x && world.map.items[j].y == y){  
                if(world.map.items[j].cut()){
-                   this.moves = 0;
+                   this.moves--;
                    this.message = '+1';
                    this.important = false;
                    game.teams[this.team].wallet.trees += 1;
@@ -698,7 +700,8 @@ var Pirate = function Pirate(args){
     this.squad = 1;
     this.sprite = 17;
     this.messages = ['Arr..', 'Yes?', '..y', 'Go!', 'ye!'];
-    this.move_range = 4;
+    this.move_range = 2;
+    this.attack_range = 1;
     this.fow = 5;
     this.bonus = {
         attack: false,
@@ -721,8 +724,8 @@ var Gunner = function Gunner(args){
     this.team = 0;
     this.squad = 1;
     this.messages = ['Fire!', 'Aim', 'Yarr!', 'Bum!'];
+    this.move_range = 2;
     this.attack_range = 4;
-    this.move_range = 3;
     this.fow = 5;
     this.bonus = {
         attack: false,
@@ -747,7 +750,7 @@ var Cannon = function Cannon(args){
     this.merging = false;
     this.messages = ['Fire!', 'Yarr!', 'Bum!'];
     this.attack_range = 6;
-    this.move_range = 2;
+    this.move_range = 1;
     this.can_destroy_structure = true;
     this.fow = 7;
     this.bonus = {
@@ -773,7 +776,7 @@ var Lumberjack = function Lumberjack(args){
     this.max = 1;
     this.sprite = 53;
     this.messages = ['Cut!', 'Hmm', 'Tree'];
-    this.move_range = 3;
+    this.move_range = 2;
     this.fow = 4;
     this.merging = false;
     this.can_build_structure = true;
@@ -798,7 +801,7 @@ var Skeleton = function Skeleton(args){
     this.squad = 1;
     this.sprite = 23;
     this.messages = ['...', '..', '.'];
-    this.move_range = 3;
+    this.move_range = 2;
     this.fow = 4;  
     this.bonus = {
         attack: false,
@@ -822,7 +825,7 @@ var Dust = function Dust(args){
     this.max = 1;
     this.sprite = 49;
     this.messages = ['tsss', 'puf', '!@%'];
-    this.move_range = 3;
+    this.move_range = 2;
     this.fow = 4;
     this.merging = false;
     this.dice_bonus = 6;
@@ -849,13 +852,13 @@ var Ship = function Ship(args){
     this.x = args.x;    
     this.y = args.y;
     this.sprite = 35;
-    this.water = true;
-    this.attack_range = true;    
+    this.water = true;        
     this.can_create_unit = true;
     this.squad = 1;
     this.messages = ['Sail', 'Ahoy'];
     this.range = true;
-    this.move_range = 5;
+    this.move_range = 4;
+    this.attack_range = 5;
     this.fow = 6;
     this.merging = false;
     this.shop = ['pirate','lumberjack'];
@@ -915,7 +918,7 @@ var Octopus = function Octopus(args){
     this.messages = ['Ooo.', 'oo..', 'o?', ':)', ':o', ':['];
     this.merging = false;
     this.range = false;
-    this.move_range = 4;
+    this.move_range = 3;
     this.fow = 5;
     this.dice_bonus = 6;
     this.bonus = {
@@ -934,14 +937,14 @@ var Daemon = function Daemon(args){
     this.skeleton = true;
     this.x = args.x;
     this.y = args.y;
-    this.sprite = 68; 
-    this.range = true;   
+    this.sprite = 68;     
     this.team = 1;
     this.squad = 1;
     this.merging = false;
     this.messages = ['Sss', 'Phh', 'Fuff', 'Grrr'];
+    this.range = true; 
     this.attack_range = 4;
-    this.move_range = 3;
+    this.move_range = 2;
     this.fow = 6;
     this.give_bonus.fear = true;
     this.bonus = {
@@ -972,7 +975,7 @@ var Bonfire = function Bonfire(args){
     this.merging = false;
     this.range = true;
     this.move_range = 0;
-    this.attack_range = 6;
+    this.attack_range = 5;
     this.shop = ['daemon'];
     this.bonus = {
         attack: false,
@@ -1025,7 +1028,7 @@ var Chieftain = function Chieftain(args){
     this.squad = 1;
     this.sprite = 74;
     this.messages = ['Arr..', 'Do it', 'Go!', 'ye!'];
-    this.move_range = 4;
+    this.move_range = 2;
     this.fow = 5;
     this.bonus = {
         attack: false,

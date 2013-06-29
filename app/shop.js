@@ -15,20 +15,20 @@ var shop = {
     price_list: [],
 
     init: function(){
-        this.price_list['pirate'] = {gold:20, trees:0};
-        this.price_list['gunner'] = {gold:30, trees:0};
-        this.price_list['lumberjack'] = {gold:10, trees:0};
-        this.price_list['ship'] = {gold:200, trees:30};
-        this.price_list['cannon'] = {gold:50, trees:10};
-        this.price_list['fort'] = {gold:150, trees:20};
-        this.price_list['chieftain'] = {gold:90, trees:1};
+        this.price_list['pirate'] = {gold:20, trees:0, title:'Pirate', desc:['Merge up to 6 units', 'Basic unit']};
+        this.price_list['gunner'] = {gold:30, trees:0, title:'Gunner', desc:['Merge up to 6 units', 'Shoot at distance']};
+        this.price_list['lumberjack'] = {gold:10, trees:0, title:'Lumberjack', desc:['Don\'t merge', 'Cut palms for resources', 'Build a fort']};
+        this.price_list['ship'] = {gold:200, trees:30, title:'Ship', desc:['Sell units', 'Shoot at distance', 'Generates gold', 'You loose without one']};
+        this.price_list['cannon'] = {gold:50, trees:10, title:'Cannon', desc:['Destroys skeleton\'s cementery', 'Shoot at distance', 'Very slow']};
+        this.price_list['fort'] = {gold:150, trees:20, title:'Fort', desc:['Sell units', 'Generates resources']};
+        this.price_list['chieftain'] = {gold:90, trees:1, title:'Chieftain', desc:['Gives bonus to nerby units', 'Req. wood for wooden leg']};
         
-        this.price_list['skeleton'] = {gold:20, trees:0};
-        this.price_list['dust'] = {gold:20, trees:0};        
-        this.price_list['cementary'] = {gold:200, trees:20};
-        this.price_list['octopus'] = {gold:110, trees:0};
-        this.price_list['daemon'] = {gold:15, trees:0};
-        this.price_list['bonfire'] = {gold:30, trees:5};
+        this.price_list['skeleton'] = {gold:20, trees:0, title:'Skeleton', desc:['You can merge up to 6 units', 'Basic unit.']};
+        this.price_list['dust'] = {gold:20, trees:0, title:'Dust', desc:['Dies at first attack', 'Build bonfire', 'Cut palms for resources']};        
+        this.price_list['cementary'] = {gold:200, trees:20, title:'Cementery', desc:['Sell units', 'Generate gold', 'You loose without one']};
+        this.price_list['octopus'] = {gold:110, trees:0, title:'Octopus', desc:['Destorys pirate\'s ship']};
+        this.price_list['daemon'] = {gold:15, trees:0, title:'Daemon', desc:['Shoot at distance']};
+        this.price_list['bonfire'] = {gold:30, trees:5, title:'Bonfire', desc:['Sell units', 'Generate gold', 'Shoot at distance']};
     },
 
     buy: function(args){        

@@ -587,8 +587,7 @@ var render = {
         gameDiv.style.width = render.viewport.canvas.width+'px';
         gameDiv.style.height = render.viewport.canvas.height+'px';    
         GUI.init();
-        render.render({menu:true})
-        //render.post_render();
+        render.render({menu:true});
     },
 
     render: function(args){
