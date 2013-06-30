@@ -342,8 +342,8 @@ var game = {
                 this.killZombies();                        
                 this.shoutTeam();          
                 this.makeNewLife({
-                    trees: 2,
-                    grow: 1
+                    trees: 1,
+                    grow: 2
                 });
                 this.teams[this.turn.team].bought = false;
                 fogOfWar.update();                                                
