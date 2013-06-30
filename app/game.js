@@ -374,6 +374,7 @@ var game = {
             
             if(this.teams[this.turn.team].ai){
                  computer.init();
+                 computer.init();
             }
             bank.save();   
             game.tutorial();                 

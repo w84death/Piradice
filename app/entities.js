@@ -749,7 +749,7 @@ var Cannon = function Cannon(args){
     this.squad = 1;
     this.merging = false;
     this.messages = ['Fire!', 'Yarr!', 'Bum!'];
-    this.attack_range = 6;
+    this.attack_range = 5;
     this.move_range = 1;
     this.can_destroy_structure = true;
     this.fow = 7;
@@ -975,7 +975,7 @@ var Bonfire = function Bonfire(args){
     this.merging = false;
     this.range = true;
     this.move_range = 0;
-    this.attack_range = 5;
+    this.attack_range = 4;
     this.shop = ['daemon'];
     this.bonus = {
         attack: false,
