@@ -79,22 +79,25 @@ var shop = {
         }else{
             if(game.unit_selected === false){
                 return false;
-            }       
-            /*
-            var buy_spot = [];
+            } 
+            if(game.teams[game.turn.team].ai){      
+            
+                var buy_spot = [];
 
-            for (var i = 0; i < world.map.entities[game.unit_selected].move_area.length; i++) {
-                if(world.map.entities[game.unit_selected].move_area[i].buy){
-                    buy_spot.push(i);
+                for (var i = 0; i < world.map.entities[game.unit_selected].move_area.length; i++) {
+                    if(world.map.entities[game.unit_selected].move_area[i].buy){
+                        buy_spot.push(i);
+                    }
+                };
+                if(buy_spot.length > 0){
+                    var r = (Math.random()*buy_spot.length)<<0;
+                    newX = world.map.entities[game.unit_selected].move_area[buy_spot[r]].x
+                    newY = world.map.entities[game.unit_selected].move_area[buy_spot[r]].y;
                 }
-            };
-            if(buy_spot.length > 0){
-                var r = (Math.random()*buy_spot.length)<<0;
-                newX = world.map.entities[game.unit_selected].move_area[buy_spot[r]].x
-                newY = world.map.entities[game.unit_selected].move_area[buy_spot[r]].y;
-            }*/
-            newX = this.buy_spot.x;
-            newY = this.buy_spot.y;
+            }else{
+                newX = this.buy_spot.x;
+                newY = this.buy_spot.y;
+            }
         }
 
 
