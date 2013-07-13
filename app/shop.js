@@ -12,7 +12,11 @@
 */
 
 var shop = {
-    price_list: [],    
+    price_list: [],   
+    buy_spot: {
+        x:(render.viewport.width*0.5)<<0,
+        y:(render.viewport.height*0.5)<<0
+    },
 
     init: function(){
         this.price_list['pirate'] = {gold:20, trees:0, title:'Pirate', desc:['Merge up to 6 units', 'Basic unit']};
@@ -76,6 +80,7 @@ var shop = {
             if(game.unit_selected === false){
                 return false;
             }       
+            /*
             var buy_spot = [];
 
             for (var i = 0; i < world.map.entities[game.unit_selected].move_area.length; i++) {
@@ -87,7 +92,9 @@ var shop = {
                 var r = (Math.random()*buy_spot.length)<<0;
                 newX = world.map.entities[game.unit_selected].move_area[buy_spot[r]].x
                 newY = world.map.entities[game.unit_selected].move_area[buy_spot[r]].y;
-            }
+            }*/
+            newX = this.buy_spot.x;
+            newY = this.buy_spot.y;
         }
 
 
@@ -260,6 +267,10 @@ var shop = {
         }*/
 
         if(args.more){
+            this.buy_spot = {
+                x: args.x,
+                y: args.y
+            }
             GUI.shop = {
                 x: args.x + render.viewport.offset.x,
                 y: args.y + render.viewport.offset.y
