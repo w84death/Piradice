@@ -19,7 +19,7 @@
 */
 
 var game = {
-    version: 'Pre-final Update 8',
+    version: 'Update 9',
     runs: 0,
     mobile: false || navigator.userAgent.match(/(iPhone)|(iPod)|(iPad)|(android)|(webOS)/i),
     tablet: false || navigator.userAgent.match(/(iPad)/i),
