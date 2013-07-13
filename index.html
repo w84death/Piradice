@@ -1,0 +1,41 @@
+<html>
+<head>
+  <title>Piradice - Turn-based strategy game in HTML5</title>        
+  <link rel="stylesheet" href="app/app.css"/>
+</head>
+<body id="app">
+	<section id="game">
+	</section>
+	
+	<script src="app/seed.js"></script>
+	<script src="app/entities.js"></script>
+	<script src="app/items.js"></script>
+	<script src="app/maps.js"></script>
+	<script src="app/ai.js"></script>
+	<script src="app/io.js"></script>
+	<script src="app/world.js"></script>
+	<script src="app/shop.js"></script>  
+	<script src="app/render.js"></script>
+	<script src="app/gui.js"></script>
+	<script src="app/audio.js"></script>
+	<script src="app/game.js"></script>
+	        
+	<script>	
+	  WebFontConfig = {	  
+	    google: { families: [ 'VT323::latin' ] },
+	    active: function() {
+	    	game.init({multi:true}); 
+	    }	    
+	  };
+	  (function() {
+	    var wf = document.createElement('script');
+	    wf.src = 'font/webfont.js';
+	    wf.type = 'text/javascript';
+	    wf.async = 'true';
+	    var s = document.getElementsByTagName('script')[0];
+	    s.parentNode.insertBefore(wf, s);
+	  })(); 
+	
+	</script>
+</body>
+</html>

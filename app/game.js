@@ -19,7 +19,7 @@
 */
 
 var game = {
-    version: 'Update 9',
+    version: 'Pre-final Update 8',
     runs: 0,
     mobile: false || navigator.userAgent.match(/(iPhone)|(iPod)|(iPad)|(android)|(webOS)/i),
     tablet: false || navigator.userAgent.match(/(iPad)/i),
@@ -62,7 +62,7 @@ var game = {
     map: true, 
     audio: true,
     unit_selected: false,
-    fow: false,
+    fow: true,
     fps: 7,
 
     init: function(args){
@@ -86,7 +86,7 @@ var game = {
             width: 24 || args.w,
             height: 18 || args.h
         });        
-        //fogOfWar.init();
+        fogOfWar.init();
         shop.init();    
         render.init();        
         audio.play({sound:'music1'});

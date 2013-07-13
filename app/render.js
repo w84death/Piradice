@@ -610,8 +610,8 @@ var render = {
             this.map.ctx.clearRect(0, 0, world.map.width*this.box, world.map.height*this.box);
             var spr = 0;
 
-            function random_dist(){
-                return 4 + (Math.random()*8)<<0;
+            function random_dist(max){
+                return 4 + (Math.random()*max)<<0;
             };
 
             for(var y=0; y<world.map.height; y++){
@@ -624,47 +624,54 @@ var render = {
                     
                 }
             }
-
-            for(var y=0; y<world.map.height; y++){
-                for(var x=0; x<world.map.width; x++){
-                    if(world.map.data[x+(y*world.map.width)] == 1){
-                        spr = 97;                        
-                        this.map.ctx.drawImage(this.sprites[spr], (x*this.box)-random_dist(), (y*this.box)-random_dist());
-                        this.map.ctx.drawImage(this.sprites[spr], (x*this.box)-random_dist(), (y*this.box)+random_dist());
-                        this.map.ctx.drawImage(this.sprites[spr], (x*this.box)+random_dist(), (y*this.box)-random_dist());
-                        this.map.ctx.drawImage(this.sprites[spr], (x*this.box)+random_dist(), (y*this.box)+random_dist());
-                    }                                    
-                }
-            }
-
+            
+            // sand 
+                       
             for(var y=0; y<world.map.height; y++){
                 for(var x=0; x<world.map.width; x++){
                     if(world.map.data[x+(y*world.map.width)] == 2 || world.map.data[x+(y*world.map.width)] == 3){
                         spr = 98;
                         this.map.ctx.drawImage(this.sprites[2], x*this.box, y*this.box);                        
-                        this.map.ctx.drawImage(this.sprites[spr], (x*this.box)-random_dist(), (y*this.box)-random_dist());
-                        this.map.ctx.drawImage(this.sprites[spr], (x*this.box)-random_dist(), (y*this.box)+random_dist());
-                        this.map.ctx.drawImage(this.sprites[spr], (x*this.box)+random_dist(), (y*this.box)-random_dist());
-                        this.map.ctx.drawImage(this.sprites[spr], (x*this.box)+random_dist(), (y*this.box)+random_dist());
+                        this.map.ctx.drawImage(this.sprites[spr], (x*this.box)-random_dist(2), (y*this.box)-random_dist(2));
+                        this.map.ctx.drawImage(this.sprites[spr], (x*this.box)-random_dist(2), (y*this.box)+random_dist(2));
+                        this.map.ctx.drawImage(this.sprites[spr], (x*this.box)+random_dist(2), (y*this.box)-random_dist(2));
+                        this.map.ctx.drawImage(this.sprites[spr], (x*this.box)+random_dist(2), (y*this.box)+random_dist(2));
                     }
                 
                     
                 }
             }
 
+
+            // grass
+
             for(var y=0; y<world.map.height; y++){
                 for(var x=0; x<world.map.width; x++){
                     if(world.map.data[x+(y*world.map.width)] == 4 || world.map.data[x+(y*world.map.width)] == 5){
                         spr = 99;
                         this.map.ctx.drawImage(this.sprites[4], x*this.box, y*this.box);                        
-                        this.map.ctx.drawImage(this.sprites[spr], (x*this.box)-random_dist(), (y*this.box)-random_dist());
-                        this.map.ctx.drawImage(this.sprites[spr], (x*this.box)-random_dist(), (y*this.box)+random_dist());
-                        this.map.ctx.drawImage(this.sprites[spr], (x*this.box)+random_dist(), (y*this.box)-random_dist());
-                        this.map.ctx.drawImage(this.sprites[spr], (x*this.box)+random_dist(), (y*this.box)+random_dist());
+                        this.map.ctx.drawImage(this.sprites[spr], (x*this.box)-random_dist(2), (y*this.box)-random_dist(2));
+                        this.map.ctx.drawImage(this.sprites[spr], (x*this.box)-random_dist(2), (y*this.box)+random_dist(2));
+                        this.map.ctx.drawImage(this.sprites[spr], (x*this.box)+random_dist(2), (y*this.box)-random_dist(2));
+                        this.map.ctx.drawImage(this.sprites[spr], (x*this.box)+random_dist(2), (y*this.box)+random_dist(2));
                     }
                 }
             }
+            
 
+            // waves
+
+            for(var y=0; y<world.map.height; y++){
+                for(var x=0; x<world.map.width; x++){
+                    if(world.map.data[x+(y*world.map.width)] == 1){
+                        spr = 97;                        
+                        this.map.ctx.drawImage(this.sprites[spr], (x*this.box)-random_dist(8), (y*this.box)-random_dist(8));
+                        this.map.ctx.drawImage(this.sprites[spr], (x*this.box)-random_dist(8), (y*this.box)+random_dist(8));
+                        this.map.ctx.drawImage(this.sprites[spr], (x*this.box)+random_dist(8), (y*this.box)-random_dist(8));
+                        this.map.ctx.drawImage(this.sprites[spr], (x*this.box)+random_dist(8), (y*this.box)+random_dist(8));
+                    }                                    
+                }
+            }
 
             // render bounds
 
