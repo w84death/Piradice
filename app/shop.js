@@ -12,7 +12,7 @@
 */
 
 var shop = {
-    price_list: [],
+    price_list: [],    
 
     init: function(){
         this.price_list['pirate'] = {gold:20, trees:0, title:'Pirate', desc:['Merge up to 6 units', 'Basic unit']};
@@ -250,16 +250,21 @@ var shop = {
             args = {more:false};
         }
 
-        if(game.teams[game.turn.team].pirates){
+        /*if(game.teams[game.turn.team].pirates){
             GUI.show.push('ship');            
         }
 
         if(game.teams[game.turn.team].skeletons){            
             GUI.show.push('cementary');            
             GUI.show.push('octopus');            
-        }
+        }*/
 
         if(args.more){
+            GUI.shop = {
+                x: args.x + render.viewport.offset.x,
+                y: args.y + render.viewport.offset.y
+            }
+            GUI.init();
             for (var i = 0; i < world.map.entities[game.unit_selected].shop.length; i++) {
                 GUI.show.push(world.map.entities[game.unit_selected].shop[i]);
             };

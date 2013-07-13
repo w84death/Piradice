@@ -172,8 +172,7 @@ var world = {
             if(this.map.items[i].forest){
                 for (var x = args.x-args.size; x <= args.x+args.size; x++) {
                     for (var y = args.y-args.size; y <= args.y+args.size; y++) {                       
-                        if(this.map.items[i].x === x && this.map.items[i].y === y){
-                            this.map.moves[this.map.items[i].x+(this.map.items[i].y*this.map.width)] = 1;                                        
+                        if(this.map.items[i].x === x && this.map.items[i].y === y){                                                                    
                             for_cut.push(i);        
                         }                        
                     }
@@ -181,7 +180,9 @@ var world = {
             }
         }
 
+        console.log(for_cut);
         for (var i = 0; i < for_cut.length; i++) {
+            this.map.moves[this.map.items[for_cut[i]].x+(this.map.items[for_cut[i]].y*this.map.width)] = 1;
             this.map.items.splice(for_cut[i],1);
         };
 

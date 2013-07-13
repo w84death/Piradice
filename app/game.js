@@ -19,7 +19,7 @@
 */
 
 var game = {
-    version: 'Pre-final Update 8',
+    version: 'Update X',
     runs: 0,
     mobile: false || navigator.userAgent.match(/(iPhone)|(iPod)|(iPad)|(android)|(webOS)/i),
     tablet: false || navigator.userAgent.match(/(iPad)/i),
@@ -72,7 +72,8 @@ var game = {
             this.runs = localStorage.runs;
         }
         localStorage.runs = ++this.runs;
-        //alert('Version ' + this.version + '. Opened ' + this.runs + ' times.');  
+        //alert('Version ' + this.version + '. Opened ' + this.runs + ' times.');
+        console.log('Version ' + this.version + '. Opened ' + this.runs + ' times.');  
 
         if(this.mobile){
             //this.audio = false;
@@ -115,9 +116,10 @@ var game = {
     	this.map = false;             
         GUI.show = ['map','inventory','gold','trees','end'];
         GUI.hud['map'].position = {x:1,y:1};
-        shop.show();
+        //shop.show();
         shop.buyStarter();        
         render.render({menu:true});
+        fogOfWar.update();
         multi.show();
     },    
 
@@ -258,7 +260,12 @@ var game = {
                 if(world.map.entities[game.unit_selected].move_area[i].move){
                     world.map.entities[game.unit_selected].move(cX, cY);
                 }
-                
+                // buy
+                if(world.map.entities[game.unit_selected].move_area[i].buy){
+                    //world.map.entities[game.unit_selected].move(cX, cY);                                        
+                    shop.show({more:true, x:cX, y:cY});
+                    return true;
+                }
             }    
         }
   
@@ -346,12 +353,12 @@ var game = {
                     grow: 2
                 });
                 this.teams[this.turn.team].bought = false;
-                fogOfWar.update();                                                
                 this.payDay();
                 this.bonuses();
-                shop.show();
+                //shop.show();  
+                fogOfWar.update();              
                 GUI.show = ['map','inventory','gold','trees','end','surrender'];
-                render.render({items:true, gui:true, menu:true, entities:true, sky:true});                                   
+                render.render({items:true, gui:true, menu:true, entities:true, sky:true});
             }else{
             	return true;
             }
@@ -377,7 +384,7 @@ var game = {
                  computer.init();
             }
             bank.save();   
-            game.tutorial();                 
+            //game.tutorial();                 
     },
 
     payDay: function(){

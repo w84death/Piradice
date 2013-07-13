@@ -102,12 +102,12 @@ Unit.prototype = {
                 
                 // if there is a place to create            
                 if(this.move_area.length > 0){
-                    shop.show({more:true});
+                    //shop.show({more:true});
                 }                
             }
 
             if(this.can_build_structure){
-                shop.show({more:true});
+                //shop.show({more:true});
             }
 
             if(this.water){
@@ -861,7 +861,7 @@ var Ship = function Ship(args){
     this.attack_range = 5;
     this.fow = 6;
     this.merging = false;
-    this.shop = ['pirate','lumberjack'];
+    this.shop = ['ship','pirate','lumberjack'];
     this.bonus = {
         attack: false,
         fear: false
@@ -890,10 +890,10 @@ var Cementary = function Cementary(args){
     this.max = 1;
     this.sprite = 39;
     this.messages = ['uuu', 'ooo'];
-    this.fow = 7;
+    this.fow = 5;
     this.hasCementary = args.hasCementary || false;
     this.merging = false;
-    this.shop = ['skeleton','dust'];
+    this.shop = ['octopus','skeleton','dust'];
     this.bonus = {
         attack: false,
         fear: false

@@ -818,7 +818,7 @@ var render = {
             GUI.render({menu:true});
         }
 
-        if(args.sky && game.play && !game.teams[game.turn.team].ai){
+        if(args.sky  && !game.teams[game.turn.team].ai){
             this.sky.ctx.clearRect(0, 0, world.map.width*this.box, world.map.height*this.box);
             for(var y=0; y<world.map.height; y++){
                 for(var x=0; x<world.map.width; x++){                                                             

@@ -96,7 +96,7 @@ var computer = {
             // build if can            
 
             if(world.map.entities[computer.ai_units[computer.loop_id]].can_create_unit){
-                console.log(computer.ai_units[computer.loop_id],world.map.entities[computer.ai_units[computer.loop_id]]);
+                //console.log(computer.ai_units[computer.loop_id],world.map.entities[computer.ai_units[computer.loop_id]]);
                 if(computer.units['Pirate'] > computer.units['Skeleton']){
                     if(shop.buy({unit:'skeleton'})){
                         mma = false;

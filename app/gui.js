@@ -36,6 +36,10 @@ var GUI = {
 	},
 	basket: false,
 	show: [],
+	shop: {
+		x:(render.viewport.width*0.5)<<0,
+		y:(render.viewport.height*0.5)<<0
+	},
 
 	init: function(){
 		this.ctx = render.menu.ctx;		
@@ -258,8 +262,8 @@ var GUI = {
 				width: 2,
 				height: 2,
 				position: {
-					x: render.viewport.width-3,
-					y: 1
+					x: this.shop.x,
+					y: this.shop.y-5
 				},
 				action: 'basket',
 				value: 'ship'
@@ -270,8 +274,8 @@ var GUI = {
 				width: 2,
 				height: 2,
 				position: {
-					x: render.viewport.width-3,
-					y: 3
+					x: this.shop.x,
+					y: this.shop.y-3
 				},
 				action: 'basket',
 				value: 'pirate'
@@ -282,8 +286,8 @@ var GUI = {
 			width: 2,
 			height: 2,
 			position: {
-				x: render.viewport.width-3,
-				y: 5
+				x: this.shop.x,
+				y: this.shop.y+1
 			},
 			action: 'basket',
 			value: 'gunner'
@@ -294,8 +298,8 @@ var GUI = {
 			width: 2,
 			height: 2,
 			position: {
-				x: render.viewport.width-3,
-				y: 7
+				x: this.shop.x,
+				y: this.shop.y-3
 			},
 			action: 'basket',
 			value: 'chieftain'
@@ -306,8 +310,8 @@ var GUI = {
 				width: 2,
 				height: 2,
 				position: {
-					x: render.viewport.width-3,
-					y: 5
+					x: this.shop.x,
+					y: this.shop.y-1
 				},
 				action: 'basket',
 				value: 'lumberjack'
@@ -318,8 +322,8 @@ var GUI = {
 			width: 2,
 			height: 2,
 			position: {
-				x: render.viewport.width-3,
-				y: 3
+				x: this.shop.x,
+				y: this.shop.y-3
 			},
 			action: 'basket',
 			value: 'cannon'
@@ -330,8 +334,8 @@ var GUI = {
 			width: 2,
 			height: 2,			
 			position: {
-				x: render.viewport.width-3,
-				y: 3
+				x: this.shop.x,
+				y: this.shop.y-3
 			},
 			action: 'basket',
 			value: 'fort'
@@ -343,8 +347,8 @@ var GUI = {
 			width: 2,
 			height: 2,
 			position: {
-				x: render.viewport.width-3,
-				y: 1
+				x: this.shop.x,
+				y: this.shop.y-1
 			},
 			action: 'basket',
 			value: 'cementary'
@@ -355,8 +359,8 @@ var GUI = {
 			width: 2,
 			height: 2,			
 			position: {
-				x: render.viewport.width-3,
-				y: 3
+				x: this.shop.x,
+				y: this.shop.y-5
 			},
 			action: 'basket',
 			value: 'octopus'
@@ -367,8 +371,8 @@ var GUI = {
 			width: 2,
 			height: 2,			
 			position: {
-				x: render.viewport.width-3,
-				y: 5
+				x: this.shop.x,
+				y: this.shop.y-3
 			},
 			action: 'basket',
 			value: 'skeleton'
@@ -379,8 +383,8 @@ var GUI = {
 			width: 2,
 			height: 2,			
 			position: {
-				x: render.viewport.width-3,
-				y: 5
+				x: this.shop.x,
+				y: this.shop.y-5
 			},
 			action: 'basket',
 			value: 'daemon'
@@ -391,8 +395,8 @@ var GUI = {
 			width: 2,
 			height: 2,			
 			position: {
-				x: render.viewport.width-3,
-				y: 7
+				x: this.shop.x,
+				y: this.shop.y-1
 			},
 			action: 'basket',
 			value: 'dust'
@@ -403,8 +407,8 @@ var GUI = {
 			width: 2,
 			height: 2,			
 			position: {
-				x: render.viewport.width-3,
-				y: 5
+				x: this.shop.x,
+				y: this.shop.y-5
 			},
 			action: 'basket',
 			value: 'bonfire'
@@ -698,7 +702,7 @@ var GUI = {
 		this.ctx.textBaseline = 'middle';
 		this.ctx.textAlign = 'center';
 		
-		this.ctx.fillText('TURN '+game.turn.id, (render.viewport.width*render.box)*0.5<<0, 2*render.box);		
+		this.ctx.fillText('DAY '+game.turn.id, (render.viewport.width*render.box)*0.5<<0, 2*render.box);		
 		
 		this.show = ['ready','surrender'];
 	},
