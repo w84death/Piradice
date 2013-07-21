@@ -262,8 +262,8 @@ var GUI = {
 				width: 2,
 				height: 2,
 				position: {
-					x: render.viewport.width-5,
-					y: 6
+					x: render.viewport.width-4,
+					y: 6.5
 				},
 				action: 'basket',
 				value: 'ship'
@@ -334,8 +334,8 @@ var GUI = {
 			width: 2,
 			height: 2,			
 			position: {
-				x: render.viewport.width-5,
-				y: 6
+				x: render.viewport.width-4,
+				y: 6.5
 			},
 			action: 'basket',
 			value: 'fort'
@@ -424,7 +424,7 @@ var GUI = {
 			},
 			action: 'buy',
 			value: 'unit'
-		};		
+		};
 		
 
 	// HUD
@@ -654,12 +654,13 @@ var GUI = {
 			this.basket = args.unit;
 			this.buttons['buy'].position.x = args.x-3;
 			this.buttons['buy'].position.y = args.y;
-			this.buttons['buy'].value = args.unit;			
+			
 			if(this.show.indexOf('basket')<0){
 				this.show.push('basket', 'basket_gold', 'basket_trees');
 			}
 			if(game.teams[game.turn.team].wallet.gold >= shop.price_list[args.unit].gold && game.teams[game.turn.team].wallet.trees >= shop.price_list[args.unit].trees){
 				if(this.show.indexOf('buy')<0){
+					this.buttons['buy'].value = args.unit;			
 					this.show.push('buy');
 				}
 			}else{
@@ -827,21 +828,22 @@ var GUI = {
 	},
 
 	drawInfoBox: function(args){
-		var x = render.viewport.width-8,
+		var x = render.viewport.width-9,
 			y = 1,
-			width = 7,
+			width = 8,
 			height = 8;
 
 		var m_canvas = document.createElement('canvas');
             m_canvas.width = render.box * width;
             m_canvas.height = render.box * height;
         var m_context = m_canvas.getContext('2d');
-		var center = (((m_canvas.width*0.5)/render.box)<<0);
+		var center = (((m_canvas.width*0.5)/render.box)<<0),
+			column = 4;
 
 		// fake background
-		//m_context.drawImage(render.sprites_img, -10*render.box, -4*render.box);
-		m_context.fillStyle=this.conf.color;
-		m_context.fillRect(0,0,m_canvas.width,m_canvas.height);
+		m_context.drawImage(render.sprites_img, -10*render.box, -4*render.box);
+		//m_context.fillStyle=this.conf.color;
+		//m_context.fillRect(0,0,m_canvas.width,m_canvas.height);
 
 		
 		var entitie_found = false,
@@ -874,7 +876,7 @@ var GUI = {
 			}
 
 			// avatar
-			m_context.drawImage(game.db[name].image, render.box*0.5,render.box*0.5);
+			m_context.drawImage(game.db[name].image, render.box,render.box*0.5);
 
 			m_context.fillStyle = this.conf.color3;        	
 			m_context.textBaseline = 'top';
@@ -882,28 +884,28 @@ var GUI = {
 
 			// title
 			m_context.font = '18px VT323, cursive';
-			m_context.fillText(game.db[name].title, render.box*3 , render.box*0.5);		
+			m_context.fillText(game.db[name].title, render.box*column , render.box*0.5);		
 
 			// stats
 			if(entitie_found !== false){
 				m_context.font = '14px VT323, cursive';
 				m_context.fillStyle = this.conf.labelColor;
-				m_context.fillText('Squad: ' + world.map.entities[entitie_found].squad + ' unit', render.box*3, render.box);
-				m_context.fillText('Move: ' + world.map.entities[entitie_found].move_range + ' tiles', render.box*3, render.box+(14*1));
-				m_context.fillText('Attack: ' + world.map.entities[entitie_found].attack_range + ' tiles', render.box*3, render.box+(14*2));				
+				m_context.fillText('Squad: ' + world.map.entities[entitie_found].squad + ' unit', render.box*column, render.box);
+				m_context.fillText('Move: ' + world.map.entities[entitie_found].move_range + ' tiles', render.box*column, render.box+(14*1));
+				m_context.fillText('Attack: ' + world.map.entities[entitie_found].attack_range + ' tiles', render.box*column, render.box+(14*2));				
 			}
 			if(item_found !== false){
 				m_context.font = '14px VT323, cursive';
 				m_context.fillStyle = this.conf.labelColor;
 				if(world.map.items[item_found].chest){
 					if(world.map.items[item_found].close){
-						m_context.fillText('Chest is closed', render.box*3, render.box);
+						m_context.fillText('Chest is closed', render.box*column, render.box);
 					}else{
-						m_context.fillText('Chest is opened', render.box*3, render.box);
+						m_context.fillText('Chest is opened', render.box*column, render.box);
 					}					
 				}
 				if(world.map.items[item_found].forest){
-					m_context.fillText('Palms: ' + world.map.items[item_found].palms, render.box*3, render.box);
+					m_context.fillText('Palms: ' + world.map.items[item_found].palms, render.box*column, render.box);
 				}		
 			}
 
@@ -911,13 +913,17 @@ var GUI = {
 			m_context.font = '14px VT323, cursive';
 			m_context.fillStyle = this.conf.labelColor;			
 			for (var i = 0; i < game.db[name].desc.length; i++) {				
-				m_context.fillText(game.db[name].desc[i], render.box*0.5 , 3*render.box + (i*14));		
+				m_context.fillText(game.db[name].desc[i], render.box , 3*render.box + (i*14));		
 			};
 			
 			if(entitie_found !== false){
 				m_context.font = '18px VT323, cursive';
 				m_context.fillStyle = this.conf.labelColor2;
-				m_context.fillText('Unit have ' + world.map.entities[entitie_found].moves + ' moves left', render.box*0.5 , (height-1)*render.box);		
+				m_context.textAlign = 'Left';
+				m_context.fillText('Moves left:', render.box , (height-2.5)*render.box);		
+				m_context.font = '26px VT323, cursive';				
+				m_context.fillText(world.map.entities[entitie_found].moves, render.box*2 , (height-2)*render.box);		
+				m_context.textAlign = 'left';
 			}
 		}
 
@@ -1020,6 +1026,7 @@ var GUI = {
 			this.ctx.clearRect(0, 0, render.viewport.width*render.box, render.viewport.height*render.box);
 			
 			if(args.ready){
+				GUI.popUp.show = false;
 				this.drawReady();
 			}
 

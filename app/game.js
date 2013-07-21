@@ -181,12 +181,12 @@ var game = {
         this.db['Lumberjack'] = {
             image:render.resize(render.sprites[53][0], 2),
             title:'Lumberjack', 
-            desc:['Cut palms for resources', 'Can build a fort:']};
+            desc:['Cut palms for resources', 'Can build a fort']};
         
         this.db['Ship'] = {
             image:render.resize(render.sprites[35][0], 2),
             title:'Ship', 
-            desc:['Pirates most important unit', 'Loose game without one', 'Deploys new units near land', 'Shoot at distance', 'Generates gold per turn']};
+            desc:['Pirates most important unit', 'Lose game without one', 'Deploys new units near land', 'Shoot at distance', 'Generates gold per turn']};
         
         this.db['Cannon'] = {
             image:render.resize(render.sprites[59][0], 2),
@@ -212,12 +212,12 @@ var game = {
         this.db['Dust'] = {
             image:render.resize(render.sprites[49][0], 2),
             title:'Dust', 
-            desc:['Have masive bonus attack', 'Dies at first attack', 'Cut palms for resources','Can build bonfire:']};        
+            desc:['Have masive bonus attack', 'Dies at first attack', 'Cut palms for resources','Can build bonfire']};        
         
         this.db['Cementary'] = {
             image:render.resize(render.sprites[39][0], 2),
             title:'Cementery', 
-            desc:['Skeletons most important unit', 'Loose game without one', 'Place to buy other units', 'Generate gold per turn']};
+            desc:['Skeletons most important unit', 'Lose game without one', 'Place to buy other units', 'Generate gold per turn']};
         
         this.db['Octopus'] = {
             image:render.resize(render.sprites[36][0], 2),
@@ -373,11 +373,11 @@ var game = {
     },    
 
     checkMate: function(){
-        var loose = false,
+        var lose = false,
             win = false;
 
         if(this.turn.id > 1){
-            loose = true,
+            lose = true,
             win = true;
         }
 
@@ -387,7 +387,7 @@ var game = {
                 
                 if(game.teams[this.turn.team].pirates){
                     if(world.map.entities[i].ship && world.map.entities[i].alive){
-                        loose = false;                       
+                        lose = false;                       
                     }
                     if(world.map.entities[i].cementary && world.map.entities[i].alive){
                         win = false;
@@ -396,7 +396,7 @@ var game = {
 
                 if(game.teams[this.turn.team].skeletons){
                     if(world.map.entities[i].cementary && world.map.entities[i].alive){
-                        loose = false;                       
+                        lose = false;                       
                     }
                     if(world.map.entities[i].ship && world.map.entities[i].alive){
                         win = false;
@@ -405,7 +405,7 @@ var game = {
            }
         }
 
-        if(loose){
+        if(lose){
             game.lose();
             return false;
         }else
@@ -645,13 +645,19 @@ var game = {
     },
             
     win: function(){
-        game.teams[game.turn.team].ai = false;       
-        GUI.render({end:true,message:'You win!'})        
+        if(game.teams[game.turn.team].pirates){
+            GUI.render({end:true, pirates:true, message:'Pirates win!'});
+        }else{
+            GUI.render({end:true, skeletons:true, message:'Skeletons win!'});
+        }
     },
 
-    lose: function(){        
-        game.teams[game.turn.team].ai = false;       
-        GUI.render({end:true,message:'You lose :('})        
+    lose: function(){       
+        if(game.teams[game.turn.team].pirates){
+            GUI.render({end:true, pirates:true, message:'Pirates lose :('});
+        }else{
+            GUI.render({end:true, skeletons:true, message:'Skeletons lose :('});
+        }
     },
 
 

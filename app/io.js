@@ -41,7 +41,7 @@ var io = {
         // check if this is some button
         if(GUI.select(cX,cY)){
             audio.play({sound:'button'});
-            //GUI.popUp.show = false;
+            GUI.popUp.show = false;
             return true;
         }else{
             // check if game is not paused
