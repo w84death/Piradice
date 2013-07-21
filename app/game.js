@@ -450,11 +450,10 @@ var game = {
                 });
                 this.teams[this.turn.team].bought = false;
                 this.payDay();
-                this.bonuses();
-                //shop.show();  
+                this.bonuses(); 
                 fogOfWar.update();              
                 GUI.show = ['map','inventory','gold','trees','end','surrender'];
-                render.render({items:true, gui:true, menu:true, entities:true, sky:true});
+                render.render({items:true, gui:true, menu:true, entities:true, sky:true, hints:true});
             }else{
             	return true;
             }
