@@ -257,19 +257,18 @@ var shop = {
     show: function(args){    
         GUI.show = ['map','inventory','gold','trees','end','surrender'];
         if(!args){
-            args = {more:false};
+            args = {first:false};
         }
 
-        /*if(game.teams[game.turn.team].pirates){
-            GUI.show.push('ship');            
+        if(args.second){
+            
+            for (var i = 0; i < world.map.entities[game.unit_selected].shop2.length; i++) {
+                GUI.show.push(world.map.entities[game.unit_selected].shop2[i]);
+            };                
+
         }
 
-        if(game.teams[game.turn.team].skeletons){            
-            GUI.show.push('cementary');            
-            GUI.show.push('octopus');            
-        }*/
-
-        if(args.more){
+        if(args.first){
             this.buy_spot = {
                 x: args.x,
                 y: args.y
@@ -288,7 +287,7 @@ var shop = {
     },
 
     close: function(args){
-        this.show({more:false});
+        this.show({first:false});
         GUI.basket = false;
     },
 

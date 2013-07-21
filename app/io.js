@@ -36,14 +36,25 @@ var io = {
     },
 
     selected: function(cX,cY){
-                    
+        var realX, realY;        
+
+        // check if this is some button
         if(GUI.select(cX,cY)){
             audio.play({sound:'button'});
+            //GUI.popUp.show = false;
             return true;
         }else{
+            // check if game is not paused
             if(game.play){        
+                // draw cursor                
+                io.moveCursor(cX,cY);
+            
+                // calculate map coordinates
                 realX = cX - render.viewport.offset.x;
                 realY = cY - render.viewport.offset.y;
+                
+                // draw info about selected area
+                GUI.drawInfoBox({x:realX, y:realY});
 
                 if(game.unit_selected !== false){
                     game.MMA(realX, realY)
@@ -90,6 +101,16 @@ var io = {
         if(!io.selected(cX,cY)){
             io.touch.init = true;
         }
+    },
+
+    moveCursor: function(cX,cY){
+        // move cursor where user clicekd
+        render.cursor.pos = {
+            x: cX - render.viewport.offset.x, 
+            y: cY - render.viewport.offset.y
+        };
+
+        render.render({cursor:true});
     },
 
     move: function(e){

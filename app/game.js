@@ -64,6 +64,7 @@ var game = {
     unit_selected: false,
     fow: true,
     fps: 7,
+    db: [],
 
     init: function(args){
         if(isNaN(localStorage.runs) || !localStorage.runs){
@@ -88,10 +89,10 @@ var game = {
             height: 18 || args.h
         });        
         fogOfWar.init();
-        shop.init();    
+        shop.init();        
         render.init();        
         audio.play({sound:'music1'});
-        //this.saveMap();
+        //this.saveMap();        
     },
 
     menu: function(){
@@ -164,6 +165,99 @@ var game = {
         render.render({all:true});
     },
 
+    piratopedia: function(){        
+        //return true;
+        // PIRATES
+        this.db['Pirate'] = {
+            image:render.resize(render.sprites[17][0], 2),
+            title:'Pirate', 
+            desc:['Basic land unit', 'Merge up to 6 units in squad', 'Marged units have bonus attack' ]};
+        
+        this.db['Gunner'] = {
+            image:render.resize(render.sprites[29][0], 2),
+            title:'Gunner', 
+            desc:['Shoot at distance', 'Merge up to 6 units in squad', 'Marged units have bonus attack' ]};
+        
+        this.db['Lumberjack'] = {
+            image:render.resize(render.sprites[53][0], 2),
+            title:'Lumberjack', 
+            desc:['Cut palms for resources', 'Can build a fort:']};
+        
+        this.db['Ship'] = {
+            image:render.resize(render.sprites[35][0], 2),
+            title:'Ship', 
+            desc:['Pirates most important unit', 'Loose game without one', 'Deploys new units near land', 'Shoot at distance', 'Generates gold per turn']};
+        
+        this.db['Cannon'] = {
+            image:render.resize(render.sprites[59][0], 2),
+            title:'Cannon', 
+            desc:['Destroys structures (Cementary)', 'Shoot at distance', 'Very slow']};
+        
+        this.db['Fort'] = {
+            image:render.resize(render.sprites[71][0], 2),
+            title:'Fort', 
+            desc:['Place to buy new units', 'Generates resources per turn']};
+        
+        this.db['Chieftain'] = {
+            image:render.resize(render.sprites[74][0], 2),
+            title:'Chieftain', 
+            desc:['Gives bonus to nerby units', '1 wood for wooden leg']};
+        
+        // SKELETONS
+        this.db['Skeleton'] = {
+            image:render.resize(render.sprites[23][0], 2),
+            title:'Skeleton', 
+            desc:['Basic land unit', 'Merge up to 6 units in squad', 'Marged units have bonus attack' ]};
+        
+        this.db['Dust'] = {
+            image:render.resize(render.sprites[49][0], 2),
+            title:'Dust', 
+            desc:['Have masive bonus attack', 'Dies at first attack', 'Cut palms for resources','Can build bonfire:']};        
+        
+        this.db['Cementary'] = {
+            image:render.resize(render.sprites[39][0], 2),
+            title:'Cementery', 
+            desc:['Skeletons most important unit', 'Loose game without one', 'Place to buy other units', 'Generate gold per turn']};
+        
+        this.db['Octopus'] = {
+            image:render.resize(render.sprites[36][0], 2),
+            title:'Octopus', 
+            desc:['Water unit', 'Have massive bonus attack', 'Attack only water units']};
+        
+        this.db['Daemon'] = {
+            image:render.resize(render.sprites[68][0], 2),
+            title:'Daemon', 
+            desc:['Destroys structures (Fort)', 'Shoot at distance']};
+        
+        this.db['Bonfire'] = {
+            image:render.resize(render.sprites[70][0], 2),
+            title:'Bonfire', 
+            desc:['Place to buy other units', 'Shoot at distance', 'Generate gold per turn']}; 
+
+        // ITEMS       
+        this.db['Palm'] = {
+            image:render.resize(render.sprites[55][0], 2),
+            title:'Palm', 
+            desc:['Source of wood', 'Grown to bigger palm', 'Generate seed for new palm', 'Use Lumberjack or Dust to harvest']};
+        
+        this.db['Rip'] = {
+            image:render.resize(render.sprites[48][0], 2),
+            title:'Rip', 
+            desc:['Each pirate unit after defeat', 'Give attack bonus to skeletons']};
+        
+        this.db['Chest'] = {
+            image:render.resize(render.sprites[13][0], 2),
+            title:'Chest', 
+            desc:['Pirates:','- open it to find gold!', 'Skeletons:','- close and get rewarded']};
+        
+        this.db['Rock'] = {
+            image:render.resize(render.sprites[93][0], 2),
+            title:'Rocks', 
+            desc:['Units can\'t move on them']};
+                
+        // TERRAIN 
+    },
+
     randomMap: function(){
         render.map_rendered = true;
         render.frame = 0;
@@ -217,6 +311,9 @@ var game = {
         for (var i = 0; i < world.map.entities.length; i++) {
             if(world.map.entities[i].x == cX && world.map.entities[i].y == cY && world.map.entities[i].team == this.turn.team && world.map.entities[i].moves > 0 && world.map.entities[i].reloading < 1) {                
                 this.unit_selected = i;
+                if(world.map.entities[i].can_build_structure){
+                    shop.show({structures:true});
+                }
                 world.map.entities[i].select();                
                 world.map.entities[i].open();                
                 return true;
@@ -261,9 +358,8 @@ var game = {
                     world.map.entities[game.unit_selected].move(cX, cY);
                 }
                 // buy
-                if(world.map.entities[game.unit_selected].move_area[i].buy){
-                    //world.map.entities[game.unit_selected].move(cX, cY);                                        
-                    shop.show({more:true, x:cX, y:cY});
+                if(world.map.entities[game.unit_selected].move_area[i].buy){                                       
+                    shop.show({first:true, x:cX, y:cY});
                     return true;
                 }
             }    

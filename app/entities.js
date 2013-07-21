@@ -47,6 +47,7 @@ var Unit = function Unit(){
     this.merging = true;
     this.die_after_attack = false;
     this.shop = [];
+    this.shop2 = [];
     this.bonus = {
         attack: false,
         fear: false
@@ -98,16 +99,11 @@ Unit.prototype = {
                             }
                         }
                     }
-                }
-                
-                // if there is a place to create            
-                if(this.move_area.length > 0){
-                    //shop.show({more:true});
-                }                
+                }       
             }
 
-            if(this.can_build_structure){
-                //shop.show({more:true});
+            if(this.shop2.length > 0){            
+                shop.show({second:true});
             }
 
             if(this.water){
@@ -121,7 +117,7 @@ Unit.prototype = {
             }
 
             // MOVE FINGIND ALGORITHM
-
+            // simple as soup
             
             // some vars
             var newX = 0,
@@ -780,7 +776,7 @@ var Lumberjack = function Lumberjack(args){
     this.fow = 4;
     this.merging = false;
     this.can_build_structure = true;
-    this.shop = ['fort'];
+    this.shop2 = ['fort'];
     this.bonus = {
         attack: false,
         fear: false
@@ -832,7 +828,7 @@ var Dust = function Dust(args){
     this.die_after_attack = true;
     this.can_cut_tree = true;
     this.can_build_structure = true;
-    this.shop = ['bonfire'];
+    this.shop2 = ['bonfire'];
     this.bonus = {
         attack: false,
         fear: false
@@ -861,7 +857,8 @@ var Ship = function Ship(args){
     this.attack_range = 5;
     this.fow = 6;
     this.merging = false;
-    this.shop = ['ship','pirate','lumberjack'];
+    this.shop = ['pirate','lumberjack'];
+    this.shop2 =['ship'];
     this.bonus = {
         attack: false,
         fear: false
@@ -894,6 +891,7 @@ var Cementary = function Cementary(args){
     this.hasCementary = args.hasCementary || false;
     this.merging = false;
     this.shop = ['octopus','skeleton','dust'];
+    this.shop2 = ['cementary'];
     this.bonus = {
         attack: false,
         fear: false
@@ -947,6 +945,7 @@ var Daemon = function Daemon(args){
     this.move_range = 2;
     this.fow = 6;
     this.give_bonus.fear = true;
+    this.can_destroy_structure = true;
     this.bonus = {
         attack: false,
         fear: false

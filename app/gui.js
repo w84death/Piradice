@@ -262,8 +262,8 @@ var GUI = {
 				width: 2,
 				height: 2,
 				position: {
-					x: this.shop.x,
-					y: this.shop.y-5
+					x: render.viewport.width-5,
+					y: 6
 				},
 				action: 'basket',
 				value: 'ship'
@@ -287,7 +287,7 @@ var GUI = {
 			height: 2,
 			position: {
 				x: this.shop.x,
-				y: this.shop.y+1
+				y: this.shop.y-1
 			},
 			action: 'basket',
 			value: 'gunner'
@@ -334,8 +334,8 @@ var GUI = {
 			width: 2,
 			height: 2,			
 			position: {
-				x: this.shop.x,
-				y: this.shop.y-3
+				x: render.viewport.width-5,
+				y: 6
 			},
 			action: 'basket',
 			value: 'fort'
@@ -347,8 +347,8 @@ var GUI = {
 			width: 2,
 			height: 2,
 			position: {
-				x: this.shop.x,
-				y: this.shop.y-1
+				x: render.viewport.width-5,
+				y: 6
 			},
 			action: 'basket',
 			value: 'cementary'
@@ -407,8 +407,8 @@ var GUI = {
 			width: 2,
 			height: 2,			
 			position: {
-				x: this.shop.x,
-				y: this.shop.y-5
+				x: render.viewport.width-5,
+				y: 6
 			},
 			action: 'basket',
 			value: 'bonfire'
@@ -824,6 +824,117 @@ var GUI = {
 		}else{
 			return m_canvas;	
 		}
+	},
+
+	drawInfoBox: function(args){
+		var x = render.viewport.width-8,
+			y = 1,
+			width = 7,
+			height = 8;
+
+		var m_canvas = document.createElement('canvas');
+            m_canvas.width = render.box * width;
+            m_canvas.height = render.box * height;
+        var m_context = m_canvas.getContext('2d');
+		var center = (((m_canvas.width*0.5)/render.box)<<0);
+
+		// fake background
+		//m_context.drawImage(render.sprites_img, -10*render.box, -4*render.box);
+		m_context.fillStyle=this.conf.color;
+		m_context.fillRect(0,0,m_canvas.width,m_canvas.height);
+
+		
+		var entitie_found = false,
+			item_found = false;
+
+		// search entities	
+		for (var i = 0; i < world.map.entities.length; i++) {
+			if(world.map.entities[i].x == args.x && world.map.entities[i].y == args.y){								
+				entitie_found = i;
+				i = world.map.entities.length;				
+			}
+		};
+
+		// entitie not found? search items
+		if(entitie_found === false){
+			for (var i = 0; i < world.map.items.length; i++) {
+				if(world.map.items[i].x == args.x && world.map.items[i].y == args.y && !world.map.items[i].environment){								
+					item_found = i;
+					i = world.map.items.length;				
+				}
+			};
+		}
+
+		if(entitie_found !== false || item_found !== false){
+			var name = null;
+			if(entitie_found !== false){
+				name = world.map.entities[entitie_found].name;
+			}else{
+				name = world.map.items[item_found].name;
+			}
+
+			// avatar
+			m_context.drawImage(game.db[name].image, render.box*0.5,render.box*0.5);
+
+			m_context.fillStyle = this.conf.color3;        	
+			m_context.textBaseline = 'top';
+			m_context.textAlign = 'left';
+
+			// title
+			m_context.font = '18px VT323, cursive';
+			m_context.fillText(game.db[name].title, render.box*3 , render.box*0.5);		
+
+			// stats
+			if(entitie_found !== false){
+				m_context.font = '14px VT323, cursive';
+				m_context.fillStyle = this.conf.labelColor;
+				m_context.fillText('Squad: ' + world.map.entities[entitie_found].squad + ' unit', render.box*3, render.box);
+				m_context.fillText('Move: ' + world.map.entities[entitie_found].move_range + ' tiles', render.box*3, render.box+(14*1));
+				m_context.fillText('Attack: ' + world.map.entities[entitie_found].attack_range + ' tiles', render.box*3, render.box+(14*2));				
+			}
+			if(item_found !== false){
+				m_context.font = '14px VT323, cursive';
+				m_context.fillStyle = this.conf.labelColor;
+				if(world.map.items[item_found].chest){
+					if(world.map.items[item_found].close){
+						m_context.fillText('Chest is closed', render.box*3, render.box);
+					}else{
+						m_context.fillText('Chest is opened', render.box*3, render.box);
+					}					
+				}
+				if(world.map.items[item_found].forest){
+					m_context.fillText('Palms: ' + world.map.items[item_found].palms, render.box*3, render.box);
+				}		
+			}
+
+			// desc
+			m_context.font = '14px VT323, cursive';
+			m_context.fillStyle = this.conf.labelColor;			
+			for (var i = 0; i < game.db[name].desc.length; i++) {				
+				m_context.fillText(game.db[name].desc[i], render.box*0.5 , 3*render.box + (i*14));		
+			};
+			
+			if(entitie_found !== false){
+				m_context.font = '18px VT323, cursive';
+				m_context.fillStyle = this.conf.labelColor2;
+				m_context.fillText('Unit have ' + world.map.entities[entitie_found].moves + ' moves left', render.box*0.5 , (height-1)*render.box);		
+			}
+		}
+
+		if(entitie_found !== false || item_found !== false){
+			this.popUp = {
+				show: true,
+				canvas: m_canvas,
+				position: {
+					x: x,
+					y: y
+				}
+			};	
+		}else{
+			this.popUp.show = false;
+		}
+		
+		render.render({menu:true});
 	},
 
 	warReport: function(args){

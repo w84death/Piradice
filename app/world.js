@@ -180,7 +180,6 @@ var world = {
             }
         }
 
-        console.log(for_cut);
         for (var i = 0; i < for_cut.length; i++) {
             this.map.moves[this.map.items[for_cut[i]].x+(this.map.items[for_cut[i]].y*this.map.width)] = 1;
             this.map.items.splice(for_cut[i],1);

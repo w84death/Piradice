@@ -36,7 +36,15 @@ var render = {
     },
     gui: {
         canvas: null,
+        ctx: null,        
+    },
+    cursor: {
+        canvas: null,
         ctx: null,
+        pos: {
+            x:0,
+            y:0
+        }
     },
     sky: {
         canvas: null,
@@ -240,6 +248,7 @@ var render = {
                 GUI.init();
                 fogOfWar.init();
                 game.centerMap();
+                game.piratopedia();
                 render.render({all:true});                               
                 if(render.animation){
                     render.loop();
@@ -311,7 +320,7 @@ var render = {
         this.gui.canvas = document.createElement('canvas');
         this.gui.canvas.width = world.map.width*this.box;
         this.gui.canvas.height = world.map.height*this.box;
-        this.gui.ctx = this.gui.canvas.getContext('2d');
+        this.gui.ctx = this.gui.canvas.getContext('2d');        
         
         this.sky.canvas = document.createElement('canvas');
         this.sky.canvas.width = world.map.width*this.box;
@@ -322,6 +331,11 @@ var render = {
         this.hints.canvas.width = this.viewport.width*this.box;
         this.hints.canvas.height = this.viewport.height*this.box;
         this.hints.ctx = this.hints.canvas.getContext('2d');
+
+        this.cursor.canvas = document.createElement('canvas');
+        this.cursor.canvas.width = world.map.width*this.box;
+        this.cursor.canvas.height = world.map.height*this.box;
+        this.cursor.ctx = this.cursor.canvas.getContext('2d');
 
         this.menu.canvas = document.createElement('canvas');
         this.menu.canvas.width = this.viewport.width*this.box;
@@ -755,11 +769,19 @@ var render = {
             this.drawHints();         
         }
 
+        if(args.cursor){
+            // clear canvas
+            this.cursor.ctx.clearRect(0, 0, world.map.width*this.box, world.map.height*this.box);            
+            // draw cursor
+            this.cursor.ctx.drawImage(render.sprites[10], this.cursor.pos.x*render.box, this.cursor.pos.y*render.box);                                    
+        }
+
         if(args.gui){ 
             var draw = {x:0,y:0}
-
-            this.gui.ctx.clearRect(0, 0, world.map.width*render.box, world.map.height*render.box);
             
+            // clear canvas
+            this.gui.ctx.clearRect(0, 0, world.map.width*render.box, world.map.height*render.box);                        
+
             if(!game.teams[game.turn.team].ai){
                 for(i=0; i<world.map.entities.length; i++){
 
@@ -769,10 +791,7 @@ var render = {
                     if(world.map.entities[i].moves < 1 && world.map.entities[i].alive){                        
                         this.gui.ctx.drawImage(render.sprites[11], world.map.entities[i].x*render.box, world.map.entities[i].y*render.box);                        
                     }
-
-                    if(world.map.entities[i].selected){
-                        
-                        this.gui.ctx.drawImage(render.sprites[10], world.map.entities[i].x*render.box, world.map.entities[i].y*render.box);                        
+                    if(world.map.entities[i].selected){                                                
                         
                         for (var j = 0; j < world.map.entities[i].move_area.length; j++) {
                             var block = null;
@@ -831,7 +850,9 @@ var render = {
 
         if(args.hints){
             this.hints.ctx.clearRect(0, 0, this.viewport.width*this.box, this.viewport.height*this.box);
-            this.drawHints();
+            if(game.teams[game.turn.team].ai === false){
+                this.drawHints();    
+            }            
         }                    
 
         this.post_render();
@@ -852,6 +873,7 @@ var render = {
         layers.push(this.front.canvas);
         layers.push(this.gui.canvas);
         if(!game.map && game.fow){ layers.push(this.sky.canvas); }                         
+        layers.push(this.cursor.canvas);
 
         draw.x = this.viewport.offset.x;
         draw.y = this.viewport.offset.y;
