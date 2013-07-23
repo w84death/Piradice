@@ -299,7 +299,7 @@ var GUI = {
 			height: 2,
 			position: {
 				x: this.shop.x,
-				y: this.shop.y-3
+				y: this.shop.y-5
 			},
 			action: 'basket',
 			value: 'chieftain'
