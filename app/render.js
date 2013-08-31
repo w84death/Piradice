@@ -91,7 +91,7 @@ var render = {
 
             this.createDOM();
 
-            this.noise_img = this.fastNoise(world.map.width*this.box, world.map.height*this.box, 8 );
+            //this.noise_img = this.fastNoise(world.map.width*this.box, world.map.height*this.box, 8 );
 
             this.sprites_img.src = "media/sprites.png";
             this.sprites_img.onload = function(){                
@@ -249,41 +249,20 @@ var render = {
                 fogOfWar.init();
                 game.centerMap();
                 game.piratopedia();
-                render.render({all:true});                               
-                if(render.animation){
-                    render.loop();
-                }
-            };
-            
-            /*
-            this.next_turn.src = "/media/next_turn.png";
-            this.next_turn.onload = function(){                
-                render.render({gui:true});
-            };
-            */
+                render.render({all:true});                
+            }; 
             this.render_initialized = true;
         }else{
             this.destroyDOM();
             this.createDOM();            
-            this.noise_img = this.fastNoise(world.conf.width*this.box, world.conf.height*this.box, 8 );
+            //this.noise_img = this.fastNoise(world.conf.width*this.box, world.conf.height*this.box, 8 );
         }
 
     },    
     
 
     createDOM: function(){
-        var gameDiv = document.getElementById('game'),
-            viewportDiv = document.createElement('canvas');
-		
-		gameDiv.innerHTML = '';
-		
-        viewportDiv.setAttribute('id','viewport');
-
-        gameDiv.appendChild(viewportDiv);
-        gameDiv.style.width = (this.viewport.width*this.box)+'px';
-        gameDiv.style.height = (this.viewport.height*this.box)+'px';    
-
-        this.viewport.canvas = document.getElementById('viewport');
+        this.viewport.canvas = document.getElementById('canvas');
         this.viewport.canvas.width = this.viewport.width*this.box;
         this.viewport.canvas.height = this.viewport.height*this.box;
         this.viewport.ctx = this.viewport.canvas.getContext('2d');
@@ -292,15 +271,6 @@ var render = {
         this.map.canvas.width = world.map.width*this.box;
         this.map.canvas.height = world.map.height*this.box;
         this.map.ctx = this.map.canvas.getContext('2d');
-
-        for (var i = 0; i < this.max_frames; i++) {
-            this.frames[i] = {};
-            this.frames[i].canvas = document.createElement('canvas');
-            this.frames[i].canvas.width = world.map.width*this.box;
-            this.frames[i].canvas.height = world.map.height*this.box;
-            this.frames[i].ctx = this.frames[i].canvas.getContext('2d');    
-        };
-        
 
         this.items.canvas = document.createElement('canvas');
         this.items.canvas.width = world.map.width*this.box;
@@ -349,7 +319,7 @@ var render = {
         
     destroyDOM: function(){
         io.clear();
-        document.getElementById('game').innerHTML = '';       
+        document.getElementById('canvas').innerHTML = '';
     },
 
     makeSprite: function(x,y, flip){
@@ -498,108 +468,110 @@ var render = {
         this.hints.draw = [];
         this.hints.ctx.clearRect(0, 0, this.viewport.width*this.box, this.viewport.height*this.box);
 
-        for(i=0; i<world.map.entities.length; i++){
-            if(world.map.entities[i].alive && world.map.entities[i].team === game.turn.team){                
-                draw.x = world.map.entities[i].x + this.viewport.offset.x;
-                draw.y = world.map.entities[i].y + this.viewport.offset.y;                
-                if(draw.x < 0 || draw.x >= this.viewport.width || draw.y < 0 || draw.y >= this.viewport.height){
-                    if(world.map.entities[i].moves > 0 && world.map.entities[i].reloading < 1){
-                        draw.red = true;
-                    }else{
-                    	draw.red = false;
+        if(game.teams[game.turn.team].ai === false){
+            for(i=0; i<world.map.entities.length; i++){
+                if(world.map.entities[i].alive && world.map.entities[i].team === game.turn.team){                
+                    draw.x = world.map.entities[i].x + this.viewport.offset.x;
+                    draw.y = world.map.entities[i].y + this.viewport.offset.y;                
+                    if(draw.x < 0 || draw.x >= this.viewport.width || draw.y < 0 || draw.y >= this.viewport.height){
+                        if(world.map.entities[i].moves > 0 && world.map.entities[i].reloading < 1){
+                            draw.red = true;
+                        }else{
+                        	draw.red = false;
+                        }
+                        this.hints.draw.push({x:draw.x, y:draw.y, red:draw.red});
                     }
-                    this.hints.draw.push({x:draw.x, y:draw.y, red:draw.red});
                 }
-            }
-        } 
+            } 
 
-        for (var i = 0; i < this.hints.draw.length; i++) {
-            
-            if(this.hints.draw[i].x < 0 ){
-                indicator.x = 0;
-                indicator.y = this.hints.draw[i].y;
-                indicator.sprite = 43;
-                if(this.hints.draw[i].red){
-                    indicator.sprite = 63;
-                }
-            }
-            if(this.hints.draw[i].x >= this.viewport.width ){
-                indicator.x = this.viewport.width-1;
-                indicator.y = this.hints.draw[i].y;
-                indicator.sprite = 41;
-                if(this.hints.draw[i].red){
-                    indicator.sprite = 61;
-                }
-            }
-            if(this.hints.draw[i].y < 0 ){
-                indicator.x = this.hints.draw[i].x;
-                indicator.y = 0;            
-                indicator.sprite = 40;
-                if(this.hints.draw[i].red){
-                    indicator.sprite = 60;
-                }
-            }
-            if(this.hints.draw[i].y >= this.viewport.height ){            
-                indicator.x = this.hints.draw[i].x;
-                indicator.y = this.viewport.height-1;
-                indicator.sprite = 42;
-                if(this.hints.draw[i].red){
-                    indicator.sprite = 62;
-                }
-            }
-
-            if(indicator.x >= this.viewport.width){
-                indicator.x = this.viewport.width-1;                
-            }
-            if(indicator.x < 0){
-                indicator.x = 0;                
-            }
-            if(indicator.y >= this.viewport.height){
-                indicator.y = this.viewport.height-1;                
-            }
-            if(indicator.y < 0){
-                indicator.y = 0;                
-            }
-
-            
-            if(indicator.x === 0 && indicator.y === 0){
-               indicator.sprite = 47; 
-               if(this.hints.draw[i].red){
-                    indicator.sprite = 67;
-                }
-            }
-            if(indicator.x === 0 && indicator.y == this.viewport.height-1){
-               indicator.sprite = 46; 
-               if(this.hints.draw[i].red){
-                    indicator.sprite = 66;
-                }
-            }
-            if(indicator.x == this.viewport.width-1 && indicator.y === 0){
-               indicator.sprite = 44; 
-               if(this.hints.draw[i].red){
-                    indicator.sprite = 65;
-                }
-            }
-            if(indicator.x == this.viewport.width-1 && indicator.y == this.viewport.height-1){
-               indicator.sprite = 45; 
-               if(this.hints.draw[i].red){
-                    indicator.sprite = 64;
-                }
-            }
+            for (var i = 0; i < this.hints.draw.length; i++) {
                 
-            this.hints.ctx.drawImage(this.sprites[ indicator.sprite ], indicator.x*this.box, indicator.y*this.box);
-        };              
+                if(this.hints.draw[i].x < 0 ){
+                    indicator.x = 0;
+                    indicator.y = this.hints.draw[i].y;
+                    indicator.sprite = 43;
+                    if(this.hints.draw[i].red){
+                        indicator.sprite = 63;
+                    }
+                }
+                if(this.hints.draw[i].x >= this.viewport.width ){
+                    indicator.x = this.viewport.width-1;
+                    indicator.y = this.hints.draw[i].y;
+                    indicator.sprite = 41;
+                    if(this.hints.draw[i].red){
+                        indicator.sprite = 61;
+                    }
+                }
+                if(this.hints.draw[i].y < 0 ){
+                    indicator.x = this.hints.draw[i].x;
+                    indicator.y = 0;            
+                    indicator.sprite = 40;
+                    if(this.hints.draw[i].red){
+                        indicator.sprite = 60;
+                    }
+                }
+                if(this.hints.draw[i].y >= this.viewport.height ){            
+                    indicator.x = this.hints.draw[i].x;
+                    indicator.y = this.viewport.height-1;
+                    indicator.sprite = 42;
+                    if(this.hints.draw[i].red){
+                        indicator.sprite = 62;
+                    }
+                }
+
+                if(indicator.x >= this.viewport.width){
+                    indicator.x = this.viewport.width-1;                
+                }
+                if(indicator.x < 0){
+                    indicator.x = 0;                
+                }
+                if(indicator.y >= this.viewport.height){
+                    indicator.y = this.viewport.height-1;                
+                }
+                if(indicator.y < 0){
+                    indicator.y = 0;                
+                }
+
+                
+                if(indicator.x === 0 && indicator.y === 0){
+                   indicator.sprite = 47; 
+                   if(this.hints.draw[i].red){
+                        indicator.sprite = 67;
+                    }
+                }
+                if(indicator.x === 0 && indicator.y == this.viewport.height-1){
+                   indicator.sprite = 46; 
+                   if(this.hints.draw[i].red){
+                        indicator.sprite = 66;
+                    }
+                }
+                if(indicator.x == this.viewport.width-1 && indicator.y === 0){
+                   indicator.sprite = 44; 
+                   if(this.hints.draw[i].red){
+                        indicator.sprite = 65;
+                    }
+                }
+                if(indicator.x == this.viewport.width-1 && indicator.y == this.viewport.height-1){
+                   indicator.sprite = 45; 
+                   if(this.hints.draw[i].red){
+                        indicator.sprite = 64;
+                    }
+                }
+                    
+                this.hints.ctx.drawImage(this.sprites[ indicator.sprite ], indicator.x*this.box, indicator.y*this.box);
+            };              
+        }
     },
 
     viewportResize: function(){            
-        var gameDiv = document.getElementById('game');
+        var canvas = document.getElementById('canvas');
 
         render.viewport.width = (window.innerWidth/render.box)<<0;
         render.viewport.height = (window.innerHeight/render.box)<<0;
         render.menu.canvas.width = render.viewport.canvas.width = render.viewport.width*render.box;
         render.menu.canvas.height = render.viewport.canvas.height = render.viewport.height*render.box;                        
-        gameDiv.style.width = render.viewport.canvas.width+'px';
-        gameDiv.style.height = render.viewport.canvas.height+'px';    
+        canvas.style.width = render.viewport.canvas.width+'px';
+        canvas.style.height = render.viewport.canvas.height+'px';    
         GUI.init();
         render.render({menu:true});
     },
@@ -616,11 +588,7 @@ var render = {
             args.hints = true;
         }
 
-        if(args.map){            
-            if(this.map_rendered){
-                this.map_rendered = false;
-                this.last_frame = 0;
-            }            
+        if(args.map){                      
             this.map.ctx.clearRect(0, 0, world.map.width*this.box, world.map.height*this.box);
             var spr = 0;
 
@@ -722,30 +690,10 @@ var render = {
             }
 
 
-            args.items = true;
-            this.map.ctx.drawImage(this.noise_img, 0, 0);            
-            this.frames[this.last_frame].ctx.drawImage(this.map.canvas, 0,0);
-            if(this.last_frame + 1 >= this.max_frames){
-                this.map_rendered = true;
-            }else{
-                if(this.animated_noise){
-                    this.noise_img = this.fastNoise(world.conf.width*this.box, world.conf.height*this.box, 8 );
-                }
-                this.last_frame++;
-            }                         
-        }
-
-        if(args.mapOld){
-            this.map.ctx.clearRect(0, 0, world.map.width*this.box, world.map.height*this.box);
-            
-            for(var y=0; y<world.map.height; y++){
-                for(var x=0; x<world.map.width; x++){
-                    this.map.ctx.drawImage(this.sprites[world.map.data[x+(y*world.map.width)]], x*this.box, y*this.box);                                            
-                }
-            }
-            args.items = true;
-            this.map.ctx.drawImage(this.noise_img, 0, 0);            
-        }
+            args.items = true;            
+            this.map.ctx.drawImage(this.map.canvas, 0,0);
+            //this.map.ctx.drawImage(this.noise_img, 0, 0);
+        }        
 
         if(args.items){
             this.items.ctx.clearRect(0, 0, world.map.width*this.box, world.map.height*this.box);
@@ -862,12 +810,7 @@ var render = {
         var layers = [],
             draw = {x:0,y:0};
 
-        this.frame++;        
-        if(this.frame >= this.last_frame){
-            this.frame = 0;
-        }
-
-        layers.push(this.frames[this.frame].canvas);
+        layers.push(this.map.canvas);
         layers.push(this.items.canvas);
         if(!game.map){ layers.push(this.entities.canvas); }
         layers.push(this.front.canvas);
@@ -881,23 +824,8 @@ var render = {
         this.viewport.ctx.clearRect(0, 0, this.viewport.width*this.box, this.viewport.height*this.box);
         for (var i = 0; i < layers.length; i++) {                        
             this.viewport.ctx.drawImage( layers[i], draw.x*this.box, draw.y*this.box );
-        };
+        };        
         this.viewport.ctx.drawImage( this.hints.canvas, 0,0);
-        this.viewport.ctx.drawImage( this.menu.canvas, 0,0);
-        
+        this.viewport.ctx.drawImage( this.menu.canvas, 0,0);        
     },
-
-    loop: function(){
-        if(!this.map_rendered){
-            render.render({map:true});
-        }else{
-            render.post_render();
-        }
-        setTimeout(function () {                                    
-            if(!render.stop){
-                render.loop(); 
-            }           
-        }, 1000/game.fps);
-    }
-
 };

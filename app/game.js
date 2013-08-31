@@ -19,7 +19,7 @@
 */
 
 var game = {
-    version: 'Update X',
+    version: 'Update XI',
     runs: 0,
     mobile: false || navigator.userAgent.match(/(iPhone)|(iPod)|(iPad)|(android)|(webOS)/i),
     tablet: false || navigator.userAgent.match(/(iPad)/i),
@@ -27,8 +27,8 @@ var game = {
             pirates: true,
             ai: false,
             wallet: {
-                gold:400, //400,
-                trees:40, //22
+                gold:400,
+                trees:40,
             },
             income: {
                 gold: 5,            
@@ -40,8 +40,8 @@ var game = {
             skeletons: true,
             ai: false,
             wallet: {
-                gold:400, //400,
-                trees:30,// 12
+                gold:400,
+                trees:30,
             },
             income: {
                 gold: 5,            
@@ -117,7 +117,6 @@ var game = {
     	this.map = false;             
         GUI.show = ['map','inventory','gold','trees','end'];
         GUI.hud['map'].position = {x:1,y:1};
-        //shop.show();
         shop.buyStarter();        
         render.render({menu:true});
         fogOfWar.update();
@@ -633,8 +632,8 @@ var game = {
     
         for (var i = 0; i < world.map.entities.length; i++) {
             if(!world.map.entities[i].alive){                
-                world.map.entities[i].x = 0;
-                world.map.entities[i].y = 0;
+                world.map.entities[i].x = -1;
+                world.map.entities[i].y = -1;
                 //delete world.map.entities[i]
                 world.map.entities.slice(i,1);
             }                        
@@ -790,19 +789,16 @@ var bank = {
 	hasSave: function(){
 		if(localStorage.getItem('save')){
 			return true;
-		}
-		
+		}		
 		return false;
 	},
 };
 
-var multi = {
-    
+var multi = {    
     show: function(msg){
         GUI.render({ready:true});
     },
 };
-
 
 
 var utilities = {

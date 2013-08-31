@@ -4,8 +4,8 @@
   <link rel="stylesheet" href="app/app.css"/>
 </head>
 <body id="app">
-	<section id="game">
-	</section>
+	<canvas id="canvas">
+	</canvas>
 	
 	<script src="app/seed.js"></script>
 	<script src="app/entities.js"></script>
@@ -24,7 +24,7 @@
 	  WebFontConfig = {	  
 	    google: { families: [ 'VT323::latin' ] },
 	    active: function() {
-	    	game.init({multi:true}); 
+	    	game.init(); 
 	    }	    
 	  };
 	  (function() {

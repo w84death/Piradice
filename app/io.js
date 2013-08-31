@@ -85,9 +85,9 @@ var io = {
             py = e.pageY;
         }
 
-        var gameDiv = document.getElementById('game'),
-            cX = ((px - gameDiv.offsetLeft)/render.box<<0),
-            cY = ((py - gameDiv.offsetTop)/render.box<<0);
+        var canvas = document.getElementById('canvas'),
+            cX = ((px - canvas.offsetLeft)/render.box<<0),
+            cY = ((py - canvas.offsetTop)/render.box<<0);
 
         
         if(game.mobile || game.tablet ){
