@@ -3,7 +3,8 @@
 Turn-base strategy game in HTML5. Custom engine, vanilla JavaScript.
 
 ![Cover](cover.png)
-[PLAY ONLINE](https://piradice.p1x.in/)
+
+[PLAY ONLINE](https://piradice.p1x.in/), [Support at itch.io](https://w84death.itch.io/piradice)
 
 ## Story
 
