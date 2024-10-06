@@ -1,8 +1,9 @@
 # Piradice
+![Piradice logo](media/logo.png)
 
 Turn-base strategy game in HTML5. Custom engine, vanilla JavaScript.
 
-![Cover](cover.png)
+![Screenshot](screenshot.png)
 
 [PLAY ONLINE](https://piradice.p1x.in/), [Support at itch.io](https://w84death.itch.io/piradice)
 
@@ -22,4 +23,3 @@ But soon You'll find out You were not the first..
 - 13 unique units
 - Simple gameplay
 - Random procedural maps
-- Web, Windows, Linux, Mac, iPad
