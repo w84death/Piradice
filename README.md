@@ -1,6 +1,8 @@
 # Piradice
 
-Turn-base strategy game in HTML5
+Turn-base strategy game in HTML5. Custom engine, vanilla JavaScript.
+
+[PLAY ONLINE](https://piradice.p1x.in/)
 
 ## Story
 
