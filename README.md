@@ -11,9 +11,11 @@ Turn-based strategy game in HTML5. Custom engine, vanilla JavaScript.
 
 [PLAY ONLINE](https://piradice.p1x.in/), [Support at itch.io](https://w84death.itch.io/piradice)
 
-## Screenshots
+## Media
 
 ![Screenshot](screenshot.png)
+
+[Gameplay Video](https://youtu.be/dvAlj6aJphY?si=6_jJUHrnHWRDGcLd)
 
 ## Story
 
