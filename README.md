@@ -1,11 +1,19 @@
 # Piradice
+
 ![Piradice logo](media/logo.png)
 
-Turn-base strategy game in HTML5. Custom engine, vanilla JavaScript.
+by KRZYSZTOF JANKOWSKI && PRZEMYSLAW SIKORSKI
 
-![Screenshot](screenshot.png)
+Turn-based strategy game in HTML5. Custom engine, vanilla JavaScript.
+
+- created: 06-03-2013
+- licence: do what you want and dont bother me
 
 [PLAY ONLINE](https://piradice.p1x.in/), [Support at itch.io](https://w84death.itch.io/piradice)
+
+## Screenshots
+
+![Screenshot](screenshot.png)
 
 ## Story
 
