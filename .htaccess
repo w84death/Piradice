@@ -1,4 +1,0 @@
-AddDefaultCharset utf8
-RewriteEngine on
-RewriteRule ^([a-z0-9_-]+)/?$ index.php?nav=$1 [NC]
-RewriteRule ^([a-z0-9_-]+)/([a-z0-9_-]+)/?$ index.php?nav=$1&sub=$2 [NC]
